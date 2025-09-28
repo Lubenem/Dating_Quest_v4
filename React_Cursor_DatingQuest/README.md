@@ -85,6 +85,26 @@ npm run build
 
 The built files will be in the `dist` folder, ready for deployment.
 
+### Deploying to GitHub Pages
+
+**Option 1: Using the deploy script (Recommended)**
+```bash
+./deploy.sh
+```
+
+**Option 2: Manual deployment**
+```bash
+# Build the app to Build folder
+npm run build
+
+# Commit and push to GitHub
+git add .
+git commit -m "Deploy React app to GitHub Pages"
+git push
+```
+
+The app will be available at: https://lubenem.github.io/Dating_Quest_v4/React_Cursor_DatingQuest/Build/
+
 ## 📱 Mobile Testing
 
 1. Start the dev server

@@ -37,6 +37,7 @@ Dating_Quest/
 │   │   ├── hooks/                      # Custom hooks
 │   │   ├── types/                      # TypeScript types
 │   │   └── App.tsx                     # Main app component
+│   ├── Build/                          # Built files for GitHub Pages
 │   ├── public/                         # Static assets
 │   ├── package.json                    # Dependencies
 │   └── README.md                       # Detailed documentation

@@ -9,10 +9,10 @@
 # Commits
 
 React_Cursor_DatingQuest
-* Move to React
+* Fix white screen bug
 
 React_Cursor_DatingQuest
-* Complete React migration with TypeScript, modern components, and best practices
+* Move to React
 
 HTML_Cursor_DatingQuest 
 * Improve look / theme (dark, purple)
