@@ -30,17 +30,23 @@ A simple mobile-first web app for tracking daily dating interactions.
 
 ## How to Run
 
-### Option 1: Python Server (Recommended)
+### Option 1: GitHub Pages (Recommended for Mobile Testing)
+1. Push this repository to GitHub
+2. Enable GitHub Pages in repository settings
+3. Access your app at: `https://YOUR_USERNAME.github.io/YOUR_REPO_NAME`
+4. The root `index.html` will automatically redirect to the app
+
+### Option 2: Python Server (Local Development)
 ```bash
 cd /home/lubenem/Code/Dating_Quest/HTML_Cursor_DatingQuest
 python3 server.py
 ```
 Then open http://localhost:8000 in your browser
 
-### Option 2: Direct File
+### Option 3: Direct File
 Simply open `index.html` in your web browser
 
-### Option 3: Mobile Testing
+### Option 4: Mobile Testing (Local Network)
 1. Start the Python server
 2. Find your computer's IP address: `ip addr show`
 3. Open `http://YOUR_IP:8000` on your phone
