@@ -12,6 +12,8 @@
     <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiByeD0iMjQiIGZpbGw9InVybCgjZ3JhZGllbnQwX2xpbmVhcl8xXzEpIi8+CjxwYXRoIGQ9Ik05NiA0OEM3Ny45MDk0IDQ4IDY0IDYxLjkwOTQgNjQgODBWMTQ0QzY0IDE2Mi4wOTEgNzcuOTA5NCAxNzYgOTYgMTc2QzExNC4wOTEgMTc2IDEyOCAxNjIuMDkxIDEyOCAxNDRWODBDMTI4IDYxLjkwOTQgMTE0LjA5MSA0OCA5NiA0OFoiIGZpbGw9IndoaXRlIi8+CjxwYXRoIGQ9Ik05NiA2NEM4My44NDkxIDY0IDc0IDczLjg0OTEgNzQgODZWMTM4Qzc0IDE1MC4xNTEgODMuODQ5MSAxNjAgOTYgMTYwQzEwOC4xNTEgMTYwIDExOCAxNTAuMTUxIDExOCAxMzhWODBDMTE4IDczLjg0OTEgMTA4LjE1MSA2NCA5NiA2NFoiIGZpbGw9IiMzNDk4ZGIiLz4KPHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA0OCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4PSI3MiIgeT0iNzIiPgo8Y2lyY2xlIGN4PSIyNCIgY3k9IjI0IiByPSIyMCIgZmlsbD0id2hpdGUiLz4KPHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4PSIxMiIgeT0iMTIiPgo8cGF0aCBkPSJNMTIgMkM2LjQ3NzE1IDIgMiA2LjQ3NzE1IDIgMTJTNi40NzcxNSAyMiAxMiAyMlMyMiAxNy41MjI5IDIyIDEyUzE3LjUyMjkgMiAxMiAyWk0xMiAyMEM3LjU4MTcyIDIwIDQgMTYuNDE4MyA0IDEyUzcuNTgxNzIgNCAxMiA0UzIwIDcuNTgxNzIgMjAgMTJTMTYuNDE4MyAyMCAxMiAyMFoiIGZpbGw9IiMzNDk4ZGIiLz4KPHN2ZyB3aWR0aD0iMTIiIGhlaWdodD0iMTIiIHZpZXdCb3g9IjAgMCAxMiAxMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4PSI2IiB5PSI2Ij4KPHBhdGggZD0iTTYgNkM2IDUuNDQ3NzIgNi40NDc3MiA1IDcgNUg5QzkuNTUyMjggNSAxMCA1LjQ0NzcyIDEwIDZWN0MxMCA3LjU1MjI4IDkuNTUyMjggOCA5IDhIN0M2LjQ0NzcyIDggNiA3LjU1MjI4IDYgN1Y2WiIgZmlsbD0iIzM0OThkYiIvPgo8L3N2Zz4KPC9zdmc+Cjwvc3ZnPgo8L3N2Zz4K">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Feather Icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
     <style>
         * {
             margin: 0;
@@ -27,7 +29,7 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #1a1a2e;
             min-height: 100vh;
             overflow-x: hidden;
             -webkit-overflow-scrolling: touch;
@@ -37,9 +39,9 @@
             max-width: 414px;
             margin: 0 auto;
             min-height: 100vh;
-            background: #fff;
+            background: #1a1a2e;
             position: relative;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
         }
 
         .page {
@@ -61,13 +63,14 @@
 
         .header h1 {
             font-size: 28px;
-            color: #2c3e50;
+            color: #ffffff;
             margin-bottom: 5px;
+            font-weight: 700;
         }
 
         .header .date {
             font-size: 16px;
-            color: #7f8c8d;
+            color: #a0a0a0;
         }
 
         .counters-grid {
@@ -78,13 +81,13 @@
         }
 
         .counter-button {
-            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
             border-radius: 20px;
             padding: 30px 20px;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
+            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3);
             border: none;
             min-height: 140px;
             display: flex;
@@ -92,11 +95,29 @@
             justify-content: center;
             align-items: center;
             touch-action: manipulation;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .counter-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #a855f7, #f472b6);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .counter-button:hover::before {
+            opacity: 1;
         }
 
         .counter-button:hover {
             transform: translateY(-5px);
-            box-shadow: 0 12px 35px rgba(255, 107, 107, 0.4);
+            box-shadow: 0 12px 35px rgba(139, 92, 246, 0.4);
         }
 
         .counter-button:active {
@@ -104,30 +125,30 @@
         }
 
         .counter-button.contacts {
-            background: linear-gradient(135deg, #4ecdc4, #44a08d);
-            box-shadow: 0 8px 25px rgba(78, 205, 196, 0.3);
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3);
         }
 
         .counter-button.contacts:hover {
-            box-shadow: 0 12px 35px rgba(78, 205, 196, 0.4);
+            box-shadow: 0 12px 35px rgba(139, 92, 246, 0.4);
         }
 
         .counter-button.instant-dates {
-            background: linear-gradient(135deg, #45b7d1, #96c93d);
-            box-shadow: 0 8px 25px rgba(69, 183, 209, 0.3);
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3);
         }
 
         .counter-button.instant-dates:hover {
-            box-shadow: 0 12px 35px rgba(69, 183, 209, 0.4);
+            box-shadow: 0 12px 35px rgba(139, 92, 246, 0.4);
         }
 
         .counter-button.planned-dates {
-            background: linear-gradient(135deg, #96ceb4, #ffeaa7);
-            box-shadow: 0 8px 25px rgba(150, 206, 180, 0.3);
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3);
         }
 
         .counter-button.planned-dates:hover {
-            box-shadow: 0 12px 35px rgba(150, 206, 180, 0.4);
+            box-shadow: 0 12px 35px rgba(139, 92, 246, 0.4);
         }
 
         .counter-title {
@@ -135,18 +156,22 @@
             font-weight: 600;
             color: white;
             margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
         }
 
         .counter-value {
             font-size: 48px;
             font-weight: bold;
             color: white;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 1;
         }
 
         .reset-button {
             width: 100%;
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
             color: white;
             border: none;
             padding: 15px;
@@ -155,13 +180,14 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 8px 25px rgba(231, 76, 60, 0.3);
+            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3);
             touch-action: manipulation;
         }
 
         .reset-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 12px 35px rgba(231, 76, 60, 0.4);
+            box-shadow: 0 12px 35px rgba(139, 92, 246, 0.4);
+            background: linear-gradient(135deg, #a855f7, #f472b6);
         }
 
         .bottom-nav {
@@ -171,8 +197,8 @@
             transform: translateX(-50%);
             width: 100%;
             max-width: 414px;
-            background: white;
-            border-top: 1px solid #ecf0f1;
+            background: #16213e;
+            border-top: 1px solid #2d3748;
             display: flex;
             height: 80px;
             z-index: 1000;
@@ -186,21 +212,22 @@
             justify-content: center;
             cursor: pointer;
             transition: all 0.3s ease;
-            color: #7f8c8d;
+            color: #a0a0a0;
             touch-action: manipulation;
         }
 
         .nav-item.active {
-            color: #3498db;
+            color: #8b5cf6;
         }
 
         .nav-item:hover {
-            background: #f8f9fa;
+            background: #2d3748;
         }
 
         .nav-icon {
-            font-size: 24px;
+            font-size: 20px;
             margin-bottom: 5px;
+            stroke-width: 2;
         }
 
         .nav-label {
@@ -220,7 +247,7 @@
         }
 
         .calendar-nav {
-            background: #3498db;
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
             color: white;
             border: none;
             padding: 10px 15px;
@@ -233,7 +260,7 @@
         .calendar-title {
             font-size: 20px;
             font-weight: 600;
-            color: #2c3e50;
+            color: #ffffff;
         }
 
         .calendar-grid {
@@ -247,7 +274,7 @@
             text-align: center;
             padding: 10px 5px;
             font-weight: 600;
-            color: #7f8c8d;
+            color: #a0a0a0;
             font-size: 14px;
         }
 
@@ -260,29 +287,30 @@
             justify-content: center;
             cursor: pointer;
             transition: all 0.3s ease;
-            background: #f8f9fa;
+            background: #2d3748;
             border: 2px solid transparent;
             position: relative;
             touch-action: manipulation;
+            color: #ffffff;
         }
 
         .calendar-day:hover {
-            background: #e9ecef;
+            background: #4a5568;
         }
 
         .calendar-day.today {
-            background: #3498db;
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
             color: white;
         }
 
         .calendar-day.has-data {
-            border-color: #27ae60;
+            border-color: #8b5cf6;
         }
 
         .calendar-day.selected {
-            background: #e74c3c;
+            background: linear-gradient(135deg, #a855f7, #f472b6);
             color: white;
-            border-color: #c0392b;
+            border-color: #8b5cf6;
         }
 
         .day-number {
@@ -309,10 +337,10 @@
             transform: translateX(-50%);
             width: 100%;
             max-width: 414px;
-            background: white;
-            border-top: 1px solid #ecf0f1;
+            background: #16213e;
+            border-top: 1px solid #2d3748;
             padding: 20px;
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.3);
             z-index: 999;
             display: none;
         }
@@ -331,11 +359,11 @@
         .day-details-title {
             font-size: 18px;
             font-weight: 600;
-            color: #2c3e50;
+            color: #ffffff;
         }
 
         .day-details-close {
-            background: #e74c3c;
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
             color: white;
             border: none;
             padding: 5px 10px;
@@ -355,38 +383,38 @@
             text-align: center;
             padding: 15px 10px;
             border-radius: 15px;
-            background: #f8f9fa;
+            background: #2d3748;
         }
 
         .day-detail-label {
             font-size: 12px;
-            color: #7f8c8d;
+            color: #a0a0a0;
             margin-bottom: 5px;
         }
 
         .day-detail-value {
             font-size: 24px;
             font-weight: bold;
-            color: #2c3e50;
+            color: #ffffff;
         }
 
         .day-detail-item.approaches {
-            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
             color: white;
         }
 
         .day-detail-item.contacts {
-            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
             color: white;
         }
 
         .day-detail-item.instant-dates {
-            background: linear-gradient(135deg, #45b7d1, #96c93d);
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
             color: white;
         }
 
         .day-detail-item.planned-dates {
-            background: linear-gradient(135deg, #96ceb4, #ffeaa7);
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
             color: white;
         }
 
@@ -403,7 +431,7 @@
         }
 
         .map-button {
-            background: linear-gradient(135deg, #3498db, #2980b9);
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
             color: white;
             border: none;
             padding: 12px 20px;
@@ -412,13 +440,13 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
             touch-action: manipulation;
         }
 
         .map-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
         }
 
         .leaflet-map {
@@ -451,7 +479,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: #f8f9fa;
+            background: #1a1a2e;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -462,15 +490,15 @@
         .loading-spinner {
             width: 40px;
             height: 40px;
-            border: 4px solid #e9ecef;
-            border-top: 4px solid #3498db;
+            border: 4px solid #2d3748;
+            border-top: 4px solid #8b5cf6;
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin-bottom: 15px;
         }
-        
+
         .loading-text {
-            color: #6c757d;
+            color: #a0a0a0;
             font-size: 16px;
             font-weight: 500;
         }
@@ -481,7 +509,7 @@
         }
 
         .location-info {
-            background: #f8f9fa;
+            background: #2d3748;
             border-radius: 15px;
             padding: 15px;
             text-align: center;
@@ -489,23 +517,23 @@
 
         .location-status {
             font-size: 16px;
-            color: #2c3e50;
+            color: #ffffff;
             font-weight: 500;
         }
 
         .location-coords {
             font-size: 14px;
-            color: #7f8c8d;
+            color: #a0a0a0;
             margin-top: 5px;
         }
 
         .location-error {
-            color: #e74c3c;
+            color: #f87171;
             font-weight: 600;
         }
 
         .location-success {
-            color: #27ae60;
+            color: #34d399;
             font-weight: 600;
         }
 
@@ -591,10 +619,10 @@
             <div class="map-container">
                 <div class="map-controls">
                     <button class="map-button" onclick="getCurrentLocation()">
-                        📍 My Location
+                        <i data-feather="map-pin"></i> My Location
                     </button>
                     <button class="map-button" onclick="centerMap()">
-                        🎯 Center Map
+                        <i data-feather="target"></i> Center Map
                     </button>
                 </div>
                 
@@ -606,7 +634,7 @@
                 </div>
                 
                 <div class="location-info" id="locationInfo">
-                    <div class="location-status">📍 Getting your location...</div>
+                    <div class="location-status"><i data-feather="map-pin"></i> Getting your location...</div>
                 </div>
             </div>
         </div>
@@ -615,7 +643,7 @@
         <div class="day-details" id="dayDetails">
             <div class="day-details-header">
                 <div class="day-details-title" id="dayDetailsTitle">Select a day</div>
-                <button class="day-details-close" onclick="closeDayDetails()">✕</button>
+                <button class="day-details-close" onclick="closeDayDetails()"><i data-feather="x"></i></button>
             </div>
             <div class="day-details-grid">
                 <div class="day-detail-item approaches">
@@ -640,15 +668,15 @@
         <!-- Bottom Navigation -->
         <div class="bottom-nav">
             <div class="nav-item active" onclick="showPage('dashboard')">
-                <div class="nav-icon">🏠</div>
+                <div class="nav-icon"><i data-feather="home"></i></div>
                 <div class="nav-label">Dashboard</div>
             </div>
             <div class="nav-item" onclick="showPage('calendar')">
-                <div class="nav-icon">📅</div>
+                <div class="nav-icon"><i data-feather="calendar"></i></div>
                 <div class="nav-label">Calendar</div>
             </div>
             <div class="nav-item" onclick="showPage('map')">
-                <div class="nav-icon">🗺️</div>
+                <div class="nav-icon"><i data-feather="map"></i></div>
                 <div class="nav-label">Map</div>
             </div>
         </div>
@@ -976,7 +1004,7 @@
                 return;
             }
             
-            updateLocationInfo('📍 Getting your location...', 'loading');
+            updateLocationInfo('<i data-feather="map-pin"></i> Getting your location...', 'loading');
             
             navigator.geolocation.getCurrentPosition(
                 function(position) {
@@ -1005,11 +1033,11 @@
                         userMarker.bindPopup('<b>📍 Your Location</b><br>Lat: ' + userLocation[0].toFixed(6) + '<br>Lng: ' + userLocation[1].toFixed(6)).openPopup();
                     }
                     
-                    updateLocationInfo('✅ Location found!', 'success');
+                    updateLocationInfo('<i data-feather="check-circle"></i> Location found!', 'success');
                     updateLocationCoords(userLocation[0], userLocation[1]);
                 },
                 function(error) {
-                    let errorMessage = '❌ Unable to get location: ';
+                    let errorMessage = '<i data-feather="alert-circle"></i> Unable to get location: ';
                     switch(error.code) {
                         case error.PERMISSION_DENIED:
                             errorMessage += 'Permission denied';
@@ -1049,7 +1077,7 @@
             const locationInfo = document.getElementById('locationInfo');
             const statusElement = locationInfo.querySelector('.location-status');
             
-            statusElement.textContent = message;
+            statusElement.innerHTML = message;
             statusElement.className = 'location-status';
             
             if (type === 'error') {
@@ -1057,6 +1085,9 @@
             } else if (type === 'success') {
                 statusElement.classList.add('location-success');
             }
+            
+            // Reinitialize Feather icons
+            feather.replace();
         }
         
         function updateLocationCoords(lat, lng) {
@@ -1074,6 +1105,9 @@
 
         // Initialize the app
         init();
+        
+        // Initialize Feather icons
+        feather.replace();
         
         // Handle window resize for map
         window.addEventListener('resize', function() {

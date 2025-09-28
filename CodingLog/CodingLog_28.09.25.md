@@ -1,8 +1,17 @@
 ## `28.09.25`
 
+# Tasks
+
+[] Move to `react`
+[] Map action dots
+[] 
+
 # Commits
 
-HTML_Cursor_DatingQuest
+HTML_Cursor_DatingQuest 
+* Improve look / theme (dark, purple)
+
+HTML_Cursor_DatingQuest 
 * Map page
 
 Dating_Quest_Html
@@ -12,6 +21,22 @@ Dating_Quest_Html
 * Calendar fix
 
 # Prompts
+
+[] Let's move to React to leverage the ready to use components, solutions and features instead of reainwenting the wheel. Let's not touch our `HTML_Cursor_DatingQuest` folder, instead let's duplicate it into a new project folder alongside, we will call it `React_Cursor_DatingQuest`. Review the old code and reabuild eveyrhing we have so far in react using best practises for react
+
+[-] UI improvements
+* Calendar | Any 1 date should be always select and the bottom details component should be always present
+* Calendar | Bottom details component | no `x` button, so it is not closing, the text inside counter blocks should be white, cause currently it's difficult to see (gray)
+* Map | remove all the ui exept for map (location found block, my location button etc)
+* Dashboard | remove `reset today`, instead each counter shoud a nice little `-` button on the top right corenr, that will decrement the counter by 1 (needed for a case if a mistake was made)
+
+[x] Improve look / theme (dark, purple)
+Let's chagne our ui look and theme. Mainly lets focus on changing colors.
+Please look into `dashboard.png` the image of an old app. We should look and feel similar.
+* The theme should be dark always
+* The colroing should be `gradiant purple + pink` like on png (only text can be white)
+* The navbar and the app in general should avoid using emojies which look cheap, we should use preloaded icons from some fancy server created for this purpose (use common practise)
+* remove the underlying UI under map, cause we can see it sometimes when the map is loading, and it is not needed
 
 [x] Map page
 Added a third page - `Map`. Should be also available on the navbar
