@@ -18,8 +18,15 @@ A simple mobile-first web app for tracking daily dating interactions.
 - Previous/next month navigation
 - Visual indicators for days with data
 
+✅ **Map Page**
+- Interactive map using OpenStreetMap (free alternative to Google Maps)
+- Current location detection with GPS
+- Custom red dot marker showing your position
+- Location coordinates display
+- Center map and refresh location buttons
+
 ✅ **Navigation**
-- Bottom tab bar with Dashboard and Calendar
+- Bottom tab bar with Dashboard, Calendar, and Map
 - Smooth page transitions
 - Mobile-first responsive design
 

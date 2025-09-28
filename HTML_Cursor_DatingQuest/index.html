@@ -10,6 +10,8 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Dating Quest">
     <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiByeD0iMjQiIGZpbGw9InVybCgjZ3JhZGllbnQwX2xpbmVhcl8xXzEpIi8+CjxwYXRoIGQ9Ik05NiA0OEM3Ny45MDk0IDQ4IDY0IDYxLjkwOTQgNjQgODBWMTQ0QzY0IDE2Mi4wOTEgNzcuOTA5NCAxNzYgOTYgMTc2QzExNC4wOTEgMTc2IDEyOCAxNjIuMDkxIDEyOCAxNDRWODBDMTI4IDYxLjkwOTQgMTE0LjA5MSA0OCA5NiA0OFoiIGZpbGw9IndoaXRlIi8+CjxwYXRoIGQ9Ik05NiA2NEM4My44NDkxIDY0IDc0IDczLjg0OTEgNzQgODZWMTM4Qzc0IDE1MC4xNTEgODMuODQ5MSAxNjAgOTYgMTYwQzEwOC4xNTEgMTYwIDExOCAxNTAuMTUxIDExOCAxMzhWODBDMTE4IDczLjg0OTEgMTA4LjE1MSA2NCA5NiA2NFoiIGZpbGw9IiMzNDk4ZGIiLz4KPHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA0OCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4PSI3MiIgeT0iNzIiPgo8Y2lyY2xlIGN4PSIyNCIgY3k9IjI0IiByPSIyMCIgZmlsbD0id2hpdGUiLz4KPHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4PSIxMiIgeT0iMTIiPgo8cGF0aCBkPSJNMTIgMkM2LjQ3NzE1IDIgMiA2LjQ3NzE1IDIgMTJTNi40NzcxNSAyMiAxMiAyMlMyMiAxNy41MjI5IDIyIDEyUzE3LjUyMjkgMiAxMiAyWk0xMiAyMEM3LjU4MTcyIDIwIDQgMTYuNDE4MyA0IDEyUzcuNTgxNzIgNCAxMiA0UzIwIDcuNTgxNzIgMjAgMTJTMTYuNDE4MyAyMCAxMiAyMFoiIGZpbGw9IiMzNDk4ZGIiLz4KPHN2ZyB3aWR0aD0iMTIiIGhlaWdodD0iMTIiIHZpZXdCb3g9IjAgMCAxMiAxMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4PSI2IiB5PSI2Ij4KPHBhdGggZD0iTTYgNkM2IDUuNDQ3NzIgNi40NDc3MiA1IDcgNUg5QzkuNTUyMjggNSAxMCA1LjQ0NzcyIDEwIDZWN0MxMCA3LjU1MjI4IDkuNTUyMjggOCA5IDhIN0M2LjQ0NzcyIDggNiA3LjU1MjI4IDYgN1Y2WiIgZmlsbD0iIzM0OThkYiIvPgo8L3N2Zz4KPC9zdmc+Cjwvc3ZnPgo8L3N2Zz4K">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
         * {
             margin: 0;
@@ -388,6 +390,125 @@
             color: white;
         }
 
+        /* Map Page Styles */
+        .map-container {
+            padding: 20px 0;
+        }
+
+        .map-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            justify-content: center;
+        }
+
+        .map-button {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+            touch-action: manipulation;
+        }
+
+        .map-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+        }
+
+        .leaflet-map {
+            width: 100%;
+            height: 400px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Fix Leaflet CSS conflicts */
+        .leaflet-container {
+            background: #f8f9fa !important;
+        }
+        
+        .leaflet-tile {
+            border: none !important;
+        }
+        
+        .leaflet-control-container {
+            z-index: 1000;
+        }
+        
+        .map-loading {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #e9ecef;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+        
+        .loading-text {
+            color: #6c757d;
+            font-size: 16px;
+            font-weight: 500;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .location-info {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .location-status {
+            font-size: 16px;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+
+        .location-coords {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+
+        .location-error {
+            color: #e74c3c;
+            font-weight: 600;
+        }
+
+        .location-success {
+            color: #27ae60;
+            font-weight: 600;
+        }
+
         @media (max-width: 480px) {
             .app-container {
                 max-width: 100%;
@@ -461,6 +582,35 @@
             </div>
         </div>
 
+        <!-- Map Page -->
+        <div class="page" id="map">
+            <div class="header">
+                <h1>Location Map</h1>
+            </div>
+            
+            <div class="map-container">
+                <div class="map-controls">
+                    <button class="map-button" onclick="getCurrentLocation()">
+                        📍 My Location
+                    </button>
+                    <button class="map-button" onclick="centerMap()">
+                        🎯 Center Map
+                    </button>
+                </div>
+                
+                <div id="map" class="leaflet-map">
+                    <div class="map-loading" id="mapLoading">
+                        <div class="loading-spinner"></div>
+                        <div class="loading-text">Loading map...</div>
+                    </div>
+                </div>
+                
+                <div class="location-info" id="locationInfo">
+                    <div class="location-status">📍 Getting your location...</div>
+                </div>
+            </div>
+        </div>
+
         <!-- Day Details Panel -->
         <div class="day-details" id="dayDetails">
             <div class="day-details-header">
@@ -497,6 +647,10 @@
                 <div class="nav-icon">📅</div>
                 <div class="nav-label">Calendar</div>
             </div>
+            <div class="nav-item" onclick="showPage('map')">
+                <div class="nav-icon">🗺️</div>
+                <div class="nav-label">Map</div>
+            </div>
         </div>
     </div>
 
@@ -512,6 +666,11 @@
         let currentDate = new Date();
         let calendarDate = new Date();
         let selectedDay = null;
+        
+        // Map variables
+        let map = null;
+        let userMarker = null;
+        let userLocation = null;
 
         // Initialize app
         function init() {
@@ -600,6 +759,13 @@
             
             // Close day details when switching pages
             closeDayDetails();
+            
+            // Initialize map when switching to map page
+            if (pageId === 'map') {
+                setTimeout(() => {
+                    initMap();
+                }, 100);
+            }
         }
 
         // Calendar functions
@@ -742,8 +908,181 @@
             closeDayDetails();
         }
 
+        // Map functions
+        function initMap() {
+            // Only initialize if map doesn't exist and we're on map page
+            if (map || !document.getElementById('map').offsetParent) {
+                return;
+            }
+            
+            try {
+                // Initialize map with default location (New York City)
+                map = L.map('map', {
+                    zoomControl: true,
+                    attributionControl: true
+                }).setView([40.7128, -74.0060], 13);
+                
+                // Add OpenStreetMap tiles with fallback
+                const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap contributors',
+                    maxZoom: 19,
+                    subdomains: ['a', 'b', 'c']
+                });
+                
+                // Fallback tile layer
+                const cartoLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+                    attribution: '© OpenStreetMap contributors, © CARTO',
+                    maxZoom: 19,
+                    subdomains: 'abcd'
+                });
+                
+                osmLayer.addTo(map);
+                
+                // If OSM fails, try CartoDB
+                osmLayer.on('tileerror', function() {
+                    if (!map.hasLayer(cartoLayer)) {
+                        map.removeLayer(osmLayer);
+                        cartoLayer.addTo(map);
+                    }
+                });
+                
+                // Hide loading indicator when map is ready
+                map.whenReady(() => {
+                    const loadingElement = document.getElementById('mapLoading');
+                    if (loadingElement) {
+                        loadingElement.style.display = 'none';
+                    }
+                });
+                
+                // Invalidate size to ensure proper rendering
+                setTimeout(() => {
+                    if (map) {
+                        map.invalidateSize();
+                    }
+                }, 100);
+                
+                // Try to get user's location
+                getCurrentLocation();
+                
+            } catch (error) {
+                console.error('Map initialization error:', error);
+                updateLocationInfo('❌ Map failed to load', 'error');
+            }
+        }
+        
+        function getCurrentLocation() {
+            if (!navigator.geolocation) {
+                updateLocationInfo('Geolocation is not supported by this browser.', 'error');
+                return;
+            }
+            
+            updateLocationInfo('📍 Getting your location...', 'loading');
+            
+            navigator.geolocation.getCurrentPosition(
+                function(position) {
+                    userLocation = [position.coords.latitude, position.coords.longitude];
+                    
+                    // Update map view
+                    if (map) {
+                        map.setView(userLocation, 15);
+                        
+                        // Remove existing marker
+                        if (userMarker) {
+                            map.removeLayer(userMarker);
+                        }
+                        
+                        // Add new marker
+                        userMarker = L.marker(userLocation, {
+                            icon: L.divIcon({
+                                className: 'user-location-marker',
+                                html: '<div style="background: #e74c3c; width: 20px; height: 20px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 10px rgba(0,0,0,0.3);"></div>',
+                                iconSize: [20, 20],
+                                iconAnchor: [10, 10]
+                            })
+                        }).addTo(map);
+                        
+                        // Add popup
+                        userMarker.bindPopup('<b>📍 Your Location</b><br>Lat: ' + userLocation[0].toFixed(6) + '<br>Lng: ' + userLocation[1].toFixed(6)).openPopup();
+                    }
+                    
+                    updateLocationInfo('✅ Location found!', 'success');
+                    updateLocationCoords(userLocation[0], userLocation[1]);
+                },
+                function(error) {
+                    let errorMessage = '❌ Unable to get location: ';
+                    switch(error.code) {
+                        case error.PERMISSION_DENIED:
+                            errorMessage += 'Permission denied';
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            errorMessage += 'Position unavailable';
+                            break;
+                        case error.TIMEOUT:
+                            errorMessage += 'Request timeout';
+                            break;
+                        default:
+                            errorMessage += 'Unknown error';
+                            break;
+                    }
+                    updateLocationInfo(errorMessage, 'error');
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 300000
+                }
+            );
+        }
+        
+        function centerMap() {
+            if (userLocation && map) {
+                map.setView(userLocation, 15);
+                if (userMarker) {
+                    userMarker.openPopup();
+                }
+            } else {
+                getCurrentLocation();
+            }
+        }
+        
+        function updateLocationInfo(message, type) {
+            const locationInfo = document.getElementById('locationInfo');
+            const statusElement = locationInfo.querySelector('.location-status');
+            
+            statusElement.textContent = message;
+            statusElement.className = 'location-status';
+            
+            if (type === 'error') {
+                statusElement.classList.add('location-error');
+            } else if (type === 'success') {
+                statusElement.classList.add('location-success');
+            }
+        }
+        
+        function updateLocationCoords(lat, lng) {
+            const locationInfo = document.getElementById('locationInfo');
+            let coordsElement = locationInfo.querySelector('.location-coords');
+            
+            if (!coordsElement) {
+                coordsElement = document.createElement('div');
+                coordsElement.className = 'location-coords';
+                locationInfo.appendChild(coordsElement);
+            }
+            
+            coordsElement.textContent = `Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`;
+        }
+
         // Initialize the app
         init();
+        
+        // Handle window resize for map
+        window.addEventListener('resize', function() {
+            if (map) {
+                setTimeout(() => {
+                    map.invalidateSize();
+                }, 100);
+            }
+        });
     </script>
 </body>
 </html>
