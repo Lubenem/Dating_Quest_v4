@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Dating Quest</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#3498db">
@@ -14,6 +14,12 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
         }
 
         body {
@@ -21,6 +27,7 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
         }
 
         .app-container {
@@ -36,6 +43,7 @@
             display: none;
             padding: 20px;
             min-height: calc(100vh - 80px);
+            padding-bottom: 120px; /* Extra space for day details */
         }
 
         .page.active {
@@ -80,6 +88,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            touch-action: manipulation;
         }
 
         .counter-button:hover {
@@ -144,6 +153,7 @@
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 8px 25px rgba(231, 76, 60, 0.3);
+            touch-action: manipulation;
         }
 
         .reset-button:hover {
@@ -174,6 +184,7 @@
             cursor: pointer;
             transition: all 0.3s ease;
             color: #7f8c8d;
+            touch-action: manipulation;
         }
 
         .nav-item.active {
@@ -213,6 +224,7 @@
             border-radius: 20px;
             cursor: pointer;
             font-size: 16px;
+            touch-action: manipulation;
         }
 
         .calendar-title {
@@ -248,6 +260,7 @@
             background: #f8f9fa;
             border: 2px solid transparent;
             position: relative;
+            touch-action: manipulation;
         }
 
         .calendar-day:hover {
@@ -261,6 +274,12 @@
 
         .calendar-day.has-data {
             border-color: #27ae60;
+        }
+
+        .calendar-day.selected {
+            background: #e74c3c;
+            color: white;
+            border-color: #c0392b;
         }
 
         .day-number {
@@ -277,6 +296,95 @@
 
         .day-stats span {
             display: block;
+        }
+
+        /* Day Details Panel */
+        .day-details {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 414px;
+            background: white;
+            border-top: 1px solid #ecf0f1;
+            padding: 20px;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
+            z-index: 999;
+            display: none;
+        }
+
+        .day-details.show {
+            display: block;
+        }
+
+        .day-details-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .day-details-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .day-details-close {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 12px;
+            touch-action: manipulation;
+        }
+
+        .day-details-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .day-detail-item {
+            text-align: center;
+            padding: 15px 10px;
+            border-radius: 15px;
+            background: #f8f9fa;
+        }
+
+        .day-detail-label {
+            font-size: 12px;
+            color: #7f8c8d;
+            margin-bottom: 5px;
+        }
+
+        .day-detail-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .day-detail-item.approaches {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            color: white;
+        }
+
+        .day-detail-item.contacts {
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+            color: white;
+        }
+
+        .day-detail-item.instant-dates {
+            background: linear-gradient(135deg, #45b7d1, #96c93d);
+            color: white;
+        }
+
+        .day-detail-item.planned-dates {
+            background: linear-gradient(135deg, #96ceb4, #ffeaa7);
+            color: white;
         }
 
         @media (max-width: 480px) {
@@ -352,6 +460,32 @@
             </div>
         </div>
 
+        <!-- Day Details Panel -->
+        <div class="day-details" id="dayDetails">
+            <div class="day-details-header">
+                <div class="day-details-title" id="dayDetailsTitle">Select a day</div>
+                <button class="day-details-close" onclick="closeDayDetails()">✕</button>
+            </div>
+            <div class="day-details-grid">
+                <div class="day-detail-item approaches">
+                    <div class="day-detail-label">Approaches</div>
+                    <div class="day-detail-value" id="detailApproaches">0</div>
+                </div>
+                <div class="day-detail-item contacts">
+                    <div class="day-detail-label">Contacts</div>
+                    <div class="day-detail-value" id="detailContacts">0</div>
+                </div>
+                <div class="day-detail-item instant-dates">
+                    <div class="day-detail-label">Instant Dates</div>
+                    <div class="day-detail-value" id="detailInstantDates">0</div>
+                </div>
+                <div class="day-detail-item planned-dates">
+                    <div class="day-detail-label">Planned Dates</div>
+                    <div class="day-detail-value" id="detailPlannedDates">0</div>
+                </div>
+            </div>
+        </div>
+
         <!-- Bottom Navigation -->
         <div class="bottom-nav">
             <div class="nav-item active" onclick="showPage('dashboard')">
@@ -376,6 +510,7 @@
 
         let currentDate = new Date();
         let calendarDate = new Date();
+        let selectedDay = null;
 
         // Initialize app
         function init() {
@@ -461,6 +596,9 @@
                 item.classList.remove('active');
             });
             event.target.closest('.nav-item').classList.add('active');
+            
+            // Close day details when switching pages
+            closeDayDetails();
         }
 
         // Calendar functions
@@ -507,13 +645,15 @@
                 if (date.getMonth() === month) {
                     dayElement.innerHTML = `
                         <div class="day-number">${date.getDate()}</div>
-                        <div class="day-stats" id="stats-${date.toDateString()}"></div>
                     `;
                     
                     // Check if it's today
                     if (date.toDateString() === currentDateStr) {
                         dayElement.classList.add('today');
                     }
+                    
+                    // Add click handler
+                    dayElement.onclick = () => selectDay(date, dayElement);
                     
                     // Load data for this day
                     loadDayData(date.toDateString(), dayElement);
@@ -531,25 +671,74 @@
                 
                 if (total > 0) {
                     dayElement.classList.add('has-data');
-                    const statsElement = dayElement.querySelector('.day-stats');
-                    statsElement.innerHTML = `
-                        <span>A: ${dayCounters.approaches}</span>
-                        <span>C: ${dayCounters.contacts}</span>
-                        <span>I: ${dayCounters.instantDates}</span>
-                        <span>P: ${dayCounters.plannedDates}</span>
-                    `;
                 }
             }
+        }
+
+        function selectDay(date, dayElement) {
+            // Remove previous selection
+            document.querySelectorAll('.calendar-day.selected').forEach(day => {
+                day.classList.remove('selected');
+            });
+            
+            // Add selection to clicked day
+            dayElement.classList.add('selected');
+            selectedDay = date;
+            
+            // Show day details
+            showDayDetails(date);
+        }
+
+        function showDayDetails(date) {
+            const dateString = date.toDateString();
+            const data = localStorage.getItem(dateString);
+            
+            // Update title
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            };
+            document.getElementById('dayDetailsTitle').textContent = date.toLocaleDateString('en-US', options);
+            
+            if (data) {
+                const dayCounters = JSON.parse(data);
+                document.getElementById('detailApproaches').textContent = dayCounters.approaches;
+                document.getElementById('detailContacts').textContent = dayCounters.contacts;
+                document.getElementById('detailInstantDates').textContent = dayCounters.instantDates;
+                document.getElementById('detailPlannedDates').textContent = dayCounters.plannedDates;
+            } else {
+                // No data for this day
+                document.getElementById('detailApproaches').textContent = '0';
+                document.getElementById('detailContacts').textContent = '0';
+                document.getElementById('detailInstantDates').textContent = '0';
+                document.getElementById('detailPlannedDates').textContent = '0';
+            }
+            
+            // Show the panel
+            document.getElementById('dayDetails').classList.add('show');
+        }
+
+        function closeDayDetails() {
+            document.getElementById('dayDetails').classList.remove('show');
+            // Remove selection
+            document.querySelectorAll('.calendar-day.selected').forEach(day => {
+                day.classList.remove('selected');
+            });
+            selectedDay = null;
         }
 
         function previousMonth() {
             calendarDate.setMonth(calendarDate.getMonth() - 1);
             generateCalendar();
+            closeDayDetails();
         }
 
         function nextMonth() {
             calendarDate.setMonth(calendarDate.getMonth() + 1);
             generateCalendar();
+            closeDayDetails();
         }
 
         // Initialize the app

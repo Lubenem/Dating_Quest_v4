@@ -32,7 +32,7 @@ A simple mobile-first web app for tracking daily dating interactions.
 
 ### Option 1: Python Server (Recommended)
 ```bash
-cd /home/lubenem/Code/HTML_Cursor_DatingQuest
+cd /home/lubenem/Code/Dating_Quest/HTML_Cursor_DatingQuest
 python3 server.py
 ```
 Then open http://localhost:8000 in your browser
