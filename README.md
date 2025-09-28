@@ -1,6 +1,6 @@
 # Dating Quest
 
-A mobile-first web app for tracking daily dating interactions and progress.
+A modern React-based mobile-first web app for tracking daily dating interactions and progress.
 
 ## 🚀 Live Demo
 
@@ -11,10 +11,12 @@ A mobile-first web app for tracking daily dating interactions and progress.
 ## 📱 Features
 
 - **Dashboard**: Track daily interactions with 4 counter buttons
-- **Calendar**: View historical progress with monthly calendar
+- **Calendar**: View historical progress with monthly calendar  
+- **Map**: Interactive map with current location detection
 - **Mobile-First**: Optimized for mobile devices
 - **PWA Support**: Install as app on mobile devices
 - **Local Storage**: No backend required, data stored locally
+- **Modern React**: Built with React 18, TypeScript, and Vite
 
 ## 🎯 Quick Start
 
@@ -27,19 +29,24 @@ A mobile-first web app for tracking daily dating interactions and progress.
 
 ```
 Dating_Quest/
-├── index.html                    # Root redirect page
-├── .nojekyll                     # GitHub Pages config
-├── HTML_Cursor_DatingQuest/      # Main app folder
-│   ├── index.html               # Main app
-│   ├── manifest.json            # PWA manifest
-│   ├── server.py               # Local development server
-│   └── README.md               # Detailed documentation
-└── GameDesignDocuments/         # Design assets
+├── index.html                           # Root redirect page
+├── .nojekyll                            # GitHub Pages config
+├── React_Cursor_DatingQuest/            # Main React app
+│   ├── src/                            # React source code
+│   │   ├── components/                 # React components
+│   │   ├── hooks/                      # Custom hooks
+│   │   ├── types/                      # TypeScript types
+│   │   └── App.tsx                     # Main app component
+│   ├── public/                         # Static assets
+│   ├── package.json                    # Dependencies
+│   └── README.md                       # Detailed documentation
+├── HTML_Cursor_DatingQuest/             # Legacy HTML version
+└── GameDesignDocuments/                # Design assets
 ```
 
 ## 🔧 Development
 
-For local development, see the detailed README in the `HTML_Cursor_DatingQuest/` folder.
+For local development, see the detailed README in the `React_Cursor_DatingQuest/` folder.
 
 ## 📱 Mobile Installation
 

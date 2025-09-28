@@ -2,11 +2,17 @@
 
 # Tasks
 
-[] Move to `react`
+[t] Move to React
 [] Map action dots
-[] 
+[] ...
 
 # Commits
+
+React_Cursor_DatingQuest
+* Move to React
+
+React_Cursor_DatingQuest
+* Complete React migration with TypeScript, modern components, and best practices
 
 HTML_Cursor_DatingQuest 
 * Improve look / theme (dark, purple)
@@ -22,7 +28,8 @@ Dating_Quest_Html
 
 # Prompts
 
-[] Let's move to React to leverage the ready to use components, solutions and features instead of reainwenting the wheel. Let's not touch our `HTML_Cursor_DatingQuest` folder, instead let's duplicate it into a new project folder alongside, we will call it `React_Cursor_DatingQuest`. Review the old code and reabuild eveyrhing we have so far in react using best practises for react
+[x] Move to React
+Let's move to React to leverage the ready to use components, solutions and features instead of reainwenting the wheel. Let's not touch our `HTML_Cursor_DatingQuest` folder, instead let's duplicate it into a new project folder alongside, we will call it `React_Cursor_DatingQuest`. Review the old code and reabuild eveyrhing we have so far in react using best practises for react
 
 [-] UI improvements
 * Calendar | Any 1 date should be always select and the bottom details component should be always present
