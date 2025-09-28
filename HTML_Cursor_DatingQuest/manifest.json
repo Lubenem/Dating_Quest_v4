@@ -2,7 +2,7 @@
   "name": "Dating Quest",
   "short_name": "DatingQuest",
   "description": "Track your daily dating interactions and progress",
-  "start_url": "/HTML_Cursor_DatingQuest/",
+  "start_url": "/Dating_Quest_v4/HTML_Cursor_DatingQuest/",
   "display": "standalone",
   "background_color": "#667eea",
   "theme_color": "#3498db",
