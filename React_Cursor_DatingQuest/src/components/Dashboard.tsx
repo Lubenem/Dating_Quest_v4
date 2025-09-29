@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Minus } from 'lucide-react';
+import { Minus, Users, MessageCircle, Clock, Calendar } from 'lucide-react';
 import { useActions } from '../hooks/useActions';
 import type { Counters } from '../types';
 
@@ -28,22 +28,26 @@ const Dashboard: React.FC = () => {
     { 
       key: 'approach' as const, 
       label: 'Approaches',
-      gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+      gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      icon: Users
     },
     { 
       key: 'contact' as const, 
       label: 'Contacts',
-      gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)'
+      gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+      icon: MessageCircle
     },
     { 
       key: 'instantDate' as const, 
       label: 'Instant Dates',
-      gradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)'
+      gradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+      icon: Clock
     },
     { 
       key: 'plannedDate' as const, 
       label: 'Planned Dates',
-      gradient: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)'
+      gradient: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+      icon: Calendar
     },
   ];
 
@@ -107,16 +111,16 @@ const Dashboard: React.FC = () => {
       <div className="header">
         <h1>Dating Quest</h1>
         <div className="date">{formatDate()}</div>
-        {!permissionGranted && (
+        {!permissionGranted && geoError && (
           <div className="geo-warning">
-            <p>⚠️ Location permission required for action tracking</p>
-            {geoError && <p className="geo-error">{geoError}</p>}
+            <p>⚠️ Location permission denied - action tracking disabled</p>
+            <p className="geo-error">{geoError}</p>
           </div>
         )}
       </div>
       
       <div className="counters-grid">
-        {counterTypes.map(({ key, label, gradient }) => (
+        {counterTypes.map(({ key, label, gradient, icon: Icon }) => (
           <button
             key={key}
             className={`counter-button ${key} ${animatingButtons.has(`${key}-increment`) ? 'animate-increment' : ''} ${animatingButtons.has(`${key}-decrement`) ? 'animate-decrement' : ''}`}
@@ -124,6 +128,9 @@ const Dashboard: React.FC = () => {
             style={{ background: gradient }}
             disabled={!permissionGranted}
           >
+            <div className="counter-icon">
+              <Icon size={24} color="white" />
+            </div>
             <button
               className="counter-minus"
               onClick={(e) => handleDecrement(key, e)}

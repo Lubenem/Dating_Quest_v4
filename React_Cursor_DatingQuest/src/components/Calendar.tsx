@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Users, MessageCircle, Clock, Calendar as CalendarIcon } from 'lucide-react';
 import { useActions } from '../hooks/useActions';
 import type { Counters } from '../types';
 
@@ -118,18 +119,18 @@ const Calendar: React.FC = () => {
 
   return (
     <div className="page calendar">
-      <div className="header">
+      <div className="calendar-header-section">
         <h1>Progress Calendar</h1>
+        <div className="calendar-month-title">
+          {monthNames[calendarDate.getMonth()]} {calendarDate.getFullYear()}
+        </div>
       </div>
       
       <div className="calendar-container">
-        <div className="calendar-header">
+        <div className="calendar-nav-section">
           <button className="calendar-nav" onClick={previousMonth}>
             ‹ Prev
           </button>
-          <div className="calendar-title">
-            {monthNames[calendarDate.getMonth()]} {calendarDate.getFullYear()}
-          </div>
           <button className="calendar-nav" onClick={nextMonth}>
             Next ›
           </button>
@@ -147,19 +148,27 @@ const Calendar: React.FC = () => {
         </div>
         <div className="day-details-grid">
           <div className="day-detail-item approaches">
-            <div className="day-detail-label">Approaches</div>
+            <div className="day-detail-icon">
+              <Users size={20} color="white" />
+            </div>
             <div className="day-detail-value">{dayDetails.approaches}</div>
           </div>
           <div className="day-detail-item contacts">
-            <div className="day-detail-label">Contacts</div>
+            <div className="day-detail-icon">
+              <MessageCircle size={20} color="white" />
+            </div>
             <div className="day-detail-value">{dayDetails.contacts}</div>
           </div>
           <div className="day-detail-item instant-dates">
-            <div className="day-detail-label">Instant Dates</div>
+            <div className="day-detail-icon">
+              <Clock size={20} color="white" />
+            </div>
             <div className="day-detail-value">{dayDetails.instantDates}</div>
           </div>
           <div className="day-detail-item planned-dates">
-            <div className="day-detail-label">Planned Dates</div>
+            <div className="day-detail-icon">
+              <CalendarIcon size={20} color="white" />
+            </div>
             <div className="day-detail-value">{dayDetails.plannedDates}</div>
           </div>
         </div>

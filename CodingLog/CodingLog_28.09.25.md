@@ -1,12 +1,15 @@
 # Tasks
 
-[t] Move to React
-[] Map action dots
+[x] Move to React
+[x] Map action dots
 [] ...
 
 # Commits
 
 ## `29.09.25.Mon`
+
+React_Cursor_DatingQuest
+* UI Improvements
 
 React_Cursor_DatingQuest
 * Map improvement
@@ -52,9 +55,14 @@ Dating_Quest_Html
 * Dashboard | Counters look good but their are not vertiaclly centered on my screen, they are a bit lower, not good
 * Dasboard | Counters | Make the minus sign backround not transparent, I want to clearly see those buttons
 *  Dasboard | Counters | Increment animations are behaving weirdly, please rework, make it look professional
-* Dashboard | Try enhancing the page, make it look more professional and solid
+* Dashboard | Enhance the page, make it look more professional and solid (for example, let's chagne the page's background from current boring color, to some cool gradiant)
+\
+* Nice, also: use the same cool gradiant background for all other app pages, it alos should go even under the navbar, the navebar block can be semitranspartent dark bock on top of the cool graint app background
+* Dashboard | add fancy icons to each of counter (top left corner)
+* Calendar | Bottom UI Details Block | Make more professional lookin, align everying. User fancy icons for each counter instead of text. 
+* Calendar | Top ui and text `Progress Calendar` and `September...` look stacked in one place  
 
-[] Map improvement
+[x] Map improvement
 * Remove `.page.padding: 20px;` for map, will look better
 * Remove +/- button on map, not needed
 * Make sure all other icons on the map locations are either romved or made less bright, cause our focus should be on our points that we add to the map
