@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Dashboard from './components/Dashboard';
 import Calendar from './components/Calendar';
 import Map from './components/Map';
@@ -12,8 +12,10 @@ function App() {
         <div className="app-container">
           <Routes>
             <Route path="/" element={<Dashboard />} />
+            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/map" element={<Map />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
           <Navigation />
         </div>

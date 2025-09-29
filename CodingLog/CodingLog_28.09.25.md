@@ -1,5 +1,3 @@
-## `28.09.25`
-
 # Tasks
 
 [t] Move to React
@@ -7,6 +5,11 @@
 [] ...
 
 # Commits
+
+React_Cursor_DatingQuest
+* Fix Routing
+
+## `28.09.25`
 
 React_Cursor_DatingQuest
 * Fix white screen bug
@@ -27,6 +30,14 @@ Dating_Quest_Html
 * Calendar fix
 
 # Prompts
+
+[t] Fix Routing
+`https://lubenem.github.io/Dating_Quest_v4/React_Cursor_DatingQuest/Build/`
+* This url should always prepend any of other page or component, weather it's `calendar` or `dashboard`.
+Currently when I click on the calendar the url becomes `lubenem.github.io/calendar` and I get an 404 error when I reoload.
+* Also make sure `dashboard` is always the dauflt page
+
+## `28.09.25`
 
 [x] Move to React
 Let's move to React to leverage the ready to use components, solutions and features instead of reainwenting the wheel. Let's not touch our `HTML_Cursor_DatingQuest` folder, instead let's duplicate it into a new project folder alongside, we will call it `React_Cursor_DatingQuest`. Review the old code and reabuild eveyrhing we have so far in react using best practises for react
