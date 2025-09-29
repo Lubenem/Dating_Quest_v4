@@ -9,6 +9,9 @@
 ## `29.09.25.Mon`
 
 React_Cursor_DatingQuest
+* Map improvement
+
+React_Cursor_DatingQuest
 * Data storage refactoring
 
 React_Cursor_DatingQuest
@@ -44,13 +47,22 @@ Dating_Quest_Html
 
 ## `29.09.25.Mon`
 
+[] UI Improvements
+* Dashboard | remove the annoying geolocation message, we should only see it if the geo data was refused by the system
+* Dashboard | Counters look good but their are not vertiaclly centered on my screen, they are a bit lower, not good
+* Dasboard | Counters | Make the minus sign backround not transparent, I want to clearly see those buttons
+*  Dasboard | Counters | Increment animations are behaving weirdly, please rework, make it look professional
+* Dashboard | Try enhancing the page, make it look more professional and solid
+
 [] Map improvement
 * Remove `.page.padding: 20px;` for map, will look better
 * Remove +/- button on map, not needed
 * Make sure all other icons on the map locations are either romved or made less bright, cause our focus should be on our points that we add to the map
 * When map page starting, load from locall storage all user actions. Use their `geoposition` to place a dot of an appropriate color (action color), when taped, give details on action
 * My current position should be either a black dot or some neat icon
-
+\
+* Good! but: When I press the point, it shows html tags, fix please (can be jsut text if no other option works)
+* What if we have a bunch of points a the same location? It's difficult to find out what are the actions, and select a specific one, cause they are overlapping each otehr. Let's brain storm a solution. 
 
 [x] Data storage refactoring
 * Explain to me, the current data storage logic.

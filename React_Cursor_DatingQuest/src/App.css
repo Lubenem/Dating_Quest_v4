@@ -48,6 +48,10 @@ body {
   padding-bottom: 0;
 }
 
+.page.map {
+  padding: 0;
+}
+
 .dashboard-page {
   justify-content: center;
   padding-top: 20px;
@@ -514,4 +518,42 @@ body {
     top: 12px;
     right: 12px;
   }
+}
+
+/* Leaflet Map Customizations */
+.leaflet-container {
+  background: #1a1a2e !important;
+}
+
+.leaflet-tile {
+  border: none !important;
+}
+
+.leaflet-control-container {
+  z-index: 1000;
+}
+
+/* Hide default Leaflet controls */
+.leaflet-control-zoom {
+  display: none !important;
+}
+
+.leaflet-control-attribution {
+  display: none !important;
+}
+
+/* Custom marker styles */
+.action-marker {
+  background: transparent !important;
+  border: none !important;
+}
+
+.cluster-marker {
+  background: transparent !important;
+  border: none !important;
+}
+
+.current-location-marker {
+  background: transparent !important;
+  border: none !important;
 }
