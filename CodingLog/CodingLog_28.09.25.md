@@ -6,10 +6,15 @@
 
 # Commits
 
+## `29.09.25.Mon`
+
+React_Cursor_DatingQuest
+* UI improvements
+
 React_Cursor_DatingQuest
 * Fix Routing
 
-## `28.09.25`
+## `28.09.25.Sun`
 
 React_Cursor_DatingQuest
 * Fix white screen bug
@@ -31,18 +36,38 @@ Dating_Quest_Html
 
 # Prompts
 
+## `29.09.25.Mon`
+
+[] UI improvements
+* GOOD!, next:
+* Dashbord | Counter blocks | Good, but, ake their parent block have a fixed hight, so they are not moving appart when screen is longer
+* Dashbord | Counter blocks | Remove the mouse hover animations. We don't need them in mobile
+* Dashbord | Counter blocks | The minus buttons, make them darker, so they don't blend in
+* Calendar | Bottom details block | Make the conuters blocks use the same colors like in dashboard
+
+[] Dashboard | UI improvements
+Center the counter blocks vertically and make them bigger.
+* I want each of the counter have it's unique color, it should be like a natural gradiant
+* Make the page look more professional and solid
+* The minus buttons should be more suared and bigger, it's hard to touch
+* Animattions| there should be two diff animations, one for increment, and one for decrememt, after the animation is done, the block should go to the initial state
+
+[x] Calendar | UI improvements
+* Don't display any data inside the date cell, doesn't look good, also we already have the counters data on the bottom of the screen
+* Current date should just have interesting special border, the color of the cell should be the same as others, though the currently selected date can have color change
+
 [t] Fix Routing
 `https://lubenem.github.io/Dating_Quest_v4/React_Cursor_DatingQuest/Build/`
 * This url should always prepend any of other page or component, weather it's `calendar` or `dashboard`.
 Currently when I click on the calendar the url becomes `lubenem.github.io/calendar` and I get an 404 error when I reoload.
 * Also make sure `dashboard` is always the dauflt page
 
-## `28.09.25`
+## `28.09.25.Sun`
 
 [x] Move to React
 Let's move to React to leverage the ready to use components, solutions and features instead of reainwenting the wheel. Let's not touch our `HTML_Cursor_DatingQuest` folder, instead let's duplicate it into a new project folder alongside, we will call it `React_Cursor_DatingQuest`. Review the old code and reabuild eveyrhing we have so far in react using best practises for react
 
-[-] UI improvements
+[x] UI improvements
 * Calendar | Any 1 date should be always select and the bottom details component should be always present
 * Calendar | Bottom details component | no `x` button, so it is not closing, the text inside counter blocks should be white, cause currently it's difficult to see (gray)
 * Map | remove all the ui exept for map (location found block, my location button etc)

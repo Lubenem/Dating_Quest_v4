@@ -95,14 +95,6 @@ const Calendar: React.FC = () => {
             onClick={() => selectDay(date)}
           >
             <div className="day-number">{date.getDate()}</div>
-            {total > 0 && (
-              <div className="day-stats">
-                <span>A: {dayData.approaches}</span>
-                <span>C: {dayData.contacts}</span>
-                <span>I: {dayData.instantDates}</span>
-                <span>P: {dayData.plannedDates}</span>
-              </div>
-            )}
           </div>
         );
       } else {
@@ -154,19 +146,19 @@ const Calendar: React.FC = () => {
           <div className="day-details-title">{formatSelectedDate()}</div>
         </div>
         <div className="day-details-grid">
-          <div className="day-detail-item">
+          <div className="day-detail-item approaches">
             <div className="day-detail-label">Approaches</div>
             <div className="day-detail-value">{dayDetails.approaches}</div>
           </div>
-          <div className="day-detail-item">
+          <div className="day-detail-item contacts">
             <div className="day-detail-label">Contacts</div>
             <div className="day-detail-value">{dayDetails.contacts}</div>
           </div>
-          <div className="day-detail-item">
+          <div className="day-detail-item instant-dates">
             <div className="day-detail-label">Instant Dates</div>
             <div className="day-detail-value">{dayDetails.instantDates}</div>
           </div>
-          <div className="day-detail-item">
+          <div className="day-detail-item planned-dates">
             <div className="day-detail-label">Planned Dates</div>
             <div className="day-detail-value">{dayDetails.plannedDates}</div>
           </div>

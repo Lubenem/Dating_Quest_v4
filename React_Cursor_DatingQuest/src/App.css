@@ -38,10 +38,27 @@ body {
   padding: 20px;
   min-height: calc(100vh - 80px);
   padding-bottom: 120px;
+  display: flex;
+  flex-direction: column;
 }
 
 .page.calendar {
   padding-bottom: 200px;
+}
+
+.dashboard-page {
+  justify-content: flex-start;
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+
+.dashboard-page .counters-grid {
+  height: 400px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px;
+  margin-bottom: 30px;
+  align-content: center;
 }
 
 /* Header Styles */
@@ -67,26 +84,28 @@ body {
 .counters-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  gap: 25px;
   margin-bottom: 30px;
+  flex: 1;
+  align-items: center;
 }
 
 .counter-button {
-  background: linear-gradient(135deg, #8b5cf6, #ec4899);
-  border-radius: 20px;
-  padding: 30px 20px;
+  border-radius: 25px;
+  padding: 40px 25px;
   text-align: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
   border: none;
-  min-height: 140px;
+  min-height: 180px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   position: relative;
   overflow: hidden;
+  transform: translateY(0);
 }
 
 .counter-button::before {
@@ -96,62 +115,81 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, #a855f7, #f472b6);
+  background: rgba(255, 255, 255, 0.1);
   opacity: 0;
   transition: opacity 0.3s ease;
 }
 
-.counter-button:hover::before {
-  opacity: 1;
-}
-
-.counter-button:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 12px 35px rgba(139, 92, 246, 0.4);
-}
-
 .counter-button:active {
-  transform: translateY(-2px);
+  transform: translateY(-4px);
+}
+
+/* Animation Classes */
+.counter-button.animate-increment {
+  animation: incrementPulse 0.3s ease-out;
+}
+
+.counter-button.animate-decrement {
+  animation: decrementShrink 0.3s ease-out;
+}
+
+@keyframes incrementPulse {
+  0% { transform: scale(1) translateY(0); }
+  50% { transform: scale(1.05) translateY(-5px); }
+  100% { transform: scale(1) translateY(0); }
+}
+
+@keyframes decrementShrink {
+  0% { transform: scale(1) translateY(0); }
+  50% { transform: scale(0.95) translateY(2px); }
+  100% { transform: scale(1) translateY(0); }
 }
 
 .counter-minus {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  background: rgba(255, 255, 255, 0.2);
+  top: 15px;
+  right: 15px;
+  background: rgba(0, 0, 0, 0.4);
   border: none;
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
+  border-radius: 8px;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s ease;
   z-index: 2;
+  backdrop-filter: blur(10px);
 }
 
 .counter-minus:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(0, 0, 0, 0.6);
   transform: scale(1.1);
 }
 
+.counter-minus:active {
+  transform: scale(0.95);
+}
+
 .counter-title {
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 18px;
+  font-weight: 700;
   color: white;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
   position: relative;
   z-index: 1;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
 .counter-value {
-  font-size: 48px;
-  font-weight: bold;
+  font-size: 56px;
+  font-weight: 900;
   color: white;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  text-shadow: 0 4px 8px rgba(0,0,0,0.4);
   position: relative;
   z-index: 1;
+  line-height: 1;
 }
 
 /* Navigation Styles */
@@ -265,8 +303,10 @@ body {
 }
 
 .calendar-day.today {
-  background: linear-gradient(135deg, #8b5cf6, #ec4899);
-  color: white;
+  border-color: #8b5cf6;
+  border-width: 3px;
+  background: #2d3748;
+  color: #ffffff;
 }
 
 .calendar-day.has-data {
@@ -282,17 +322,6 @@ body {
 .day-number {
   font-size: 14px;
   font-weight: 600;
-}
-
-.day-stats {
-  font-size: 10px;
-  margin-top: 2px;
-  text-align: center;
-  line-height: 1.2;
-}
-
-.day-stats span {
-  display: block;
 }
 
 /* Day Details Panel */
@@ -331,8 +360,23 @@ body {
   text-align: center;
   padding: 15px 10px;
   border-radius: 15px;
-  background: linear-gradient(135deg, #8b5cf6, #ec4899);
   color: white;
+}
+
+.day-detail-item.approaches {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.day-detail-item.contacts {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.day-detail-item.instant-dates {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.day-detail-item.planned-dates {
+  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
 }
 
 .day-detail-label {
@@ -395,16 +439,28 @@ body {
     max-width: 100%;
   }
   
-  .counters-grid {
-    gap: 15px;
+  .dashboard-page .counters-grid {
+    height: 350px;
+    gap: 20px;
   }
   
   .counter-button {
-    padding: 25px 15px;
-    min-height: 120px;
+    padding: 35px 20px;
+    min-height: 160px;
+  }
+  
+  .counter-title {
+    font-size: 16px;
   }
   
   .counter-value {
-    font-size: 40px;
+    font-size: 48px;
+  }
+  
+  .counter-minus {
+    width: 35px;
+    height: 35px;
+    top: 12px;
+    right: 12px;
   }
 }
