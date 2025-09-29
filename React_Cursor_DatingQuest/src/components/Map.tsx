@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { useLocation } from 'react-router-dom';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useActions } from '../hooks/useActions';
@@ -142,6 +143,7 @@ const clusterActions = (actions: Action[], clusterRadius: number = 0.0005): Acti
 
 const Map: React.FC = () => {
   const { getDayActions } = useActions();
+  const location = useLocation();
   const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
   const [actionClusters, setActionClusters] = useState<ActionCluster[]>([]);
   const [loading, setLoading] = useState(true);
@@ -194,6 +196,13 @@ const Map: React.FC = () => {
     getCurrentLocation();
     loadAllActions();
   }, []);
+
+  // Refresh action data every time the map route is accessed
+  useEffect(() => {
+    if (location.pathname === '/map') {
+      loadAllActions();
+    }
+  }, [location.pathname]);
 
   useEffect(() => {
     if (userLocation && mapRef.current) {

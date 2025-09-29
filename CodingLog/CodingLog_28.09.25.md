@@ -50,7 +50,7 @@ Dating_Quest_Html
 
 ## `29.09.25.Mon`
 
-[] UI Improvements
+[x] UI Improvements
 * Dashboard | remove the annoying geolocation message, we should only see it if the geo data was refused by the system
 * Dashboard | Counters look good but their are not vertiaclly centered on my screen, they are a bit lower, not good
 * Dasboard | Counters | Make the minus sign backround not transparent, I want to clearly see those buttons
@@ -60,7 +60,10 @@ Dating_Quest_Html
 * Nice, also: use the same cool gradiant background for all other app pages, it alos should go even under the navbar, the navebar block can be semitranspartent dark bock on top of the cool graint app background
 * Dashboard | add fancy icons to each of counter (top left corner)
 * Calendar | Bottom UI Details Block | Make more professional lookin, align everying. User fancy icons for each counter instead of text. 
-* Calendar | Top ui and text `Progress Calendar` and `September...` look stacked in one place  
+* Calendar | Top ui and text `Progress Calendar` and `September...` look stacked in one place
+\
+* Whenever I am opening the map component, the map should always fetch again the storage for actions, to make sure we have the latest updated on the map. Sometime I needed to reopen the app to see them
+* Make the calendar day cells with black background, instead of current gray or smth, cause it blends in with the page gradiant background   
 
 [x] Map improvement
 * Remove `.page.padding: 20px;` for map, will look better
