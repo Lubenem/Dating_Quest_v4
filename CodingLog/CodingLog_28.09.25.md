@@ -9,6 +9,9 @@
 ## `29.09.25.Mon`
 
 React_Cursor_DatingQuest
+* Map fix
+
+React_Cursor_DatingQuest
 * UI Improvements
 
 React_Cursor_DatingQuest
@@ -49,6 +52,11 @@ Dating_Quest_Html
 # Prompts
 
 ## `29.09.25.Mon`
+
+[] Map fix
+* Make sure the action points are on the heigher layer then my current position
+* Make sure that if I decrement one counter, it removes exactly one last action of this type, and map will still show the rest
+* Make sure if I have only one action on dashobard and imidiatly switch to map, I should see it, without any reloading of the app or page or anything like that
 
 [x] UI Improvements
 * Dashboard | remove the annoying geolocation message, we should only see it if the geo data was refused by the system

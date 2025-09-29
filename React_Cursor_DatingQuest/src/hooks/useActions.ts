@@ -5,6 +5,7 @@ import { useGeolocation } from './useGeolocation';
 export const useActions = () => {
   const { getCurrentLocation, permissionGranted, error: geoError } = useGeolocation();
   const [actions, setActions] = useState<Action[]>([]);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   // Generate unique ID for actions
   const generateActionId = (): string => {
@@ -65,6 +66,9 @@ export const useActions = () => {
         setActions(updatedActions);
       }
 
+      // Trigger refresh for other components
+      triggerRefresh();
+
       return newAction;
     } catch (error) {
       console.error('Failed to add action:', error);
@@ -94,6 +98,9 @@ export const useActions = () => {
       if (today === getTodayString()) {
         setActions(updatedActions);
       }
+
+      // Trigger refresh for other components
+      triggerRefresh();
       
       return true;
     }
@@ -118,6 +125,11 @@ export const useActions = () => {
     return getDayCounters(getTodayString());
   };
 
+  // Trigger refresh for components that need to update
+  const triggerRefresh = () => {
+    setRefreshTrigger(prev => prev + 1);
+  };
+
   // Load today's actions on mount
   useEffect(() => {
     const todayActions = getDayActions(getTodayString());
@@ -133,5 +145,6 @@ export const useActions = () => {
     getTodayCounters,
     permissionGranted,
     geoError,
+    refreshTrigger,
   };
 };
