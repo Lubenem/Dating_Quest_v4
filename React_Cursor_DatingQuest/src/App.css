@@ -615,7 +615,7 @@ body {
 
 /* Leaflet Map Customizations */
 .leaflet-container {
-  background: #1a1a2e !important;
+  background: #ffffff !important;
 }
 
 .leaflet-tile {
@@ -639,14 +639,24 @@ body {
 .action-marker {
   background: transparent !important;
   border: none !important;
+  z-index: 10000 !important;
 }
 
 .cluster-marker {
   background: transparent !important;
   border: none !important;
+  z-index: 10000 !important;
 }
 
 .current-location-marker {
   background: transparent !important;
   border: none !important;
+  z-index: 1 !important;
+}
+
+.transparent-location-marker {
+  background: transparent !important;
+  border: none !important;
+  pointer-events: none !important;
+  z-index: 1 !important;
 }

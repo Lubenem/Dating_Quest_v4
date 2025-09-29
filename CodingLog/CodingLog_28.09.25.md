@@ -53,7 +53,7 @@ Dating_Quest_Html
 
 ## `29.09.25.Mon`
 
-[] Map fix
+[x] Map fix
 * Make sure the action points are on the heigher layer then my current position
 * Make sure that if I decrement one counter, it removes exactly one last action of this type, and map will still show the rest
 * Make sure if I have only one action on dashobard and imidiatly switch to map, I should see it, without any reloading of the app or page or anything like that

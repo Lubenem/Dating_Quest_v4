@@ -50,7 +50,7 @@ const createActionIcon = (type: ActionType) => {
       border-radius: 50%;
       border: 3px solid white;
       box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-      z-index: 1000;
+      z-index: 10000;
     "></div>`,
     iconSize: [16, 16],
     iconAnchor: [8, 8]
@@ -79,7 +79,7 @@ const createClusterIcon = (count: number, hasCurrentLocation: boolean = false) =
       color: white;
       font-weight: bold;
       font-size: ${Math.min(12 + count, 16)}px;
-      z-index: 1000;
+      z-index: 10000;
     ">${count}</div>`,
     iconSize: [size, size],
     iconAnchor: [size/2, size/2]
@@ -101,6 +101,25 @@ const createCurrentLocationIcon = () => {
     "></div>`,
     iconSize: [20, 20],
     iconAnchor: [10, 10]
+  });
+};
+
+// Create semi-transparent, non-clickable location marker
+const createTransparentLocationIcon = () => {
+  return L.divIcon({
+    className: 'transparent-location-marker',
+    html: `<div style="
+      background: rgba(0, 0, 0, 0.7);
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 3px solid rgba(255, 255, 255, 0.8);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      z-index: 1;
+      pointer-events: none;
+    "></div>`,
+    iconSize: [16, 16],
+    iconAnchor: [8, 8]
   });
 };
 
@@ -292,7 +311,6 @@ const Map: React.FC = () => {
             attribution='© OpenStreetMap contributors'
             maxZoom={19}
             subdomains={['a', 'b', 'c']}
-            opacity={0.7} // Make map tiles less bright
           />
           
           {/* Action clusters (including current location if nearby) */}
@@ -362,6 +380,15 @@ const Map: React.FC = () => {
               </Popup>
             </Marker>
           ))}
+          
+          {/* Semi-transparent current location marker (non-clickable, always visible) */}
+          {userLocation && (
+            <Marker
+              position={userLocation}
+              icon={createTransparentLocationIcon()}
+              interactive={false}
+            />
+          )}
           
         </MapContainer>
       </div>
