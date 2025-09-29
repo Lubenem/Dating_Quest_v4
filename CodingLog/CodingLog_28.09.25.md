@@ -9,6 +9,9 @@
 ## `29.09.25.Mon`
 
 React_Cursor_DatingQuest
+* Data storage refactoring
+
+React_Cursor_DatingQuest
 * Scrolls
 
 React_Cursor_DatingQuest
@@ -41,11 +44,20 @@ Dating_Quest_Html
 
 ## `29.09.25.Mon`
 
-
 [] Map improvement
 * Remove `.page.padding: 20px;` for map, will look better
 * Remove +/- button on map, not needed
-* Make sure all other icons on the map locations are either romved or made less bright, cause our focus should be on our points that we add to the map 
+* Make sure all other icons on the map locations are either romved or made less bright, cause our focus should be on our points that we add to the map
+* When map page starting, load from locall storage all user actions. Use their `geoposition` to place a dot of an appropriate color (action color), when taped, give details on action
+* My current position should be either a black dot or some neat icon
+
+
+[x] Data storage refactoring
+* Explain to me, the current data storage logic.
+Where do we do it, how the data structures look. I might wanna extend this logic and also store some additiional logic for each action log (like coordinates)
+* Let's use the `ActionLog` approach instead of our current apporach. It will be better cause our app in the future will have aditional new action types. I need all of the actions be structed the same. The `ActionLog`, or maybe just `Action` for simplicity, should have action type, curent datetime, current geoposition, and other necessary details about the action.
+* The calendar and dashboard pages now will fetch our local storage system for appropriate actions by `datetime` and `type` to present the info on the screen
+* On load our app should always check if we have the geo permissions, if not always aks for it. We need them for our actions storage
 
 [] Scrolls
 * I am using Samsung Galaxy A32, and I have scrolls on dashboard and calendar.

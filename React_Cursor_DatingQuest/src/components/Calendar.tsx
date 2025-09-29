@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useCounters } from '../hooks/useCounters';
+import { useActions } from '../hooks/useActions';
 import type { Counters } from '../types';
 
 const Calendar: React.FC = () => {
-  const { getDayData } = useCounters();
+  const { getDayCounters } = useActions();
   const [calendarDate, setCalendarDate] = useState(new Date());
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
   const [dayDetails, setDayDetails] = useState<Counters>({
@@ -29,8 +29,8 @@ const Calendar: React.FC = () => {
 
   const updateDayDetails = (date: Date) => {
     const dateString = date.toDateString();
-    const data = getDayData(dateString);
-    setDayDetails(data);
+    const counters = getDayCounters(dateString);
+    setDayDetails(counters);
   };
 
   const selectDay = (date: Date) => {
@@ -82,8 +82,8 @@ const Calendar: React.FC = () => {
       
       if (date.getMonth() === month) {
         const dateString = date.toDateString();
-        const dayData = getDayData(dateString);
-        const total = Object.values(dayData).reduce((sum, val) => sum + val, 0);
+        const counters = getDayCounters(dateString);
+        const total = Object.values(counters).reduce((sum, val) => sum + val, 0);
         
         const isToday = dateString === currentDateStr;
         const isSelected = selectedDay && dateString === selectedDay.toDateString();

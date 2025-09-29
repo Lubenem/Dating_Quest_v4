@@ -1,16 +1,29 @@
+export type ActionType = 'approach' | 'contact' | 'instantDate' | 'plannedDate';
+
+export interface LocationData {
+  latitude: number;
+  longitude: number;
+  accuracy?: number;
+  timestamp: string;
+}
+
+export interface Action {
+  id: string;
+  type: ActionType;
+  timestamp: string;
+  location: LocationData;
+  notes?: string;
+  tags?: string[];
+}
+
+export interface DayData {
+  date: string; // "Mon Sep 30 2024"
+  actions: Action[];
+}
+
 export interface Counters {
   approaches: number;
   contacts: number;
   instantDates: number;
   plannedDates: number;
-}
-
-export interface DayData {
-  date: string;
-  counters: Counters;
-}
-
-export interface LocationData {
-  latitude: number;
-  longitude: number;
 }

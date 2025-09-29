@@ -82,6 +82,27 @@ body {
   color: #a0a0a0;
 }
 
+.geo-warning {
+  margin-top: 10px;
+  padding: 10px;
+  background: rgba(255, 193, 7, 0.1);
+  border: 1px solid rgba(255, 193, 7, 0.3);
+  border-radius: 10px;
+  text-align: center;
+}
+
+.geo-warning p {
+  font-size: 14px;
+  color: #ffc107;
+  margin: 0;
+}
+
+.geo-error {
+  font-size: 12px !important;
+  color: #f87171 !important;
+  margin-top: 5px !important;
+}
+
 /* Counter Styles */
 .counters-grid {
   display: grid;
@@ -124,6 +145,26 @@ body {
 
 .counter-button:active {
   transform: translateY(-4px);
+}
+
+.counter-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.counter-button:disabled:hover {
+  transform: none;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+}
+
+.counter-minus:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.counter-minus:disabled:hover {
+  transform: none;
+  background: rgba(0, 0, 0, 0.4);
 }
 
 /* Animation Classes */
@@ -228,7 +269,7 @@ body {
 }
 
 .nav-item:hover {
-  background: #2d3748;
+  background: transparent;
 }
 
 .nav-icon {
