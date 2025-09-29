@@ -9,6 +9,9 @@
 ## `29.09.25.Mon`
 
 React_Cursor_DatingQuest
+* Scrolls
+
+React_Cursor_DatingQuest
 * UI improvements
 
 React_Cursor_DatingQuest
@@ -37,6 +40,17 @@ Dating_Quest_Html
 # Prompts
 
 ## `29.09.25.Mon`
+
+
+[] Map improvement
+* Remove `.page.padding: 20px;` for map, will look better
+* Remove +/- button on map, not needed
+* Make sure all other icons on the map locations are either romved or made less bright, cause our focus should be on our points that we add to the map 
+
+[] Scrolls
+* I am using Samsung Galaxy A32, and I have scrolls on dashboard and calendar.
+* The scrolls doesn't look profesional. We should keep in mind that we are doing a mobile phone app
+* What can be a solution here? I want my page height to be always adjusted to the screen height
 
 [] UI improvements
 * GOOD!, next:

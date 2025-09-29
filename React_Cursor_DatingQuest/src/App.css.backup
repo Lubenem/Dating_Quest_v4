@@ -14,44 +14,42 @@
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background: #1a1a2e;
-  height: 100vh;
-  overflow: hidden;
+  min-height: 100vh;
+  overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
 }
 
 .app {
   background: #1a1a2e;
-  height: 100vh;
+  min-height: 100vh;
 }
 
 .app-container {
   max-width: 414px;
   margin: 0 auto;
-  height: 100vh;
+  min-height: 100vh;
   background: #1a1a2e;
   position: relative;
   box-shadow: 0 0 20px rgba(0,0,0,0.3);
-  display: flex;
-  flex-direction: column;
 }
 
 /* Page Styles */
 .page {
-  flex: 1;
   padding: 20px;
+  min-height: calc(100vh - 80px);
+  padding-bottom: 120px;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
 }
 
 .page.calendar {
-  padding-bottom: 0;
+  padding-bottom: 200px;
 }
 
 .dashboard-page {
-  justify-content: center;
-  padding-top: 20px;
-  padding-bottom: 20px;
+  justify-content: flex-start;
+  padding-top: 40px;
+  padding-bottom: 40px;
 }
 
 .dashboard-page .counters-grid {
@@ -59,15 +57,15 @@ body {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 25px;
-  margin-bottom: 0;
+  margin-bottom: 30px;
   align-content: center;
 }
 
 /* Header Styles */
 .header {
   text-align: center;
-  margin-bottom: 20px;
-  flex-shrink: 0;
+  margin-bottom: 30px;
+  padding-top: 20px;
 }
 
 .header h1 {
@@ -207,7 +205,6 @@ body {
   display: flex;
   height: 80px;
   z-index: 1000;
-  flex-shrink: 0;
 }
 
 .nav-item {
@@ -243,11 +240,7 @@ body {
 
 /* Calendar Styles */
 .calendar-container {
-  flex: 1;
   padding: 20px 0;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
 }
 
 .calendar-header {
@@ -255,7 +248,6 @@ body {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
-  flex-shrink: 0;
 }
 
 .calendar-nav {
@@ -280,7 +272,6 @@ body {
   grid-template-columns: repeat(7, 1fr);
   gap: 5px;
   margin-bottom: 20px;
-  flex-shrink: 0;
 }
 
 .calendar-day-header {
@@ -346,7 +337,6 @@ body {
   padding: 20px;
   box-shadow: 0 -5px 20px rgba(0,0,0,0.3);
   z-index: 999;
-  flex-shrink: 0;
 }
 
 .day-details-header {
@@ -403,9 +393,9 @@ body {
 
 /* Map Styles */
 .map-container {
-  flex: 1;
+  width: 100%;
+  height: calc(100vh - 80px);
   position: relative;
-  overflow: hidden;
 }
 
 .map-loading {
