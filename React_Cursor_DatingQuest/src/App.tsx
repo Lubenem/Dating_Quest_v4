@@ -3,6 +3,7 @@ import Dashboard from './components/Dashboard';
 import Calendar from './components/Calendar';
 import Map from './components/Map';
 import Navigation from './components/Navigation';
+import ProgressBar from './components/ProgressBar';
 import './App.css';
 
 function App() {
@@ -10,6 +11,7 @@ function App() {
     <div className="app">
       <Router>
         <div className="app-container">
+          <ProgressBar />
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/dashboard" element={<Dashboard />} />

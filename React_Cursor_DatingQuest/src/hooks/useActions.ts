@@ -7,6 +7,46 @@ export const useActions = () => {
   const [actions, setActions] = useState<Action[]>([]);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
+  // Check if we're in localhost testing mode
+  const isLocalhostTesting = (): boolean => {
+    return window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+  };
+
+  // Generate random location within 1000 meters for testing
+  const generateRandomTestLocation = async (): Promise<{ latitude: number; longitude: number }> => {
+    // Get user's actual location as base
+    const userLocation = await getCurrentLocation();
+    if (!userLocation) {
+      // Fallback to NYC if no location available
+      return {
+        latitude: 40.7128,
+        longitude: -74.0060
+      };
+    }
+    
+    // Generate random offset within 1000 meters (approximately 0.009 degrees)
+    const maxOffset = 0.009;
+    const latOffset = (Math.random() - 0.5) * maxOffset;
+    const lngOffset = (Math.random() - 0.5) * maxOffset;
+    
+    return {
+      latitude: userLocation.latitude + latOffset,
+      longitude: userLocation.longitude + lngOffset
+    };
+  };
+
+  // Get daily goal (default 30)
+  const getDailyGoal = (): number => {
+    const stored = localStorage.getItem('approachesDayGoal');
+    return stored ? parseInt(stored, 10) : 30;
+  };
+
+  // Set daily goal
+  const setDailyGoal = (goal: number): void => {
+    localStorage.setItem('approachesDayGoal', goal.toString());
+    triggerRefresh();
+  };
+
   // Generate unique ID for actions
   const generateActionId = (): string => {
     return `action_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -39,12 +79,37 @@ export const useActions = () => {
   // Add a new action
   const addAction = async (type: ActionType, notes?: string, tags?: string[]): Promise<Action | null> => {
     try {
-      if (!permissionGranted) {
+      if (!permissionGranted && !isLocalhostTesting()) {
         console.warn('Geolocation permission not granted');
         return null;
       }
 
-      const location = await getCurrentLocation();
+      let location: { latitude: number; longitude: number; accuracy?: number; timestamp: string };
+      
+      if (isLocalhostTesting()) {
+        // Use random location for localhost testing
+        const randomLoc = await generateRandomTestLocation();
+        location = {
+          latitude: randomLoc.latitude,
+          longitude: randomLoc.longitude,
+          accuracy: 10,
+          timestamp: new Date().toISOString()
+        };
+        console.log('🧪 Testing mode: Using random location:', randomLoc);
+      } else {
+        // Use real geolocation for production
+        const realLocation = await getCurrentLocation();
+        if (!realLocation) {
+          console.error('Failed to get current location');
+          return null;
+        }
+        location = {
+          latitude: realLocation.latitude,
+          longitude: realLocation.longitude,
+          accuracy: realLocation.accuracy || 10,
+          timestamp: realLocation.timestamp
+        };
+      }
       
       const newAction: Action = {
         id: generateActionId(),
@@ -112,8 +177,11 @@ export const useActions = () => {
   const getDayCounters = (dateString: string): Counters => {
     const dayActions = getDayActions(dateString);
     
+    // All action types are derivatives of approach, so they all count as approaches
+    const totalApproaches = dayActions.length; // All actions count as approaches
+    
     return {
-      approaches: dayActions.filter(action => action.type === 'approach').length,
+      approaches: totalApproaches,
       contacts: dayActions.filter(action => action.type === 'contact').length,
       instantDates: dayActions.filter(action => action.type === 'instantDate').length,
       plannedDates: dayActions.filter(action => action.type === 'plannedDate').length,
@@ -146,5 +214,7 @@ export const useActions = () => {
     permissionGranted,
     geoError,
     refreshTrigger,
+    getDailyGoal,
+    setDailyGoal,
   };
 };

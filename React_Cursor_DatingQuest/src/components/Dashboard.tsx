@@ -53,9 +53,9 @@ const Dashboard: React.FC = () => {
 
   const handleIncrement = async (key: string) => {
     const actionType = key as any;
-    const success = await addAction(actionType);
+    const result = await addAction(actionType);
     
-    if (success) {
+    if (result) {
       updateCounters();
       triggerAnimation(key, 'increment');
     } else {

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet';
 import { useLocation } from 'react-router-dom';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -13,6 +13,7 @@ interface ActionCluster {
   actions: Action[];
   count: number;
   hasCurrentLocation: boolean;
+  sequentialNumber?: number;
 }
 
 // Fix for default markers in react-leaflet
@@ -27,7 +28,26 @@ L.Icon.Default.mergeOptions({
   shadowUrl: markerShadow,
 });
 
-// Action type colors
+// Calculate progress-based color (blue -> green -> gold) - VIBRANT AND REWARDING
+const getProgressColor = (actionIndex: number, dailyGoal: number): string => {
+  const progress = Math.min(actionIndex / dailyGoal, 1); // Progress from 0 to 1
+  
+  if (progress <= 0.33) {
+    // Blue phase (0-33% of goal) - Deep, vibrant blues
+    const intensity = progress / 0.33;
+    return `rgb(${Math.round(30 + intensity * 70)}, ${Math.round(100 + intensity * 155)}, ${Math.round(200 + intensity * 55)})`;
+  } else if (progress <= 0.66) {
+    // Green phase (33-66% of goal) - Rich, energetic greens
+    const intensity = (progress - 0.33) / 0.33;
+    return `rgb(${Math.round(100 + intensity * 155)}, ${Math.round(200 + intensity * 55)}, ${Math.round(30 + intensity * 70)})`;
+  } else {
+    // Gold phase (66-100% of goal) - Brilliant, achievement golds
+    const intensity = (progress - 0.66) / 0.34;
+    return `rgb(${Math.round(255)}, ${Math.round(200 + intensity * 55)}, ${Math.round(0)})`;
+  }
+};
+
+// Action type colors (fallback for non-progress colors)
 const getActionColor = (type: ActionType): string => {
   switch (type) {
     case 'approach': return '#667eea';
@@ -39,48 +59,58 @@ const getActionColor = (type: ActionType): string => {
 };
 
 // Create custom icons for actions
-const createActionIcon = (type: ActionType) => {
-  const color = getActionColor(type);
+const createActionIcon = (sequentialNumber: number, dailyGoal: number, totalActions: number) => {
+  const color = getProgressColor(sequentialNumber - 1, dailyGoal);
+  const isLatest = sequentialNumber === totalActions;
+  
   return L.divIcon({
-    className: 'action-marker',
+    className: `action-marker-${sequentialNumber}${isLatest ? ' action-marker-latest' : ''}`, // Unique class name to force re-render
     html: `<div style="
-      background: ${color};
-      width: 16px;
-      height: 16px;
+      background: ${color} !important;
+      width: ${isLatest ? '24px' : '20px'};
+      height: ${isLatest ? '24px' : '20px'};
       border-radius: 50%;
-      border: 3px solid white;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-      z-index: 10000;
-    "></div>`,
-    iconSize: [16, 16],
-    iconAnchor: [8, 8]
+      border: ${isLatest ? '4px solid #000000' : '3px solid white'};
+      box-shadow: ${isLatest ? '0 4px 12px rgba(0,0,0,0.6), 0 0 0 2px rgba(255,255,255,0.8)' : '0 2px 8px rgba(0,0,0,0.3)'};
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: ${isLatest ? '14px' : '12px'};
+      z-index: ${isLatest ? '10001' : '10000'};
+    ">${sequentialNumber}</div>`,
+    iconSize: [isLatest ? 24 : 20, isLatest ? 24 : 20],
+    iconAnchor: [isLatest ? 12 : 10, isLatest ? 12 : 10]
   });
 };
 
 // Create cluster icon for multiple actions
-const createClusterIcon = (count: number, hasCurrentLocation: boolean = false) => {
+const createClusterIcon = (count: number, dailyGoal: number, hasCurrentLocation: boolean = false, highestNumber?: number, totalActions: number = 0) => {
   const size = Math.min(20 + count * 2, 40); // Scale with count, max 40px
+  const progressColor = highestNumber ? getProgressColor(highestNumber - 1, dailyGoal) : '#667eea';
   const background = hasCurrentLocation 
     ? 'linear-gradient(135deg, #000000 0%, #333333 100%)'
-    : 'linear-gradient(135deg, #667eea 0%, #f093fb 100%)';
+    : progressColor;
+  const isLatest = highestNumber === totalActions;
   
   return L.divIcon({
-    className: 'cluster-marker',
+    className: `cluster-marker-${highestNumber || count}${isLatest ? ' cluster-marker-latest' : ''}`, // Unique class name
     html: `<div style="
-      background: ${background};
+      background: ${background} !important;
       width: ${size}px;
       height: ${size}px;
       border-radius: 50%;
-      border: 4px solid white;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      border: ${isLatest ? '4px solid #000000' : '4px solid white'};
+      box-shadow: ${isLatest ? '0 4px 12px rgba(0,0,0,0.6), 0 0 0 2px rgba(255,255,255,0.8)' : '0 4px 12px rgba(0,0,0,0.3)'};
       display: flex;
       align-items: center;
       justify-content: center;
       color: white;
       font-weight: bold;
       font-size: ${Math.min(12 + count, 16)}px;
-      z-index: 10000;
-    ">${count}</div>`,
+      z-index: ${isLatest ? '10001' : '10000'};
+    ">${highestNumber || count}</div>`,
     iconSize: [size, size],
     iconAnchor: [size/2, size/2]
   });
@@ -128,7 +158,10 @@ const clusterActions = (actions: Action[], userLocation: [number, number] | null
   const clusters: ActionCluster[] = [];
   const processed = new Set<string>();
 
-  actions.forEach((action, index) => {
+  // Sort actions by timestamp to get sequential order
+  const sortedActions = [...actions].sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+
+  sortedActions.forEach((action, index) => {
     if (processed.has(action.id)) return;
 
     const cluster: ActionCluster = {
@@ -136,7 +169,8 @@ const clusterActions = (actions: Action[], userLocation: [number, number] | null
       center: [action.location.latitude, action.location.longitude],
       actions: [action],
       count: 1,
-      hasCurrentLocation: false
+      hasCurrentLocation: false,
+      sequentialNumber: index + 1 // Add sequential number
     };
 
     // Check if this action is near user's current location
@@ -153,7 +187,7 @@ const clusterActions = (actions: Action[], userLocation: [number, number] | null
     }
 
     // Find nearby actions
-    actions.forEach((otherAction) => {
+    sortedActions.forEach((otherAction) => {
       if (otherAction.id === action.id || processed.has(otherAction.id)) return;
       
       const distance = Math.sqrt(
@@ -173,6 +207,10 @@ const clusterActions = (actions: Action[], userLocation: [number, number] | null
       const avgLat = cluster.actions.reduce((sum, a) => sum + a.location.latitude, 0) / cluster.count;
       const avgLng = cluster.actions.reduce((sum, a) => sum + a.location.longitude, 0) / cluster.count;
       cluster.center = [avgLat, avgLng];
+      
+      // Find the highest sequential number in the cluster
+      const highestNumber = Math.max(...cluster.actions.map(a => sortedActions.findIndex(sa => sa.id === a.id) + 1));
+      cluster.sequentialNumber = highestNumber;
     }
 
     clusters.push(cluster);
@@ -183,31 +221,23 @@ const clusterActions = (actions: Action[], userLocation: [number, number] | null
 };
 
 const Map: React.FC = () => {
-  const { getDayActions, refreshTrigger } = useActions();
+  const { getDayActions, refreshTrigger, getDailyGoal } = useActions();
   const location = useLocation();
   const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
   const [actionClusters, setActionClusters] = useState<ActionCluster[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedDate, setSelectedDate] = useState<string>(new Date().toDateString());
   const mapRef = useRef<L.Map>(null);
 
-  // Load all actions from localStorage
-  const loadAllActions = () => {
-    const allActions: Action[] = [];
-    
-    // Get all localStorage keys (dates)
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
-      if (key && key.match(/^[A-Za-z]{3} [A-Za-z]{3} \d{2} \d{4}$/)) { // Date pattern
-        const dayActions = getDayActions(key);
-        allActions.push(...dayActions);
-      }
-    }
+  // Load actions for selected date
+  const loadActionsForDate = () => {
+    const dayActions = getDayActions(selectedDate);
     
     // Cluster nearby actions and current location
-    const clusters = clusterActions(allActions, userLocation);
+    const clusters = clusterActions(dayActions, userLocation);
     
     // If no actions exist but we have location, create a location-only cluster
-    if (allActions.length === 0 && userLocation) {
+    if (dayActions.length === 0 && userLocation) {
       const locationCluster: ActionCluster = {
         id: 'location-only',
         center: userLocation,
@@ -248,20 +278,25 @@ const Map: React.FC = () => {
 
   useEffect(() => {
     getCurrentLocation();
-    loadAllActions();
+    loadActionsForDate();
   }, []);
 
   // Refresh action data every time the map route is accessed
   useEffect(() => {
     if (location.pathname === '/map') {
-      loadAllActions();
+      loadActionsForDate();
     }
   }, [location.pathname]);
 
   // Refresh action data when actions are added/removed
   useEffect(() => {
-    loadAllActions();
+    loadActionsForDate();
   }, [refreshTrigger]);
+
+  // Refresh when selected date changes
+  useEffect(() => {
+    loadActionsForDate();
+  }, [selectedDate]);
 
   useEffect(() => {
     if (userLocation && mapRef.current) {
@@ -290,43 +325,57 @@ const Map: React.FC = () => {
 
   return (
     <div className="page map">
-      <div className="map-container">
-        {loading && (
-          <div className="map-loading">
-            <div className="loading-spinner"></div>
-            <div className="loading-text">Loading map...</div>
-          </div>
-        )}
-        <MapContainer
-          ref={mapRef}
-          center={[40.7128, -74.0060]} // Default to NYC
-          zoom={13}
-          style={{ height: '100%', width: '100%' }}
+      <div className="map-header">
+        <h1>Action Map</h1>
+        <div className="date-selector">
+          <label htmlFor="date-picker">Select Date:</label>
+          <input
+            id="date-picker"
+            type="date"
+            value={selectedDate ? new Date(selectedDate).toISOString().split('T')[0] : ''}
+            onChange={(e) => setSelectedDate(new Date(e.target.value).toDateString())}
+            className="date-input"
+          />
+        </div>
+      </div>
+      
+    <div className="map-container">
+      {loading && (
+        <div className="map-loading">
+          <div className="loading-spinner"></div>
+          <div className="loading-text">Loading map...</div>
+        </div>
+      )}
+      <MapContainer
+        ref={mapRef}
+        center={[40.7128, -74.0060]} // Default to NYC
+        zoom={13}
+        style={{ height: '100%', width: '100%' }}
           zoomControl={false} // Remove zoom controls
           attributionControl={false} // Remove attribution
-          whenReady={() => setLoading(false)}
-        >
-          <TileLayer
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            attribution='© OpenStreetMap contributors'
-            maxZoom={19}
-            subdomains={['a', 'b', 'c']}
-          />
+        whenReady={() => setLoading(false)}
+      >
+        <TileLayer
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='© OpenStreetMap contributors'
+          maxZoom={19}
+          subdomains={['a', 'b', 'c']}
+        />
           
           {/* Action clusters (including current location if nearby) */}
           {actionClusters.map((cluster) => (
-            <Marker
-              key={cluster.id}
+          <Marker
+              key={`${cluster.id}-${cluster.sequentialNumber || 0}-${getDailyGoal()}`}
               position={cluster.center}
               icon={
                 cluster.count === 0 ? 
                   createCurrentLocationIcon() : // Location-only marker
                   cluster.count === 1 ? 
-                    createActionIcon(cluster.actions[0].type) : 
-                    createClusterIcon(cluster.count, cluster.hasCurrentLocation)
+                    createActionIcon(cluster.sequentialNumber || 1, getDailyGoal(), getDayActions(selectedDate).length) : 
+                    createClusterIcon(cluster.count, getDailyGoal(), cluster.hasCurrentLocation, cluster.sequentialNumber, getDayActions(selectedDate).length)
               }
-            >
-              <Popup>
+          >
+            <Popup>
                 {cluster.count === 0 ? (
                   // Location-only popup
                   <div>
@@ -377,8 +426,8 @@ const Map: React.FC = () => {
                     ))}
                   </div>
                 )}
-              </Popup>
-            </Marker>
+            </Popup>
+          </Marker>
           ))}
           
           {/* Semi-transparent current location marker (non-clickable, always visible) */}
@@ -389,9 +438,23 @@ const Map: React.FC = () => {
               interactive={false}
             />
           )}
+
+          {/* Path arrows connecting action points */}
+          {actionClusters.length > 1 && (
+            <Polyline
+              positions={actionClusters
+                .filter(cluster => cluster.count > 0)
+                .sort((a, b) => (a.sequentialNumber || 0) - (b.sequentialNumber || 0))
+                .map(cluster => cluster.center)}
+              color="#8b5cf6"
+              weight={3}
+              opacity={0.7}
+              dashArray="5, 10"
+            />
+          )}
           
-        </MapContainer>
-      </div>
+      </MapContainer>
+    </div>
     </div>
   );
 };

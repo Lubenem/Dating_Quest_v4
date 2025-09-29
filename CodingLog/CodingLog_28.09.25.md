@@ -1,12 +1,23 @@
 # Tasks
 
+# V1.0
+[] Backend Supabase / Auth
+[] Friendship
+[] ...
+
+# Mvp
+[] Add Map History Path and Progress Bar (desire to grind)
+\
+[] Add `Contacts` Page
 [x] Move to React
 [x] Map action dots
-[] ...
 
 # Commits
 
 ## `29.09.25.Mon`
+
+React_Cursor_DatingQuest
+* Add Map History Path and Progress Bar (desire to grind)
 
 React_Cursor_DatingQuest
 * Map fix
@@ -52,6 +63,20 @@ Dating_Quest_Html
 # Prompts
 
 ## `29.09.25.Mon`
+
+
+[t] Add Map History Path and Progress Bar (desire to grind)
+* Map | there should be a selection of a date on top of the map. We show points only for a certain date (for now)
+* Dashboard | each other action then `approach` is also `approach`, it's like a derivative, so when we count them, the `approach` counter is automatically inremented also. 
+* Map | each action point will have a number inside in order in which they were created (starting with 1), also the points should be connected with the arrows pointing in direction of users path, to show us our progress and make us more engaged, satisfied and locked in.
+* Map | If more than one action point at the same place, only count `approaches` and display only one heighest number
+\
+* Storage | User should have a variable stored `approachesDayGoal`, it will be changing in the future depedning on his level. By default it's `30`.
+* Map | Color Gradients and Effects: As we go closer to the `approachesDayGoal`, for dots on map use a gradient that changes as the user completes more actions. For instance, the first action could be a light color, and as they progress, the color could become more vibrant, like a shift from blue to green to gold (`approachesDayGoal`).
+\
+* Top Progress Bar | Progress Bar: Add a progress bar as the top component which is visible throughout the whole app, just like the bottom nav bar. It fills up as the users completes his `approachesDayGoal`, the progress bar should look cool, engaging and have the same progress color gradiant as the dots on the map.
+\
+* Add cool temp app icon. Maybe download it from some fancy site or smth, can be a `heart` icon or smth like that
 
 [x] Map fix
 * Make sure the action points are on the heigher layer then my current position
