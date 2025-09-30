@@ -505,24 +505,20 @@ body {
 
 /* Calendar Styles */
 .calendar-header-section {
-  text-align: center;
-  margin-bottom: 20px;
-  position: relative;
-  z-index: 1;
+  display: none;
 }
 
 .calendar-header-section h1 {
-  font-size: 24px;
-  color: #ffffff;
-  margin-bottom: 8px;
-  font-weight: 700;
+  display: none;
 }
 
 .calendar-month-title {
-  font-size: 18px;
-  color: #8b5cf6;
-  font-weight: 600;
-  margin-bottom: 15px;
+  font-size: 20px;
+  color: #ffffff;
+  font-weight: 700;
+  text-align: center;
+  flex: 1;
+  margin: 0 20px;
 }
 
 .calendar-container {
@@ -538,6 +534,7 @@ body {
 .calendar-nav-section {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   margin-bottom: 20px;
   padding: 0 10px;
 }
@@ -585,46 +582,116 @@ body {
 
 .calendar-day {
   aspect-ratio: 1;
-  border-radius: 10px;
+  border-radius: 12px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.3s ease;
-  background: rgba(0, 0, 0, 0.8);
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  background: rgba(0, 0, 0, 0.6);
   border: 2px solid transparent;
   position: relative;
   touch-action: manipulation;
-  color: #ffffff;
+  color: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(5px);
+  min-height: 44px;
 }
 
 .calendar-day:hover {
-  background: rgba(0, 0, 0, 0.9);
+  background: rgba(0, 0, 0, 0.8);
   transform: scale(1.05);
-}
-
-.calendar-day.today {
-  border-color: #8b5cf6;
-  border-width: 3px;
-  background: rgba(0, 0, 0, 0.9);
   color: #ffffff;
 }
 
+/* Action Day - Days with at least one action (accomplishment streak) */
 .calendar-day.has-data {
+  background: rgba(34, 197, 94, 0.2);
+  border-color: rgba(34, 197, 94, 0.4);
+  color: #22c55e;
+  position: relative;
+}
+
+.calendar-day.has-data::before {
+  content: '';
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 6px;
+  height: 6px;
+  background: #22c55e;
+  border-radius: 50%;
+  box-shadow: 0 0 6px rgba(34, 197, 94, 0.6);
+}
+
+/* Today - Current day (always visible) */
+.calendar-day.today {
+  background: rgba(139, 92, 246, 0.2);
+  border-color: #8b5cf6;
+  border-width: 3px;
+  color: #8b5cf6;
+  font-weight: 700;
+  position: relative;
+}
+
+.calendar-day.today::after {
+  content: 'TODAY';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 8px;
+  font-weight: 600;
+  color: #8b5cf6;
+  background: rgba(139, 92, 246, 0.2);
+  padding: 1px 4px;
+  border-radius: 4px;
+  letter-spacing: 0.3px;
+}
+
+/* Selected Day - Currently analyzing (default: today) */
+.calendar-day.selected {
+  background: linear-gradient(135deg, #a855f7, #f472b6);
+  color: white;
+  border-color: #8b5cf6;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(168, 85, 247, 0.4);
+}
+
+/* Combined states - Multiple day types */
+.calendar-day.has-data.today {
+  background: rgba(34, 197, 94, 0.3);
+  border-color: #8b5cf6;
+  color: #8b5cf6;
+}
+
+.calendar-day.has-data.today::before {
+  background: #8b5cf6;
+  box-shadow: 0 0 6px rgba(139, 92, 246, 0.6);
+}
+
+.calendar-day.has-data.selected {
+  background: linear-gradient(135deg, #22c55e, #8b5cf6);
+  color: white;
   border-color: #8b5cf6;
 }
 
-.calendar-day.selected {
-  background: linear-gradient(135deg, #a855f7, #f472b6);
+.calendar-day.today.selected {
+  background: linear-gradient(135deg, #8b5cf6, #f472b6);
+  color: white;
+  border-color: #8b5cf6;
+}
+
+.calendar-day.has-data.today.selected {
+  background: linear-gradient(135deg, #22c55e, #8b5cf6, #f472b6);
   color: white;
   border-color: #8b5cf6;
 }
 
 .day-number {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
+  z-index: 1;
 }
 
 /* Day Details Panel */

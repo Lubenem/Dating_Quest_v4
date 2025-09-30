@@ -119,18 +119,14 @@ const Calendar: React.FC = () => {
 
   return (
     <div className="page calendar">
-      <div className="calendar-header-section">
-        <h1>Progress Calendar</h1>
-        <div className="calendar-month-title">
-          {monthNames[calendarDate.getMonth()]} {calendarDate.getFullYear()}
-        </div>
-      </div>
-      
       <div className="calendar-container">
         <div className="calendar-nav-section">
           <button className="calendar-nav" onClick={previousMonth}>
             ‹ Prev
           </button>
+          <div className="calendar-month-title">
+            {monthNames[calendarDate.getMonth()]} {calendarDate.getFullYear()}
+          </div>
           <button className="calendar-nav" onClick={nextMonth}>
             Next ›
           </button>

@@ -335,22 +335,22 @@ const Map: React.FC = () => {
         />
       </div>
       
-      <div className="map-container">
-        {loading && (
-          <div className="map-loading">
-            <div className="loading-spinner"></div>
-            <div className="loading-text">Loading map...</div>
-          </div>
-        )}
-        <MapContainer
-          ref={mapRef}
-          center={[40.7128, -74.0060]} // Default to NYC
-          zoom={13}
-          style={{ height: '100%', width: '100%' }}
+    <div className="map-container">
+      {loading && (
+        <div className="map-loading">
+          <div className="loading-spinner"></div>
+          <div className="loading-text">Loading map...</div>
+        </div>
+      )}
+      <MapContainer
+        ref={mapRef}
+        center={[40.7128, -74.0060]} // Default to NYC
+        zoom={13}
+        style={{ height: '100%', width: '100%' }}
             zoomControl={false} // Remove zoom controls
             attributionControl={false} // Remove attribution
-          whenReady={() => setLoading(false)}
-        >
+        whenReady={() => setLoading(false)}
+      >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='© OpenStreetMap contributors'

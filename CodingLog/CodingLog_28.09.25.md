@@ -17,6 +17,9 @@
 ## `30.09.25.Tue`
 
 React_Cursor_DatingQuest
+* Calendar Improvement
+
+React_Cursor_DatingQuest
 * Map | Date Selection Improvement
 
 ## `29.09.25.Mon`
@@ -69,7 +72,7 @@ Dating_Quest_Html
 
 ## `30.09.25.Tue`
 
-[] Calendar Improvement
+[t] Calendar Improvement
 * Calendar | Remove top text "Progress Calendar" its a redundant UI component that takes too much vertical space. Leave only text for current month and year, but it should be on the same vertical level as the "Prev/Next" buttons. Shift the calendar up. To use the space optimally.
 * Calendar | We should visually distinguishe between 3 day types: 'actionDay', 'toDay', 'selectedDay'. On day can have all 3 types at the same time.
 * 'actionDay' - each day when at least on action was made should be marked somehow visually, to give the user a feeling of accomplishment and a desire no to break the streak.
