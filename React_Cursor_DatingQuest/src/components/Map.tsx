@@ -325,36 +325,32 @@ const Map: React.FC = () => {
 
   return (
     <div className="page map">
-      <div className="map-header">
-        <h1>Action Map</h1>
-        <div className="date-selector">
-          <label htmlFor="date-picker">Select Date:</label>
-          <input
-            id="date-picker"
-            type="date"
-            value={selectedDate ? new Date(selectedDate).toISOString().split('T')[0] : ''}
-            onChange={(e) => setSelectedDate(new Date(e.target.value).toDateString())}
-            className="date-input"
-          />
-        </div>
+      {/* Clean date selection button in top right corner */}
+      <div className="map-date-button">
+        <input
+          type="date"
+          value={selectedDate ? new Date(selectedDate).toISOString().split('T')[0] : ''}
+          onChange={(e) => setSelectedDate(new Date(e.target.value).toDateString())}
+          className="date-picker-button"
+        />
       </div>
       
-    <div className="map-container">
-      {loading && (
-        <div className="map-loading">
-          <div className="loading-spinner"></div>
-          <div className="loading-text">Loading map...</div>
-        </div>
-      )}
-      <MapContainer
-        ref={mapRef}
-        center={[40.7128, -74.0060]} // Default to NYC
-        zoom={13}
-        style={{ height: '100%', width: '100%' }}
-          zoomControl={false} // Remove zoom controls
-          attributionControl={false} // Remove attribution
-        whenReady={() => setLoading(false)}
-      >
+      <div className="map-container">
+        {loading && (
+          <div className="map-loading">
+            <div className="loading-spinner"></div>
+            <div className="loading-text">Loading map...</div>
+          </div>
+        )}
+        <MapContainer
+          ref={mapRef}
+          center={[40.7128, -74.0060]} // Default to NYC
+          zoom={13}
+          style={{ height: '100%', width: '100%' }}
+            zoomControl={false} // Remove zoom controls
+            attributionControl={false} // Remove attribution
+          whenReady={() => setLoading(false)}
+        >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='© OpenStreetMap contributors'

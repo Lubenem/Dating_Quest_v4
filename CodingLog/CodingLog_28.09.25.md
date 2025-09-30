@@ -6,13 +6,18 @@
 [] ...
 
 # Mvp
-[] Add Map History Path and Progress Bar (desire to grind)
+[t] Add Map History Path and Progress Bar (desire to grind)
 \
 [] Add `Contacts` Page
 [x] Move to React
 [x] Map action dots
 
 # Commits
+
+## `30.09.25.Tue`
+
+React_Cursor_DatingQuest
+* Map | Date Selection Improvement
 
 ## `29.09.25.Mon`
 
@@ -62,10 +67,24 @@ Dating_Quest_Html
 
 # Prompts
 
+## `30.09.25.Tue`
+
+[] Calendar Improvement
+* Calendar | Remove top text "Progress Calendar" its a redundant UI component that takes too much vertical space. Leave only text for current month and year, but it should be on the same vertical level as the "Prev/Next" buttons. Shift the calendar up. To use the space optimally.
+* Calendar | We should visually distinguishe between 3 day types: 'actionDay', 'toDay', 'selectedDay'. On day can have all 3 types at the same time.
+* 'actionDay' - each day when at least on action was made should be marked somehow visually, to give the user a feeling of accomplishment and a desire no to break the streak.
+* 'today' - is today, changes each day. User should always understand clearly which day cell represents today.
+* 'selected' - the day for which we see the stats at the bottom, we analyze it currently, by default it's always 'today'
+* Make the calendar look more professional and nativeApp-like
+
+
+[t] Map | Date Selection Improvement
+* Map | Remove the Top UI block with date selection. Takes too much space. Only leave the Date Selection Button, with no wrappers at the to right corner. Today's current date should be correctly displayed on the date selection button by default.
+* Map | Date Selection Button | Make sure the date selection button works correctly. I fI select a certain date, it should be displayed on the button and only action points from this date are shown on the map
+
 ## `29.09.25.Mon`
 
-
-[t] Add Map History Path and Progress Bar (desire to grind)
+[x] Add Map History Path and Progress Bar (desire to grind)
 * Map | there should be a selection of a date on top of the map. We show points only for a certain date (for now)
 * Dashboard | each other action then `approach` is also `approach`, it's like a derivative, so when we count them, the `approach` counter is automatically inremented also. 
 * Map | each action point will have a number inside in order in which they were created (starting with 1), also the points should be connected with the arrows pointing in direction of users path, to show us our progress and make us more engaged, satisfied and locked in.

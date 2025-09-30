@@ -698,12 +698,49 @@ body {
   color: #ffffff;
 }
 
-/* Map Styles - Focus on Action Points */
-.map-header {
+/* Map Styles - Clean Date Button */
+.map-date-button {
+  position: fixed;
+  top: 160px; /* Below progress bar (120px + 40px margin) */
+  right: 20px;
+  z-index: 1000;
+}
+
+.date-picker-button {
+  background: rgba(22, 33, 62, 0.9);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(139, 92, 246, 0.4);
+  border-radius: 12px;
+  padding: 10px 14px;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  width: 100%;
+  min-width: 120px;
   text-align: center;
-  margin-bottom: 20px;
-  position: relative;
-  z-index: 1;
+}
+
+.date-picker-button:hover {
+  border-color: #8b5cf6;
+  background: rgba(22, 33, 62, 0.95);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+}
+
+.date-picker-button:focus {
+  outline: none;
+  border-color: #8b5cf6;
+  background: rgba(22, 33, 62, 0.95);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+}
+
+
+
+/* Remove old map header styles */
+.map-header {
+  display: none;
 }
 
 /* Dim map tiles to focus attention on action points */
@@ -755,40 +792,22 @@ body {
   animation: latestActionPulse 2s ease-in-out infinite !important;
 }
 
+/* Remove old map header h1 style */
 .map-header h1 {
-  font-size: 24px;
-  color: #ffffff;
-  margin-bottom: 15px;
-  font-weight: 700;
+  display: none;
 }
 
+/* Remove old date selector styles */
 .date-selector {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
+  display: none;
 }
 
 .date-selector label {
-  color: #8b5cf6;
-  font-weight: 600;
-  font-size: 14px;
+  display: none;
 }
 
 .date-input {
-  background: rgba(255, 255, 255, 0.1);
-  border: 2px solid rgba(139, 92, 246, 0.3);
-  border-radius: 10px;
-  padding: 8px 12px;
-  color: white;
-  font-size: 14px;
-  backdrop-filter: blur(10px);
-}
-
-.date-input:focus {
-  outline: none;
-  border-color: #8b5cf6;
-  background: rgba(255, 255, 255, 0.15);
+  display: none;
 }
 
 .map-container {
