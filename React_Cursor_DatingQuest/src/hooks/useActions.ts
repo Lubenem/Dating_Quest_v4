@@ -178,14 +178,14 @@ export const useActions = () => {
   const getDayCounters = (dateString: string): Counters => {
     const dayActions = getDayActions(dateString);
     
-    // All action types are derivatives of approach, so they all count as approaches
-    const totalApproaches = dayActions.length; // All actions count as approaches
+    // All action types except missed opportunities are derivatives of approach, so they all count as approaches
+    const totalApproaches = dayActions.filter(action => action.type !== 'missedOpportunity').length;
     
     return {
       approaches: totalApproaches,
       contacts: dayActions.filter(action => action.type === 'contact').length,
       instantDates: dayActions.filter(action => action.type === 'instantDate').length,
-      plannedDates: dayActions.filter(action => action.type === 'plannedDate').length,
+      missedOpportunities: dayActions.filter(action => action.type === 'missedOpportunity').length,
     };
   };
 

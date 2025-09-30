@@ -1,4 +1,4 @@
-export type ActionType = 'approach' | 'contact' | 'instantDate' | 'plannedDate';
+export type ActionType = 'approach' | 'contact' | 'instantDate' | 'missedOpportunity';
 
 export interface LocationData {
   latitude: number;
@@ -26,5 +26,5 @@ export interface Counters {
   approaches: number;
   contacts: number;
   instantDates: number;
-  plannedDates: number;
+  missedOpportunities: number;
 }

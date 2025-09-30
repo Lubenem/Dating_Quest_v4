@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Minus, Users, MessageCircle, Clock, Calendar } from 'lucide-react';
+import { Minus, Users, MessageCircle, Clock, XCircle } from 'lucide-react';
 import { useActionsContext } from '../contexts/ActionsContext';
 
 const Dashboard: React.FC = () => {
@@ -14,6 +14,12 @@ const Dashboard: React.FC = () => {
       icon: Users
     },
     { 
+      key: 'missedOpportunity' as const, 
+      label: 'Missed Opportunities',
+      gradient: 'linear-gradient(135deg, #2d3748 0%, #1a202c 100%)',
+      icon: XCircle
+    },
+    { 
       key: 'contact' as const, 
       label: 'Contacts',
       gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
@@ -24,13 +30,7 @@ const Dashboard: React.FC = () => {
       label: 'Instant Dates',
       gradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
       icon: Clock
-    },
-    { 
-      key: 'plannedDate' as const, 
-      label: 'Planned Dates',
-      gradient: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
-      icon: Calendar
-    },
+    }
   ];
 
   const handleIncrement = async (key: string) => {
@@ -81,7 +81,7 @@ const Dashboard: React.FC = () => {
       case 'approach': return counters.approaches;
       case 'contact': return counters.contacts;
       case 'instantDate': return counters.instantDates;
-      case 'plannedDate': return counters.plannedDates;
+      case 'missedOpportunity': return counters.missedOpportunities;
       default: return 0;
     }
   };

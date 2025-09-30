@@ -15,6 +15,8 @@ interface ActionCluster {
   count: number;
   hasCurrentLocation: boolean;
   sequentialNumber?: number;
+  isMissedOpportunity?: boolean;
+  hasMissedOpportunities?: boolean;
 }
 
 // Fix for default markers in react-leaflet
@@ -54,9 +56,37 @@ const getActionColor = (type: ActionType): string => {
     case 'approach': return '#667eea';
     case 'contact': return '#f093fb';
     case 'instantDate': return '#4facfe';
-    case 'plannedDate': return '#43e97b';
+    case 'missedOpportunity': return '#2d3748';
     default: return '#8b5cf6';
   }
+};
+
+// Create custom icons for missed opportunities
+const createMissedOpportunityIcon = (sequentialNumber: number, totalMissedOpportunities: number) => {
+  const isLatest = sequentialNumber === totalMissedOpportunities;
+  const size = isLatest ? 24 : 20;
+  
+  return L.divIcon({
+    className: `missed-opportunity-marker-${sequentialNumber}${isLatest ? ' missed-opportunity-marker-latest' : ''}`,
+    html: `<div style="
+      background: #2d3748 !important;
+      width: ${size}px;
+      height: ${size}px;
+      border-radius: 50%;
+      border: ${isLatest ? '3px solid #1a202c' : '2px solid #1a202c'};
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: ${isLatest ? '14px' : '12px'};
+      box-shadow: ${isLatest ? '0 0 15px rgba(45, 55, 72, 0.8), 0 0 30px rgba(45, 55, 72, 0.4)' : '0 0 8px rgba(45, 55, 72, 0.6)'};
+      z-index: 10000;
+      ${isLatest ? 'animation: pulse 2s infinite;' : ''}
+    ">✕</div>`,
+    iconSize: [size, size],
+    iconAnchor: [size / 2, size / 2],
+  });
 };
 
 // Create custom icons for actions
@@ -236,8 +266,33 @@ const Map: React.FC = () => {
     const dateString = selectedDate.toDateString();
     const dayActions = getDayActions(dateString);
     
-    // Cluster nearby actions and current location
+    // Cluster all actions together (regular + missed opportunities)
     const clusters = clusterActions(dayActions, userLocation);
+    
+    // Process clusters to prioritize regular actions
+    const processedClusters: ActionCluster[] = clusters.map(cluster => {
+      // Separate regular actions from missed opportunities within the cluster
+      const regularActionsInCluster = cluster.actions.filter(action => action.type !== 'missedOpportunity');
+      const missedOpportunitiesInCluster = cluster.actions.filter(action => action.type === 'missedOpportunity');
+      
+      // If there are regular actions, prioritize them
+      if (regularActionsInCluster.length > 0) {
+        return {
+          ...cluster,
+          actions: [...regularActionsInCluster, ...missedOpportunitiesInCluster], // Regular actions first
+          count: regularActionsInCluster.length, // Count only regular actions for display
+          isMissedOpportunity: false, // Cluster is not a missed opportunity cluster
+          hasMissedOpportunities: missedOpportunitiesInCluster.length > 0 // Flag if it has missed opportunities
+        };
+      } else {
+        // Only missed opportunities in this cluster
+        return {
+          ...cluster,
+          isMissedOpportunity: true,
+          hasMissedOpportunities: false
+        };
+      }
+    });
     
     // If no actions exist but we have location, create a location-only cluster
     if (dayActions.length === 0 && userLocation) {
@@ -246,12 +301,14 @@ const Map: React.FC = () => {
         center: userLocation,
         actions: [],
         count: 0,
-        hasCurrentLocation: true
+        hasCurrentLocation: true,
+        isMissedOpportunity: false,
+        hasMissedOpportunities: false
       };
-      clusters.push(locationCluster);
+      processedClusters.push(locationCluster);
     }
     
-    setActionClusters(clusters);
+    setActionClusters(processedClusters);
   };
 
   // Get current location
@@ -334,7 +391,7 @@ const Map: React.FC = () => {
         onDateChange={setSelectedDate}
       />
       
-      <div className="map-container">
+    <div className="map-container">
       {loading && (
         <div className="map-loading">
           <div className="loading-spinner"></div>
@@ -365,9 +422,11 @@ const Map: React.FC = () => {
               icon={
                 cluster.count === 0 ? 
                   createCurrentLocationIcon() : // Location-only marker
-                  cluster.count === 1 ? 
-                    createActionIcon(cluster.sequentialNumber || 1, dailyGoal, getDayActions(selectedDate?.toDateString() || '').length) : 
-                    createClusterIcon(cluster.count, dailyGoal, cluster.hasCurrentLocation, cluster.sequentialNumber, getDayActions(selectedDate?.toDateString() || '').length)
+                  cluster.isMissedOpportunity ?
+                    createMissedOpportunityIcon(cluster.sequentialNumber || 1, getDayActions(selectedDate?.toDateString() || '').filter(a => a.type === 'missedOpportunity').length) :
+                    cluster.count === 1 ? 
+                      createActionIcon(cluster.sequentialNumber || 1, dailyGoal, getDayActions(selectedDate?.toDateString() || '').filter(a => a.type !== 'missedOpportunity').length) : 
+                      createClusterIcon(cluster.count, dailyGoal, cluster.hasCurrentLocation, cluster.sequentialNumber, getDayActions(selectedDate?.toDateString() || '').filter(a => a.type !== 'missedOpportunity').length)
               }
           >
             <Popup>
@@ -377,6 +436,21 @@ const Map: React.FC = () => {
                     <b>📍 Your Current Location</b><br />
                     Lat: {cluster.center[0].toFixed(6)}<br />
                     Lng: {cluster.center[1].toFixed(6)}
+                  </div>
+                ) : cluster.isMissedOpportunity ? (
+                  // Missed opportunity popup
+                  <div>
+                    <div style={{ marginBottom: '10px', fontWeight: 'bold', color: '#2d3748' }}>
+                      ❌ Missed Opportunity #{cluster.sequentialNumber}
+                    </div>
+                    <div style={{ fontSize: '12px', color: '#666' }}>
+                      {new Date(cluster.actions[0].timestamp).toLocaleString()}
+                    </div>
+                    {cluster.actions[0].notes && (
+                      <div style={{ fontSize: '12px', color: '#888', marginTop: '2px' }}>
+                        {cluster.actions[0].notes}
+                      </div>
+                    )}
                   </div>
                 ) : cluster.count === 1 ? (
                   cluster.hasCurrentLocation ? (
@@ -403,11 +477,25 @@ const Map: React.FC = () => {
                   <div>
                     <div style={{ marginBottom: '10px', fontWeight: 'bold' }}>
                       {cluster.hasCurrentLocation ? '📍 Your Location + ' : ''}{cluster.count} actions
+                      {cluster.hasMissedOpportunities && (
+                        <span style={{ fontSize: '12px', color: '#666', fontWeight: 'normal' }}>
+                          {' '}(+{cluster.actions.filter(a => a.type === 'missedOpportunity').length} missed)
+                        </span>
+                      )}
                     </div>
                     {cluster.actions.map((action) => (
-                      <div key={action.id} style={{ marginBottom: '8px', padding: '5px', borderBottom: '1px solid #eee' }}>
-                        <div style={{ fontWeight: 'bold', color: getActionColor(action.type) }}>
-                          {action.type.charAt(0).toUpperCase() + action.type.slice(1)}
+                      <div key={action.id} style={{ 
+                        marginBottom: '8px', 
+                        padding: '5px', 
+                        borderBottom: '1px solid #eee',
+                        opacity: action.type === 'missedOpportunity' ? 0.7 : 1
+                      }}>
+                        <div style={{ 
+                          fontWeight: 'bold', 
+                          color: action.type === 'missedOpportunity' ? '#666' : getActionColor(action.type),
+                          fontSize: action.type === 'missedOpportunity' ? '12px' : '14px'
+                        }}>
+                          {action.type === 'missedOpportunity' ? '❌ Missed Opportunity' : action.type.charAt(0).toUpperCase() + action.type.slice(1)}
                         </div>
                         <div style={{ fontSize: '12px', color: '#666' }}>
                           {new Date(action.timestamp).toLocaleString()}
@@ -434,11 +522,11 @@ const Map: React.FC = () => {
             />
           )}
 
-          {/* Path arrows connecting action points */}
-          {actionClusters.length > 1 && (
+          {/* Path arrows connecting regular action points */}
+          {actionClusters.filter(cluster => cluster.count > 0 && !cluster.isMissedOpportunity).length > 1 && (
             <Polyline
               positions={actionClusters
-                .filter(cluster => cluster.count > 0)
+                .filter(cluster => cluster.count > 0 && !cluster.isMissedOpportunity)
                 .sort((a, b) => (a.sequentialNumber || 0) - (b.sequentialNumber || 0))
                 .map(cluster => cluster.center)}
               color="#8b5cf6"

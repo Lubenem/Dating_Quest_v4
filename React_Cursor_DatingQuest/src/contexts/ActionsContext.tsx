@@ -42,7 +42,7 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
     approaches: 0,
     contacts: 0,
     instantDates: 0,
-    plannedDates: 0,
+    missedOpportunities: 0,
   });
   const [dailyGoal, setDailyGoalState] = useState<number>(10);
 
@@ -105,10 +105,10 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
   const updateCounters = (): void => {
     const todayActions = getDayActions(getTodayString());
     const newCounters: Counters = {
-      approaches: todayActions.length, // All actions count as approaches
+      approaches: todayActions.filter(action => action.type !== 'missedOpportunity').length, // All actions except missed opportunities count as approaches
       contacts: todayActions.filter(action => action.type === 'contact').length,
       instantDates: todayActions.filter(action => action.type === 'instantDate').length,
-      plannedDates: todayActions.filter(action => action.type === 'plannedDate').length,
+      missedOpportunities: todayActions.filter(action => action.type === 'missedOpportunity').length,
     };
     setCounters(newCounters);
   };
@@ -189,10 +189,10 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
   const getDayCounters = (date: string): Counters => {
     const dayActions = getDayActions(date);
     return {
-      approaches: dayActions.length,
+      approaches: dayActions.filter(action => action.type !== 'missedOpportunity').length,
       contacts: dayActions.filter(action => action.type === 'contact').length,
       instantDates: dayActions.filter(action => action.type === 'instantDate').length,
-      plannedDates: dayActions.filter(action => action.type === 'plannedDate').length,
+      missedOpportunities: dayActions.filter(action => action.type === 'missedOpportunity').length,
     };
   };
 

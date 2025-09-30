@@ -1,19 +1,29 @@
 # Tasks
 
-# V1.0
+## V1.0
 [] Backend Supabase / Auth
 [] Friendship
+[] Add `Contacts` Page
+[] Move to `ReactNative`
 [] ...
 
-# Mvp
-[] Add `Contacts` Page
-[x] Add Map History Path and Progress Bar (desire to grind)
+## Mvp
+[x] Add `Missed Oportunities` feature
+
+## DesireToGrind
+[x] Add Map History Path
+[x] Progress Bar
+
+## Core
 [x] Move to React
 [x] Map action dots
 
 # Commits
 
 ## `30.09.25.Tue`
+
+React_Cursor_DatingQuest
+* Missed Opportunities
 
 React_Cursor_DatingQuest
 * Map | Date Selection Improvement 2
@@ -77,11 +87,15 @@ Dating_Quest_Html
 
 ## `30.09.25.Tue`
 
-[t] Progress Bar Improvement (State Management)
+[t] Missed Opportunities
+* Dashboard | Let's add a new feature. It's a new action 'Missed Opportunity'. It will have a new counter block on dashboard. Should be black, should be below the current ones, should take as much of horizontal space as two current counter, it will be wide, but height will be a little bit shorter.
+* Map | Missed opportunities are not approaches dirivaties, so they are not supposed to be counted as ones not in the dashboard nor in the map. On the Map they will be dark dots where they will have their separate counting starting from 1, and a separate connection path
+
+[x] Progress Bar Improvement (State Management)
 * Set `approachesDayGoal` variable to 10 by default
 * Progress Bar | The bar still sucks, let's search the web and find some cool horizontal progress bar, should look and feel like it's from a game. The bar should be wide and thick, it should take majority of a top bar parent block. We can only leave one small text a the top: 'Approaches: 0/10'
 
-[t] Calendar Improvement
+[x] Calendar Improvement
 * Calendar | Remove top text "Progress Calendar" its a redundant UI component that takes too much vertical space. Leave only text for current month and year, but it should be on the same vertical level as the "Prev/Next" buttons. Shift the calendar up. To use the space optimally.
 * Calendar | We should visually distinguishe between 3 day types: 'actionDay', 'toDay', 'selectedDay'. On day can have all 3 types at the same time.
 * 'actionDay' - each day when at least on action was made should be marked somehow visually, to give the user a feeling of accomplishment and a desire no to break the streak.

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Users, MessageCircle, Clock, Calendar as CalendarIcon } from 'lucide-react';
+import { Users, MessageCircle, Clock, XCircle } from 'lucide-react';
 import { useActionsContext } from '../contexts/ActionsContext';
 import type { Counters } from '../types';
 
@@ -11,7 +11,7 @@ const Calendar: React.FC = () => {
     approaches: 0,
     contacts: 0,
     instantDates: 0,
-    plannedDates: 0,
+    missedOpportunities: 0,
   });
 
   useEffect(() => {
@@ -181,11 +181,11 @@ const Calendar: React.FC = () => {
             </div>
             <div className="day-detail-value">{dayDetails.instantDates}</div>
           </div>
-          <div className="day-detail-item planned-dates">
+          <div className="day-detail-item missed-opportunities">
             <div className="day-detail-icon">
-              <CalendarIcon size={20} color="white" />
+              <XCircle size={20} color="white" />
             </div>
-            <div className="day-detail-value">{dayDetails.plannedDates}</div>
+            <div className="day-detail-value">{dayDetails.missedOpportunities}</div>
           </div>
         </div>
       </div>
