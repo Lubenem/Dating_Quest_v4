@@ -6,15 +6,17 @@
 [] ...
 
 # Mvp
-[x] Add Map History Path and Progress Bar (desire to grind)
-\
 [] Add `Contacts` Page
+[x] Add Map History Path and Progress Bar (desire to grind)
 [x] Move to React
 [x] Map action dots
 
 # Commits
 
 ## `30.09.25.Tue`
+
+React_Cursor_DatingQuest
+* Map | Date Selection Improvement 2
 
 React_Cursor_DatingQuest
 * Progress Bar Improvement (State Management)
@@ -75,7 +77,7 @@ Dating_Quest_Html
 
 ## `30.09.25.Tue`
 
-[] Progress Bar Improvement (State Management)
+[t] Progress Bar Improvement (State Management)
 * Set `approachesDayGoal` variable to 10 by default
 * Progress Bar | The bar still sucks, let's search the web and find some cool horizontal progress bar, should look and feel like it's from a game. The bar should be wide and thick, it should take majority of a top bar parent block. We can only leave one small text a the top: 'Approaches: 0/10'
 

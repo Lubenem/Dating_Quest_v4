@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Users, MessageCircle, Clock, Calendar as CalendarIcon } from 'lucide-react';
-import { useActions } from '../hooks/useActions';
+import { useActionsContext } from '../contexts/ActionsContext';
 import type { Counters } from '../types';
 
 const Calendar: React.FC = () => {
-  const { getDayCounters } = useActions();
+  const { getDayCounters } = useActionsContext();
   const [calendarDate, setCalendarDate] = useState(new Date());
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
   const [dayDetails, setDayDetails] = useState<Counters>({
@@ -29,14 +29,23 @@ const Calendar: React.FC = () => {
   const dayHeaders = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
   const updateDayDetails = (date: Date) => {
-    const dateString = date.toDateString();
+    // Create a consistent date string using local date components
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const day = date.getDate();
+    const dateString = new Date(year, month, day).toDateString();
     const counters = getDayCounters(dateString);
     setDayDetails(counters);
   };
 
   const selectDay = (date: Date) => {
-    setSelectedDay(date);
-    updateDayDetails(date);
+    // Create a new date object to avoid timezone issues
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const day = date.getDate();
+    const newSelectedDate = new Date(year, month, day);
+    setSelectedDay(newSelectedDate);
+    updateDayDetails(newSelectedDate);
   };
 
   const previousMonth = () => {
@@ -62,9 +71,6 @@ const Calendar: React.FC = () => {
     const startDate = new Date(firstDay);
     startDate.setDate(startDate.getDate() - firstDay.getDay());
     
-    const today = new Date();
-    const currentDateStr = today.toDateString();
-    
     const days = [];
     
     // Add day headers
@@ -82,9 +88,23 @@ const Calendar: React.FC = () => {
       date.setDate(startDate.getDate() + i);
       
       if (date.getMonth() === month) {
-        const dateString = date.toDateString();
+        // Create consistent date strings for comparison
+        const year = date.getFullYear();
+        const monthNum = date.getMonth();
+        const day = date.getDate();
+        const consistentDate = new Date(year, monthNum, day);
+        const dateString = consistentDate.toDateString();
+        
         const counters = getDayCounters(dateString);
         const total = Object.values(counters).reduce((sum, val) => sum + val, 0);
+        
+        // Create today's date consistently
+        const today = new Date();
+        const todayYear = today.getFullYear();
+        const todayMonth = today.getMonth();
+        const todayDay = today.getDate();
+        const todayDate = new Date(todayYear, todayMonth, todayDay);
+        const currentDateStr = todayDate.toDateString();
         
         const isToday = dateString === currentDateStr;
         const isSelected = selectedDay && dateString === selectedDay.toDateString();
@@ -93,7 +113,7 @@ const Calendar: React.FC = () => {
           <div
             key={i}
             className={`calendar-day ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''} ${total > 0 ? 'has-data' : ''}`}
-            onClick={() => selectDay(date)}
+            onClick={() => selectDay(consistentDate)}
           >
             <div className="day-number">{date.getDate()}</div>
           </div>

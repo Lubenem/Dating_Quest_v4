@@ -730,6 +730,134 @@ body {
   box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
 }
 
+/* Map Date Picker Styles */
+.map-date-picker-container {
+  position: fixed;
+  top: 98px;
+  right: 14px;
+  z-index: 1000;
+}
+
+.map-date-picker-button {
+  background: rgba(22, 33, 62, 0.9);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(139, 92, 246, 0.4);
+  border-radius: 12px;
+  padding: 10px 14px;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 140px;
+  justify-content: space-between;
+}
+
+.map-date-picker-button:hover {
+  border-color: #8b5cf6;
+  background: rgba(22, 33, 62, 0.95);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+}
+
+.map-date-picker-button:focus {
+  outline: none;
+  border-color: #8b5cf6;
+  background: rgba(22, 33, 62, 0.95);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+}
+
+.date-picker-icon {
+  font-size: 16px;
+}
+
+.date-picker-text {
+  flex: 1;
+  text-align: center;
+}
+
+.date-picker-arrow {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.date-picker-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  background: rgba(22, 33, 62, 0.95);
+  backdrop-filter: blur(20px);
+  border: 2px solid rgba(139, 92, 246, 0.4);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  overflow: hidden;
+}
+
+/* Custom DatePicker Styles */
+.custom-datepicker {
+  background: transparent !important;
+  border: none !important;
+}
+
+.custom-datepicker .react-datepicker__header {
+  background: rgba(139, 92, 246, 0.2) !important;
+  border-bottom: 1px solid rgba(139, 92, 246, 0.3) !important;
+  color: white !important;
+}
+
+.custom-datepicker .react-datepicker__current-month {
+  color: white !important;
+  font-weight: 600 !important;
+}
+
+.custom-datepicker .react-datepicker__day-name {
+  color: rgba(255, 255, 255, 0.7) !important;
+  font-weight: 500 !important;
+}
+
+.custom-datepicker .react-datepicker__day {
+  color: white !important;
+  border-radius: 6px !important;
+  margin: 1px !important;
+}
+
+.custom-datepicker .react-datepicker__day:hover {
+  background: rgba(139, 92, 246, 0.3) !important;
+  color: white !important;
+}
+
+.custom-datepicker .react-datepicker__day--selected {
+  background: #8b5cf6 !important;
+  color: white !important;
+}
+
+.custom-datepicker .react-datepicker__day--today {
+  background: rgba(139, 92, 246, 0.2) !important;
+  color: #8b5cf6 !important;
+  font-weight: 600 !important;
+}
+
+.custom-datepicker .react-datepicker__day--disabled {
+  color: rgba(255, 255, 255, 0.3) !important;
+}
+
+.custom-datepicker .react-datepicker__navigation {
+  background: rgba(139, 92, 246, 0.2) !important;
+  border-radius: 6px !important;
+}
+
+.custom-datepicker .react-datepicker__navigation:hover {
+  background: rgba(139, 92, 246, 0.4) !important;
+}
+
+.custom-datepicker .react-datepicker__navigation-icon::before {
+  border-color: white !important;
+}
+
 
 
 /* Remove old map header styles */

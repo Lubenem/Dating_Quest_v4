@@ -3,7 +3,8 @@ import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet'
 import { useLocation } from 'react-router-dom';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { useActions } from '../hooks/useActions';
+import { useActionsContext } from '../contexts/ActionsContext';
+import MapDatePicker from './MapDatePicker';
 import type { Action, ActionType } from '../types';
 
 // Cluster interface for grouping nearby actions
@@ -221,17 +222,19 @@ const clusterActions = (actions: Action[], userLocation: [number, number] | null
 };
 
 const Map: React.FC = () => {
-  const { getDayActions, refreshTrigger, getDailyGoal } = useActions();
+  const { getDayActions, dailyGoal } = useActionsContext();
   const location = useLocation();
   const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
   const [actionClusters, setActionClusters] = useState<ActionCluster[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedDate, setSelectedDate] = useState<string>(new Date().toDateString());
+  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const mapRef = useRef<L.Map>(null);
 
   // Load actions for selected date
   const loadActionsForDate = () => {
-    const dayActions = getDayActions(selectedDate);
+    if (!selectedDate) return;
+    const dateString = selectedDate.toDateString();
+    const dayActions = getDayActions(dateString);
     
     // Cluster nearby actions and current location
     const clusters = clusterActions(dayActions, userLocation);
@@ -291,7 +294,7 @@ const Map: React.FC = () => {
   // Refresh action data when actions are added/removed
   useEffect(() => {
     loadActionsForDate();
-  }, [refreshTrigger]);
+  }, [getDayActions]);
 
   // Refresh when selected date changes
   useEffect(() => {
@@ -325,17 +328,13 @@ const Map: React.FC = () => {
 
   return (
     <div className="page map">
-      {/* Clean date selection button in top right corner */}
-      <div className="map-date-button">
-        <input
-          type="date"
-          value={selectedDate ? new Date(selectedDate).toISOString().split('T')[0] : ''}
-          onChange={(e) => setSelectedDate(new Date(e.target.value).toDateString())}
-          className="date-picker-button"
-        />
-      </div>
+      {/* New Date Picker Component */}
+      <MapDatePicker 
+        selectedDate={selectedDate}
+        onDateChange={setSelectedDate}
+      />
       
-    <div className="map-container">
+      <div className="map-container">
       {loading && (
         <div className="map-loading">
           <div className="loading-spinner"></div>
@@ -361,14 +360,14 @@ const Map: React.FC = () => {
           {/* Action clusters (including current location if nearby) */}
           {actionClusters.map((cluster) => (
           <Marker
-              key={`${cluster.id}-${cluster.sequentialNumber || 0}-${getDailyGoal()}`}
+              key={`${cluster.id}-${cluster.sequentialNumber || 0}-${dailyGoal}`}
               position={cluster.center}
               icon={
                 cluster.count === 0 ? 
                   createCurrentLocationIcon() : // Location-only marker
                   cluster.count === 1 ? 
-                    createActionIcon(cluster.sequentialNumber || 1, getDailyGoal(), getDayActions(selectedDate).length) : 
-                    createClusterIcon(cluster.count, getDailyGoal(), cluster.hasCurrentLocation, cluster.sequentialNumber, getDayActions(selectedDate).length)
+                    createActionIcon(cluster.sequentialNumber || 1, dailyGoal, getDayActions(selectedDate?.toDateString() || '').length) : 
+                    createClusterIcon(cluster.count, dailyGoal, cluster.hasCurrentLocation, cluster.sequentialNumber, getDayActions(selectedDate?.toDateString() || '').length)
               }
           >
             <Popup>
