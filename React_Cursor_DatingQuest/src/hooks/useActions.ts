@@ -35,10 +35,10 @@ export const useActions = () => {
     };
   };
 
-  // Get daily goal (default 30)
+  // Get daily goal (default 10)
   const getDailyGoal = (): number => {
     const stored = localStorage.getItem('approachesDayGoal');
-    return stored ? parseInt(stored, 10) : 30;
+    return stored ? parseInt(stored, 10) : 10;
   };
 
   // Set daily goal
@@ -118,6 +118,7 @@ export const useActions = () => {
         location,
         notes,
         tags,
+        date: getTodayString(),
       };
 
       const today = getTodayString();

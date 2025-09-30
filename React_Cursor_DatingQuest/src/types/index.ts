@@ -14,6 +14,7 @@ export interface Action {
   location: LocationData;
   notes?: string;
   tags?: string[];
+  date: string; // "Mon Sep 30 2024"
 }
 
 export interface DayData {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useActions } from '../hooks/useActions';
+import { useActionsContext } from '../contexts/ActionsContext';
 
 // Calculate progress-based color (same as map dots)
 const getProgressColor = (progress: number): string => {
@@ -19,58 +19,31 @@ const getProgressColor = (progress: number): string => {
 };
 
 const ProgressBar: React.FC = () => {
-  const { getTodayCounters, getDailyGoal } = useActions();
+  const { counters, dailyGoal } = useActionsContext();
   
-  const todayCounters = getTodayCounters();
-  const dailyGoal = getDailyGoal();
-  const currentProgress = todayCounters.approaches;
+  const currentProgress = counters.approaches;
   const progressPercentage = Math.min((currentProgress / dailyGoal) * 100, 100);
   const progressDecimal = Math.min(currentProgress / dailyGoal, 1);
-  
   const progressColor = getProgressColor(progressDecimal);
   
   return (
-    <div className="progress-bar-container">
-      <div className="progress-bar-header">
-        <div className="progress-info">
-          <span className="progress-label">Progress</span>
-          <span className="progress-value">{currentProgress}/{dailyGoal}</span>
-        </div>
-        <div className="progress-percentage">{Math.round(progressPercentage)}%</div>
+    <div className="game-progress-container">
+      <div className="progress-label">
+        Approaches: {currentProgress}/{dailyGoal}
       </div>
-      
-      <div className="horizontal-progress">
-        <div className="progress-track">
-          <div 
-            className="progress-fill"
-            style={{
-              width: `${progressPercentage}%`,
-              background: `linear-gradient(90deg, ${progressColor} 0%, ${progressColor} 100%)`,
-              boxShadow: `0 0 12px ${progressColor}60`
-            }}
-          >
-            <div className="progress-glow"></div>
-            <div className="progress-fill-content">
-              {Math.round(progressPercentage)}%
-            </div>
-          </div>
+      <div className="game-progress-bar">
+        <div 
+          className="progress-fill"
+          style={{
+            width: `${progressPercentage}%`,
+            background: `linear-gradient(90deg, ${progressColor} 0%, ${progressColor} 100%)`,
+            boxShadow: `0 0 12px ${progressColor}60`
+          }}
+        >
+          <div className="progress-glow"></div>
+          <div className="progress-shine"></div>
         </div>
-      </div>
-      
-      {/* Progress milestones */}
-      <div className="progress-milestones">
-        <div className="milestone milestone-33">
-          <div className="milestone-dot"></div>
-          <div className="milestone-label">33%</div>
-        </div>
-        <div className="milestone milestone-66">
-          <div className="milestone-dot"></div>
-          <div className="milestone-label">66%</div>
-        </div>
-        <div className="milestone milestone-100">
-          <div className="milestone-dot"></div>
-          <div className="milestone-label">Goal!</div>
-        </div>
+        <div className="progress-border"></div>
       </div>
     </div>
   );

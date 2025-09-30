@@ -1,28 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Minus, Users, MessageCircle, Clock, Calendar } from 'lucide-react';
-import { useActions } from '../hooks/useActions';
-import type { Counters } from '../types';
+import { useActionsContext } from '../contexts/ActionsContext';
 
 const Dashboard: React.FC = () => {
-  const { addAction, removeLastAction, getTodayCounters, permissionGranted, geoError } = useActions();
-  const [counters, setCounters] = useState<Counters>({
-    approaches: 0,
-    contacts: 0,
-    instantDates: 0,
-    plannedDates: 0,
-  });
+  const { addAction, removeLastAction, counters, permissionGranted, geoError } = useActionsContext();
   const [animatingButtons, setAnimatingButtons] = useState<Set<string>>(new Set());
-
-  // Update counters on mount
-  useEffect(() => {
-    const todayCounters = getTodayCounters();
-    setCounters(todayCounters);
-  }, []);
-
-  const updateCounters = () => {
-    const todayCounters = getTodayCounters();
-    setCounters(todayCounters);
-  };
 
   const counterTypes = [
     { 
@@ -56,7 +38,6 @@ const Dashboard: React.FC = () => {
     const result = await addAction(actionType);
     
     if (result) {
-      updateCounters();
       triggerAnimation(key, 'increment');
     } else {
       console.warn('Failed to add action - check geolocation permissions');
@@ -69,7 +50,6 @@ const Dashboard: React.FC = () => {
     const success = removeLastAction(actionType);
     
     if (success) {
-      updateCounters();
       triggerAnimation(key, 'decrement');
     }
   };

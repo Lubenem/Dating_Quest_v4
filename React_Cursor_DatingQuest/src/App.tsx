@@ -4,25 +4,28 @@ import Calendar from './components/Calendar';
 import Map from './components/Map';
 import Navigation from './components/Navigation';
 import ProgressBar from './components/ProgressBar';
+import { ActionsProvider } from './contexts/ActionsContext';
 import './App.css';
 
 function App() {
   return (
-    <div className="app">
-      <Router>
-        <div className="app-container">
-          <ProgressBar />
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/calendar" element={<Calendar />} />
-            <Route path="/map" element={<Map />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-          <Navigation />
-        </div>
-      </Router>
-    </div>
+    <ActionsProvider>
+      <div className="app">
+        <Router>
+          <div className="app-container">
+            <ProgressBar />
+            <Routes>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/calendar" element={<Calendar />} />
+              <Route path="/map" element={<Map />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+            <Navigation />
+          </div>
+        </Router>
+      </div>
+    </ActionsProvider>
   );
 }
 

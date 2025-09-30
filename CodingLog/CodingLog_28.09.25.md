@@ -6,7 +6,7 @@
 [] ...
 
 # Mvp
-[t] Add Map History Path and Progress Bar (desire to grind)
+[x] Add Map History Path and Progress Bar (desire to grind)
 \
 [] Add `Contacts` Page
 [x] Move to React
@@ -15,6 +15,9 @@
 # Commits
 
 ## `30.09.25.Tue`
+
+React_Cursor_DatingQuest
+* Progress Bar Improvement (State Management)
 
 React_Cursor_DatingQuest
 * Calendar Improvement
@@ -71,6 +74,10 @@ Dating_Quest_Html
 # Prompts
 
 ## `30.09.25.Tue`
+
+[] Progress Bar Improvement (State Management)
+* Set `approachesDayGoal` variable to 10 by default
+* Progress Bar | The bar still sucks, let's search the web and find some cool horizontal progress bar, should look and feel like it's from a game. The bar should be wide and thick, it should take majority of a top bar parent block. We can only leave one small text a the top: 'Approaches: 0/10'
 
 [t] Calendar Improvement
 * Calendar | Remove top text "Progress Calendar" its a redundant UI component that takes too much vertical space. Leave only text for current month and year, but it should be on the same vertical level as the "Prev/Next" buttons. Shift the calendar up. To use the space optimally.
