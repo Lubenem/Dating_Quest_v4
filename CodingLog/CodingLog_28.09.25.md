@@ -7,6 +7,10 @@
 [] Move to `ReactNative`
 [] ...
 
+## move-to-expo
+[] Create an empty expo project
+[] ...
+
 ## Mvp
 [x] Add `Missed Oportunities` feature
 
@@ -19,6 +23,11 @@
 [x] Map action dots
 
 # Commits
+
+## `02.10.25.Thu`
+
+move-to-expo
+* Create an empty expo project
 
 ## `30.09.25.Tue`
 
@@ -84,6 +93,28 @@ Dating_Quest_Html
 * Calendar fix
 
 # Prompts
+
+## `02.10.25.Thu`
+
+[t] Expo migration documentation
+* @React_Cursor_DatingQuest/ learn this proj
+* In the GameDesignDocuments create a `MigrationPlan.md`
+
+--
+there please state the detailed plan of migrating this app from react/html to ractNative/expo project.
+* First and most important - USE best and common practice for React Native. Serach web if needed. Learn what is the best way to stracture a newly created react native (expo) app, how they manage state, local storage, different pages, page transitions,
+commo ui elements that look sofisticated and solid. Use common design patterns, don't reinvent the wheel!
+
+* The doc should be as big and detailed as possible, not just to have a lot of words, but to communicate and agree upon the detailed plan of action, that we will execute in the future. Also it's a brainstorm process possibility
+
+Next, lay out the main plan for main parts and building blocks, like 
+* UI (pages, navigation etc.)
+* React Native Improvements. Since we are going to the moblie native teritory, I expect it to be a better and more smoother mobile experinence then html WPA. HTML looks cheap in mobile. We need this app to feel like a real sophisticated mobile app. The UI should feel mobile-like, not like migration straigh from html. I am think about swipe gestures left right, to smothly transition between pages, but it's just one of the possible improvement of the native experience
+* Data Management (Runtime State and Persisten Storage)
+-  Which components should have an acess to the state, 
+- what are we storing in state and how (events, reactive nature of data/ui flow, one component causing the state to chagne which causing other subscribed components to react, like for example counter blocks and progress bar) 
+- what are we storing in persistant storage (data strutcures, should be a separte part of the program)
+* Other important steps(Calendar logic, Map logic, Dashboard logic, etc.)
 
 ## `30.09.25.Tue`
 
