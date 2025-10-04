@@ -8,8 +8,8 @@
 [] ...
 
 ## move-to-expo
-[] Create an empty expo project
-[] ...
+[x] Create an empty expo project
+[] Replicate the dashbord page
 
 ## Mvp
 [x] Add `Missed Oportunities` feature
@@ -23,6 +23,11 @@
 [x] Map action dots
 
 # Commits
+
+## `04.10.25.Sat`
+
+move-to-expo
+* Attempt | Replicate the dashbord page
 
 ## `02.10.25.Thu`
 
