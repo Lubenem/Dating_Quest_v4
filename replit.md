@@ -32,6 +32,56 @@ The Vite dev server is configured to run on port 5000 and is optimized for the R
 ## Deployment
 The app uses local storage only - no backend or database required. All data is stored in the browser's localStorage.
 
+## Expo Mobile App (Expo_Cursor_DatingQuest)
+Dating Quest is being migrated to a native mobile app using Expo/React Native.
+
+### Current Status
+- **Framework**: Expo SDK 54, React Native, TypeScript
+- **Features Implemented**:
+  - Dashboard with animated gradient background
+  - Swipe navigation between Dashboard and Map pages
+  - Map page with expo-maps (Apple Maps on iOS, Google Maps on Android)
+  - Location services with expo-location
+  
+### Testing & Building
+- **Important**: expo-maps requires a development build and **will NOT work in Expo Go**
+- Use EAS Build to create native builds for testing on device
+
+### Build Commands (via npm scripts)
+```bash
+# Development build (APK for testing with dev client)
+npm run build:dev
+
+# Preview build (APK for internal testing)
+npm run build:preview
+
+# Production build (AAB for Google Play Store)
+npm run build:prod
+```
+
+### First Time Setup for EAS Build
+1. **Login to Expo**: `npx eas-cli login`
+2. **Build for Android**: `npm run build:dev`
+3. EAS will prompt for Android keystore - press Y to auto-generate
+4. Wait for cloud build to complete (~10-15 minutes)
+5. Install APK from the dashboard or scan QR code
+6. Run `npm run start:dev-client` to connect to dev server
+
+### Configuration
+- **Package**: com.lubenem.datingquest
+- **EAS Project**: Already configured in app.json
+- **Build Profiles**: Configured in eas.json
+  - `development`: Debug APK with dev client
+  - `preview`: Release APK for testing
+  - `production`: AAB for Play Store
+
+### Future Features (Planned)
+- Action markers on map (approaches, contacts, instant dates, missed opportunities)
+- Date picker for historical data
+- Marker clustering for nearby actions
+- Polylines connecting action points
+- Marker details on tap
+
 ## Recent Changes
 - 2025-10-05: Initial Replit setup
   - Installed Node.js 20 and npm dependencies
@@ -39,3 +89,11 @@ The app uses local storage only - no backend or database required. All data is s
   - Set up workflow for React dev server
   - Created .gitignore for Node.js project
   - Configured autoscale deployment with serve package
+  
+- 2025-10-05: Expo Mobile App Development
+  - Implemented Map page with expo-maps integration
+  - Created swipe navigation between Dashboard and Map
+  - Fixed gesture handling with proper shared values and threshold logic
+  - Configured EAS Build for Android development builds
+  - Added build scripts to package.json (build:dev, build:preview, build:prod)
+  - Installed expo-dev-client and eas-cli for development builds
