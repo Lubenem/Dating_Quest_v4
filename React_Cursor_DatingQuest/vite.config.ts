@@ -4,8 +4,20 @@ import react from '@vitejs/plugin-react'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: '/Dating_Quest_v4/React_Cursor_DatingQuest/Build/',
+  base: '/',
   build: {
     outDir: 'Build',
+  },
+  server: {
+    host: '0.0.0.0',
+    port: 5000,
+    hmr: {
+      clientPort: 443,
+      protocol: 'wss',
+    },
+  },
+  preview: {
+    host: '0.0.0.0',
+    port: 5000,
   },
 })
