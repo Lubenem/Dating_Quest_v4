@@ -35,6 +35,7 @@ The app uses local storage only - no backend or database required. All data is s
 ## Recent Changes
 - 2025-10-05: Initial Replit setup
   - Installed Node.js 20 and npm dependencies
-  - Configured Vite for Replit environment (port 5000, 0.0.0.0 host)
+  - Configured Vite for Replit environment (port 5000, 0.0.0.0 host, allowedHosts enabled)
   - Set up workflow for React dev server
   - Created .gitignore for Node.js project
+  - Configured autoscale deployment with serve package
