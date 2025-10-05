@@ -6,6 +6,7 @@ export default function RootLayout() {
     <ActionsProvider>
       <Stack 
         screenOptions={{
+          headerShown: false,
           headerStyle: {
             backgroundColor: '#1a1a2e',
           },
