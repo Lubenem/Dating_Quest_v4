@@ -20,7 +20,8 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.lubenem.datingquest"
+      "package": "com.lubenem.datingquest",
+      "versionCode": 1
     },
     "web": {
       "output": "static",
