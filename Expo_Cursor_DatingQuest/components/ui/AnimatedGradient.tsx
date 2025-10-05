@@ -1,16 +1,8 @@
-import React, { useEffect } from 'react';
-import { StyleSheet } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { StyleSheet, Animated as RNAnimated } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import Animated, {
-  useSharedValue,
-  useAnimatedProps,
-  withRepeat,
-  withTiming,
-  interpolateColor,
-  Easing,
-} from 'react-native-reanimated';
 
-const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient);
+const AnimatedLinearGradient = RNAnimated.createAnimatedComponent(LinearGradient);
 
 const colorSets = [
   ['#667eea', '#764ba2', '#f093fb'],
@@ -22,48 +14,40 @@ const colorSets = [
 ];
 
 export const AnimatedGradient: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const progress = useSharedValue(0);
+  const animValue = useRef(new RNAnimated.Value(0)).current;
 
   useEffect(() => {
-    progress.value = withRepeat(
-      withTiming(colorSets.length, {
+    const animation = RNAnimated.loop(
+      RNAnimated.timing(animValue, {
+        toValue: colorSets.length,
         duration: colorSets.length * 5000,
-        easing: Easing.linear,
-      }),
-      -1,
-      false
+        useNativeDriver: false,
+      })
     );
+    animation.start();
+    return () => animation.stop();
   }, []);
 
-  const animatedProps = useAnimatedProps(() => {
-    const index = Math.floor(progress.value) % colorSets.length;
-    const nextIndex = (index + 1) % colorSets.length;
-    const interpolation = progress.value % 1;
+  const allColors = colorSets.flat();
+  
+  const color1 = animValue.interpolate({
+    inputRange: colorSets.map((_, i) => i),
+    outputRange: colorSets.map(set => set[0]),
+  });
 
-    const color1 = interpolateColor(
-      interpolation,
-      [0, 1],
-      [colorSets[index][0], colorSets[nextIndex][0]]
-    );
-    const color2 = interpolateColor(
-      interpolation,
-      [0, 1],
-      [colorSets[index][1], colorSets[nextIndex][1]]
-    );
-    const color3 = interpolateColor(
-      interpolation,
-      [0, 1],
-      [colorSets[index][2], colorSets[nextIndex][2]]
-    );
+  const color2 = animValue.interpolate({
+    inputRange: colorSets.map((_, i) => i),
+    outputRange: colorSets.map(set => set[1]),
+  });
 
-    return {
-      colors: [color1, color2, color3],
-    };
+  const color3 = animValue.interpolate({
+    inputRange: colorSets.map((_, i) => i),
+    outputRange: colorSets.map(set => set[2]),
   });
 
   return (
     <AnimatedLinearGradient
-      animatedProps={animatedProps}
+      colors={[color1, color2, color3] as any}
       style={styles.gradient}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
