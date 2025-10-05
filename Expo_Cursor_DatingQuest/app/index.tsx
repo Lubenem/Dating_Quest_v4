@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useActionsContext } from '../contexts/ActionsContext';
 import { CounterGrid } from '../components/Dashboard/CounterGrid';
 import { ProgressBar } from '../components/ui/ProgressBar';
+import { AnimatedGradient } from '../components/ui/AnimatedGradient';
 import { Colors, Layout } from '../constants';
 import { ActionType } from '../types';
 
@@ -53,12 +53,7 @@ export default function DashboardScreen() {
   };
 
   return (
-    <LinearGradient
-      colors={['#1a1a2e', '#16213e', '#0f3460']}
-      style={styles.gradient}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 1 }}
-    >
+    <AnimatedGradient>
       <SafeAreaView style={styles.container}>
         <ScrollView 
           contentContainerStyle={styles.content}
@@ -92,14 +87,11 @@ export default function DashboardScreen() {
           />
         </ScrollView>
       </SafeAreaView>
-    </LinearGradient>
+    </AnimatedGradient>
   );
 }
 
 const styles = StyleSheet.create({
-  gradient: {
-    flex: 1,
-  },
   container: {
     flex: 1,
   },
