@@ -21,7 +21,12 @@
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
       "package": "com.lubenem.datingquest",
-      "versionCode": 1
+      "versionCode": 1,
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyDl47GB_Au0WbAZ0Y92xayFXM5tygR76-Y"
+        }
+      }
     },
     "web": {
       "output": "static",
