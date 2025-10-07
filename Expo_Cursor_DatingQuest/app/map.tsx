@@ -1,6 +1,6 @@
 import React from 'react';
-import { LeafletMapWebView } from '../components/Map/LeafletMapWebView';
+import { MapContent } from '../components/Map/MapContent';
 
 export default function MapScreen() {
-  return <LeafletMapWebView />;
+  return <MapContent />;
 }
