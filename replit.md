@@ -77,8 +77,11 @@ npm run build:prod
   - `preview`: Release APK for testing
   - `production`: AAB for Play Store
 
+### Navigation
+- Bottom tab navigation (Dashboard and Map tabs)
+- Previously used swipe navigation (SwipeablePages) - removed to allow full map interaction
+
 ### Future Features (Planned)
-- Action markers on map (approaches, contacts, instant dates, missed opportunities)
 - Date picker for historical data
 - Marker clustering for nearby actions
 - Polylines connecting action points
@@ -111,5 +114,6 @@ npm run build:prod
   - Fixed NullPointerException crash when leaving app (added onUserLeaveHint override in MainActivity.kt)
   - Cleaned up all expo-maps references from codebase
   - Removed unused packages: @react-navigation/*, expo-image, expo-web-browser
-  - Removed outdated AI_Docs planning documents
   - Fixed dev build error - app now bundles correctly
+  - **Navigation Update**: Replaced swipe navigation with bottom tab navigation to prevent gesture conflicts with map
+  - Fixed map centering - now properly animates to user's actual location when fetched
