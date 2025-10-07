@@ -109,3 +109,4 @@ npm run build:prod
   - Map now supports full interaction (pan, zoom, rotate) without page swipe interference
   - Removed map page header to maximize screen space
   - Cleaned up unused expo-maps dependency
+  - Fixed NullPointerException crash when leaving app (added onUserLeaveHint override in MainActivity.kt)
