@@ -1,10 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView, { Marker, UrlTile } from 'react-native-maps';
 import { useActionsContext } from '../../contexts/ActionsContext';
 import { Colors } from '../../constants';
-import { darkMapStyle } from '../../constants/mapStyles';
 import { ActionType } from '../../types';
 
 // Marker colors for different action types
@@ -59,9 +58,7 @@ export const MapContent: React.FC = () => {
       <View style={styles.mapContainer}>
         <MapView
           ref={mapRef}
-          provider={PROVIDER_GOOGLE}
           style={styles.map}
-          customMapStyle={darkMapStyle}
           initialRegion={{
             ...centerLocation,
             latitudeDelta: 0.0922,
@@ -72,6 +69,10 @@ export const MapContent: React.FC = () => {
           rotateEnabled={true}
           pitchEnabled={false}
         >
+          <UrlTile
+            urlTemplate="https://a.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            maximumZ={19}
+          />
           {/* Render markers for all actions */}
           {actions.map((action, index) => (
             <Marker
