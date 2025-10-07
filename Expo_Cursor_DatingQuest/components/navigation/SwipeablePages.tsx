@@ -33,6 +33,10 @@ export const SwipeablePages: React.FC<SwipeablePagesProps> = ({
   };
 
   const panGesture = Gesture.Pan()
+    // Only activate when horizontal swipe is dominant
+    .activeOffsetX([-20, 20])
+    // Allow vertical scrolling/gestures by setting a larger threshold
+    .failOffsetY([-10, 10])
     .onStart(() => {
       startX.value = translateX.value;
     })
