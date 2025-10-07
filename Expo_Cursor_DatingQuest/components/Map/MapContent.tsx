@@ -1,41 +1,12 @@
-import React, { useEffect, useRef } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React from 'react';
+import { Platform, StyleSheet, View, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import MapView, { Marker, UrlTile } from 'react-native-maps';
+import { AppleMaps, GoogleMaps } from 'expo-maps';
 import { useActionsContext } from '../../contexts/ActionsContext';
 import { Colors } from '../../constants';
-import { ActionType } from '../../types';
-
-// Marker colors for different action types
-const markerColors: Record<ActionType, string> = {
-  approach: '#4CAF50',        // Green
-  contact: '#2196F3',         // Blue
-  instantDate: '#FF1744',     // Red/Pink
-  missedOpportunity: '#FFC107' // Amber/Yellow
-};
 
 export const MapContent: React.FC = () => {
-  const { actions, permissionGranted, geoError, userLocation } = useActionsContext();
-  const mapRef = useRef<MapView>(null);
-
-  const defaultLocation = {
-    latitude: 40.7128,
-    longitude: -74.0060,
-  };
-
-  const centerLocation = userLocation || defaultLocation;
-
-  // Center map on user's location when it becomes available
-  useEffect(() => {
-    if (userLocation && mapRef.current) {
-      mapRef.current.animateToRegion({
-        latitude: userLocation.latitude,
-        longitude: userLocation.longitude,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
-      }, 500);
-    }
-  }, [userLocation]);
+  const { permissionGranted, geoError, userLocation } = useActionsContext();
 
   if (!permissionGranted) {
     return (
@@ -43,7 +14,7 @@ export const MapContent: React.FC = () => {
         <View style={styles.errorContainer}>
           <Text style={styles.errorTitle}>Location Permission Required</Text>
           <Text style={styles.errorMessage}>
-            Please enable location permissions to view the map and track your actions.
+            Please enable location permissions to view the map.
           </Text>
           {geoError && (
             <Text style={styles.errorDetail}>{geoError}</Text>
@@ -53,41 +24,54 @@ export const MapContent: React.FC = () => {
     );
   }
 
+  const initialRegion = userLocation
+    ? {
+        latitude: userLocation.latitude,
+        longitude: userLocation.longitude,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      }
+    : {
+        latitude: 40.7128,
+        longitude: -74.0060,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      };
+
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <View style={styles.mapContainer}>
-        <MapView
-          ref={mapRef}
-          style={styles.map}
-          mapType="none"
-          initialRegion={{
-            ...centerLocation,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-          }}
-          showsUserLocation={true}
-          showsMyLocationButton={true}
-          rotateEnabled={true}
-          pitchEnabled={false}
-        >
-          <UrlTile
-            urlTemplate="https://basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png"
-            maximumZ={19}
+        {Platform.OS === 'ios' ? (
+          <AppleMaps.View
+            style={styles.map}
+            initialCameraPosition={{
+              center: {
+                latitude: initialRegion.latitude,
+                longitude: initialRegion.longitude,
+              },
+              zoom: 15,
+            }}
+            showsUserLocation={true}
           />
-          {/* Render markers for all actions */}
-          {actions.map((action, index) => (
-            <Marker
-              key={action.id}
-              coordinate={{
-                latitude: action.location.latitude,
-                longitude: action.location.longitude,
-              }}
-              pinColor={markerColors[action.type]}
-              title={`#${index + 1} - ${action.type.charAt(0).toUpperCase() + action.type.slice(1).replace(/([A-Z])/g, ' $1').trim()}`}
-              description={new Date(action.timestamp).toLocaleString()}
-            />
-          ))}
-        </MapView>
+        ) : Platform.OS === 'android' ? (
+          <GoogleMaps.View
+            style={styles.map}
+            initialCameraPosition={{
+              target: {
+                latitude: initialRegion.latitude,
+                longitude: initialRegion.longitude,
+              },
+              zoom: 15,
+            }}
+            showsUserLocation={true}
+          />
+        ) : (
+          <View style={styles.errorContainer}>
+            <Text style={styles.errorMessage}>
+              Maps are only available on iOS and Android
+            </Text>
+          </View>
+        )}
       </View>
     </SafeAreaView>
   );
