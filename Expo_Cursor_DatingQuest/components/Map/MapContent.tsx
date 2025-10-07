@@ -59,6 +59,7 @@ export const MapContent: React.FC = () => {
         <MapView
           ref={mapRef}
           style={styles.map}
+          mapType="none"
           initialRegion={{
             ...centerLocation,
             latitudeDelta: 0.0922,
