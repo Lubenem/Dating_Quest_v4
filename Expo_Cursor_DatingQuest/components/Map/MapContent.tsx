@@ -70,11 +70,23 @@ export const MapContent: React.FC = () => {
           <AppleMaps.View
             style={styles.map}
             cameraPosition={cameraPosition}
+            uiSettings={{
+              compassEnabled: true,
+              scaleBarEnabled: true,
+            }}
           />
         ) : Platform.OS === 'android' ? (
           <GoogleMaps.View
             style={styles.map}
             cameraPosition={cameraPosition}
+            uiSettings={{
+              scrollGesturesEnabled: true,
+              zoomGesturesEnabled: true,
+              tiltGesturesEnabled: false,
+              rotationGesturesEnabled: true,
+              zoomControlsEnabled: false,
+              compassEnabled: true,
+            }}
           />
         ) : (
           <View style={[styles.map, styles.centerContent]}>
