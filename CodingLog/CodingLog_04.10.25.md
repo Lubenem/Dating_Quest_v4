@@ -15,7 +15,7 @@
 
 # Commits
 
-## `05.10.25.Sat`
+## `05.10.25.Sun`
 
 move-to-expo
 * Remove index top block

@@ -1,9 +1,22 @@
 import React from 'react';
 import { Platform, StyleSheet, View, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { AppleMaps, GoogleMaps } from 'expo-maps';
 import { useActionsContext } from '../../contexts/ActionsContext';
 import { Colors } from '../../constants';
+import { WebMap } from './WebMap';
+
+let AppleMaps: any;
+let GoogleMaps: any;
+
+if (Platform.OS !== 'web') {
+  try {
+    const ExpoMaps = require('expo-maps');
+    AppleMaps = ExpoMaps.AppleMaps;
+    GoogleMaps = ExpoMaps.GoogleMaps;
+  } catch (error) {
+    console.warn('expo-maps not available');
+  }
+}
 
 export const MapContent: React.FC = () => {
   const { permissionGranted, geoError, userLocation } = useActionsContext();
@@ -41,7 +54,20 @@ export const MapContent: React.FC = () => {
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <View style={styles.mapContainer}>
-        {Platform.OS === 'ios' ? (
+        {Platform.OS === 'web' && userLocation ? (
+          <WebMap
+            latitude={userLocation.latitude}
+            longitude={userLocation.longitude}
+            markers={[]}
+          />
+        ) : Platform.OS === 'web' ? (
+          <View style={styles.errorContainer}>
+            <Text style={styles.errorTitle}>Map Loading</Text>
+            <Text style={styles.errorMessage}>
+              Waiting for location...
+            </Text>
+          </View>
+        ) : Platform.OS === 'ios' && AppleMaps ? (
           <AppleMaps.View
             style={styles.map}
             cameraPosition={{
@@ -66,7 +92,7 @@ export const MapContent: React.FC = () => {
                 : []
             }
           />
-        ) : Platform.OS === 'android' ? (
+        ) : Platform.OS === 'android' && GoogleMaps ? (
           <GoogleMaps.View
             style={styles.map}
             cameraPosition={{
@@ -90,8 +116,9 @@ export const MapContent: React.FC = () => {
           />
         ) : (
           <View style={styles.errorContainer}>
+            <Text style={styles.errorTitle}>Map Not Available</Text>
             <Text style={styles.errorMessage}>
-              Maps are only available on iOS and Android
+              Maps require expo-maps package on mobile devices
             </Text>
           </View>
         )}
@@ -116,6 +143,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 32,
+    backgroundColor: Colors.background,
   },
   errorTitle: {
     fontSize: 24,

@@ -1,8 +1,6 @@
-import React, { useEffect, useRef } from 'react';
-import { StyleSheet, Animated as RNAnimated } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { StyleSheet, Animated as RNAnimated, Platform } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-
-const AnimatedLinearGradient = RNAnimated.createAnimatedComponent(LinearGradient);
 
 const colorSets = [
   ['#667eea', '#764ba2', '#f093fb'],
@@ -13,7 +11,31 @@ const colorSets = [
   ['#ff9a9e', '#fecfef', '#ffdde1'],
 ];
 
-export const AnimatedGradient: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const WebAnimatedGradient: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % colorSets.length);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <LinearGradient
+      colors={colorSets[currentIndex]}
+      style={styles.gradient}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+    >
+      {children}
+    </LinearGradient>
+  );
+};
+
+const NativeAnimatedGradient: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const AnimatedLinearGradient = RNAnimated.createAnimatedComponent(LinearGradient);
   const animValue = useRef(new RNAnimated.Value(0)).current;
 
   useEffect(() => {
@@ -28,8 +50,6 @@ export const AnimatedGradient: React.FC<{ children: React.ReactNode }> = ({ chil
     return () => animation.stop();
   }, []);
 
-  const allColors = colorSets.flat();
-  
   const color1 = animValue.interpolate({
     inputRange: colorSets.map((_, i) => i),
     outputRange: colorSets.map(set => set[0]),
@@ -55,6 +75,13 @@ export const AnimatedGradient: React.FC<{ children: React.ReactNode }> = ({ chil
       {children}
     </AnimatedLinearGradient>
   );
+};
+
+export const AnimatedGradient: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  if (Platform.OS === 'web') {
+    return <WebAnimatedGradient>{children}</WebAnimatedGradient>;
+  }
+  return <NativeAnimatedGradient>{children}</NativeAnimatedGradient>;
 };
 
 const styles = StyleSheet.create({
