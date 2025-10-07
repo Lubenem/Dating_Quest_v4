@@ -20,6 +20,7 @@ interface ActionsContextType {
   // Geolocation
   permissionGranted: boolean;
   geoError: string | null;
+  userLocation: { latitude: number; longitude: number } | null;
 }
 
 const ActionsContext = createContext<ActionsContextType | undefined>(undefined);
@@ -46,6 +47,7 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
     missedOpportunities: 0,
   });
   const [dailyGoal, setDailyGoalState] = useState<number>(10);
+  const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null);
 
   // Generate unique ID for actions
   const generateId = (): string => {
@@ -215,6 +217,19 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
     updateCounters();
   }, [actions]);
 
+  // Update userLocation only when coordinates actually change
+  useEffect(() => {
+    if (location) {
+      const newLat = location.coords.latitude;
+      const newLng = location.coords.longitude;
+      
+      // Only update if coordinates changed
+      if (!userLocation || userLocation.latitude !== newLat || userLocation.longitude !== newLng) {
+        setUserLocation({ latitude: newLat, longitude: newLng });
+      }
+    }
+  }, [location]);
+
   const value: ActionsContextType = {
     actions,
     counters,
@@ -227,6 +242,7 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
     setDailyGoal,
     permissionGranted,
     geoError,
+    userLocation,
   };
 
   return (
