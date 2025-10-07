@@ -39,12 +39,14 @@ Dating Quest is being migrated to a native mobile app using Expo/React Native.
 - **Framework**: Expo SDK 54, React Native, TypeScript
 - **Features Implemented**:
   - Dashboard with animated gradient background
-  - Swipe navigation between Dashboard and Map pages
-  - Map page with expo-maps (Apple Maps on iOS, Google Maps on Android)
+  - Edge-based swipe navigation between Dashboard and Map pages (swipe from left/right edge)
+  - Map page with react-native-maps featuring custom dark theme
+  - Color-coded numbered markers for all action types (approach, contact, instant date, missed opportunity)
   - Location services with expo-location
+  - Gesture system that allows map interaction (pan, zoom, rotate) without page swipe interference
   
 ### Testing & Building
-- **Important**: expo-maps requires a development build and **will NOT work in Expo Go**
+- **Important**: react-native-maps requires a development build and **will NOT work in Expo Go**
 - Use EAS Build to create native builds for testing on device
 
 ### Build Commands (via npm scripts)
@@ -97,3 +99,13 @@ npm run build:prod
   - Configured EAS Build for Android development builds
   - Added build scripts to package.json (build:dev, build:preview, build:prod)
   - Installed expo-dev-client and eas-cli for development builds
+
+- 2025-10-07: Map & Gesture Improvements
+  - Migrated from expo-maps to react-native-maps for better customization
+  - Implemented custom dark map theme with sexy styling using customMapStyle
+  - Added color-coded numbered markers for all action types
+  - Fixed critical gesture conflict using edge-based swipe detection (50px zones)
+  - Implemented manual gesture activation with stateManager API
+  - Map now supports full interaction (pan, zoom, rotate) without page swipe interference
+  - Removed map page header to maximize screen space
+  - Cleaned up unused expo-maps dependency
