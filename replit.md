@@ -117,3 +117,9 @@ npm run build:prod
   - Fixed dev build error - app now bundles correctly
   - **Navigation Update**: Replaced swipe navigation with bottom tab navigation to prevent gesture conflicts with map
   - Fixed map centering - now properly animates to user's actual location when fetched
+  - **Location & Marker Fixes**:
+    - Moved userLocation to ActionsContext state to prevent duplicate location fetching
+    - Fixed marker crash by removing custom views and using built-in pinColor markers
+    - Fixed map re-centering issue - location only updates when coordinates actually change
+    - Map now loads user location once and allows free panning/zooming without re-centering
+    - Location persists when switching between Dashboard and Map pages
