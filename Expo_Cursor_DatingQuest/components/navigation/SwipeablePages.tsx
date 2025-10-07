@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Dimensions, StyleSheet, Text, TouchableOpacity } from 'react-native';
-import { GestureDetector, Gesture } from 'react-native-gesture-handler';
+import { GestureDetector, Gesture, GestureHandlerRootView } from 'react-native-gesture-handler';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -9,7 +9,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { Colors } from '../../constants';
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 interface SwipeablePagesProps {
   pages: Array<{
@@ -32,11 +32,23 @@ export const SwipeablePages: React.FC<SwipeablePagesProps> = ({
     setCurrentIndex(newIndex);
   };
 
+  // Edge swipe zones (from left or right edge only)
+  const EDGE_SWIPE_WIDTH = 50;
+
   const panGesture = Gesture.Pan()
-    // Only activate when horizontal swipe is dominant
-    .activeOffsetX([-20, 20])
-    // Allow vertical scrolling/gestures by setting a larger threshold
-    .failOffsetY([-10, 10])
+    .manualActivation(true)
+    .onTouchesDown((event, stateManager) => {
+      // Only activate if starting from left or right edge
+      const touchX = event.allTouches[0]?.x ?? 0;
+      const fromLeftEdge = touchX < EDGE_SWIPE_WIDTH;
+      const fromRightEdge = touchX > SCREEN_WIDTH - EDGE_SWIPE_WIDTH;
+      
+      if (fromLeftEdge || fromRightEdge) {
+        stateManager.activate();
+      } else {
+        stateManager.fail();
+      }
+    })
     .onStart(() => {
       startX.value = translateX.value;
     })
