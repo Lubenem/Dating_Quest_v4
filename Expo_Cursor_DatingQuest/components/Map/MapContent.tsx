@@ -1,14 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { AppleMaps, GoogleMaps } from 'expo-maps';
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { useActionsContext } from '../../contexts/ActionsContext';
 import { Colors } from '../../constants';
+import { darkMapStyle } from '../../constants/mapStyles';
+import { ActionType } from '../../types';
+
+// Marker colors for different action types
+const markerColors: Record<ActionType, string> = {
+  approach: '#4CAF50',        // Green
+  contact: '#2196F3',         // Blue
+  instantDate: '#FF1744',     // Red/Pink
+  missedOpportunity: '#FFC107' // Amber/Yellow
+};
 
 export const MapContent: React.FC = () => {
-  const { permissionGranted, geoError } = useActionsContext();
+  const { actions, permissionGranted, geoError } = useActionsContext();
   const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null);
+  const mapRef = useRef<MapView>(null);
 
   useEffect(() => {
     const getUserLocation = async () => {
@@ -37,11 +48,6 @@ export const MapContent: React.FC = () => {
 
   const centerLocation = userLocation || defaultLocation;
 
-  const cameraPosition = {
-    coordinates: centerLocation,
-    zoom: 14,
-  };
-
   if (!permissionGranted) {
     return (
       <SafeAreaView style={styles.container}>
@@ -59,42 +65,41 @@ export const MapContent: React.FC = () => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Map View</Text>
-        <Text style={styles.subtitle}>Your action locations</Text>
-      </View>
-
+    <SafeAreaView style={styles.container} edges={['top']}>
       <View style={styles.mapContainer}>
-        {Platform.OS === 'ios' ? (
-          <AppleMaps.View
-            style={styles.map}
-            cameraPosition={cameraPosition}
-            uiSettings={{
-              compassEnabled: true,
-              scaleBarEnabled: true,
-            }}
-          />
-        ) : Platform.OS === 'android' ? (
-          <GoogleMaps.View
-            style={styles.map}
-            cameraPosition={cameraPosition}
-            uiSettings={{
-              scrollGesturesEnabled: true,
-              zoomGesturesEnabled: true,
-              tiltGesturesEnabled: false,
-              rotationGesturesEnabled: true,
-              zoomControlsEnabled: false,
-              compassEnabled: true,
-            }}
-          />
-        ) : (
-          <View style={[styles.map, styles.centerContent]}>
-            <Text style={styles.errorMessage}>
-              Maps are only available on iOS and Android
-            </Text>
-          </View>
-        )}
+        <MapView
+          ref={mapRef}
+          provider={PROVIDER_GOOGLE}
+          style={styles.map}
+          customMapStyle={darkMapStyle}
+          initialRegion={{
+            ...centerLocation,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          }}
+          showsUserLocation={true}
+          showsMyLocationButton={true}
+          rotateEnabled={true}
+          pitchEnabled={false}
+        >
+          {/* Render markers for all actions */}
+          {actions.map((action, index) => (
+            <Marker
+              key={action.id}
+              coordinate={{
+                latitude: action.location.latitude,
+                longitude: action.location.longitude,
+              }}
+              pinColor={markerColors[action.type]}
+              title={`${action.type.charAt(0).toUpperCase() + action.type.slice(1).replace(/([A-Z])/g, ' $1').trim()}`}
+              description={new Date(action.timestamp).toLocaleString()}
+            >
+              <View style={[styles.markerContainer, { backgroundColor: markerColors[action.type] }]}>
+                <Text style={styles.markerText}>{index + 1}</Text>
+              </View>
+            </Marker>
+          ))}
+        </MapView>
       </View>
     </SafeAreaView>
   );
@@ -104,44 +109,31 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  header: {
-    padding: 16,
-    paddingTop: 10,
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: Colors.text,
-    marginBottom: 4,
-    textAlign: 'center',
-    textShadowColor: 'rgba(0, 0, 0, 0.3)',
-    textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 4,
-  },
-  subtitle: {
-    fontSize: 14,
-    color: Colors.textSecondary,
-    textAlign: 'center',
-    textShadowColor: 'rgba(0, 0, 0, 0.2)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 2,
-  },
   mapContainer: {
     flex: 1,
-    margin: 16,
-    marginBottom: 80,
-    borderRadius: 16,
-    overflow: 'hidden',
-    backgroundColor: '#1a1a2e',
   },
   map: {
     width: '100%',
     height: '100%',
   },
-  centerContent: {
+  markerContainer: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#ffffff',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    elevation: 5,
+  },
+  markerText: {
+    color: '#ffffff',
+    fontSize: 14,
+    fontWeight: 'bold',
   },
   errorContainer: {
     flex: 1,
