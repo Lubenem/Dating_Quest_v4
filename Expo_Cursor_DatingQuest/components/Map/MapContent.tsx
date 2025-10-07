@@ -44,26 +44,49 @@ export const MapContent: React.FC = () => {
         {Platform.OS === 'ios' ? (
           <AppleMaps.View
             style={styles.map}
-            initialCameraPosition={{
-              center: {
+            cameraPosition={{
+              coordinates: {
                 latitude: initialRegion.latitude,
                 longitude: initialRegion.longitude,
               },
               zoom: 15,
             }}
-            showsUserLocation={true}
+            markers={
+              userLocation
+                ? [
+                    {
+                      id: 'user-location',
+                      coordinates: {
+                        latitude: userLocation.latitude,
+                        longitude: userLocation.longitude,
+                      },
+                      tintColor: '#007AFF',
+                    },
+                  ]
+                : []
+            }
           />
         ) : Platform.OS === 'android' ? (
           <GoogleMaps.View
             style={styles.map}
-            initialCameraPosition={{
-              target: {
+            cameraPosition={{
+              coordinates: {
                 latitude: initialRegion.latitude,
                 longitude: initialRegion.longitude,
               },
               zoom: 15,
             }}
-            showsUserLocation={true}
+            userLocation={
+              userLocation
+                ? {
+                    coordinates: {
+                      latitude: userLocation.latitude,
+                      longitude: userLocation.longitude,
+                    },
+                    followUserLocation: false,
+                  }
+                : undefined
+            }
           />
         ) : (
           <View style={styles.errorContainer}>
