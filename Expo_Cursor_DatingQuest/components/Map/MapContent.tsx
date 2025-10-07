@@ -70,7 +70,7 @@ export const MapContent: React.FC = () => {
           pitchEnabled={false}
         >
           <UrlTile
-            urlTemplate="https://a.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            urlTemplate="https://basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png"
             maximumZ={19}
           />
           {/* Render markers for all actions */}
