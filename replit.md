@@ -108,5 +108,8 @@ npm run build:prod
   - Implemented manual gesture activation with stateManager API
   - Map now supports full interaction (pan, zoom, rotate) without page swipe interference
   - Removed map page header to maximize screen space
-  - Cleaned up unused expo-maps dependency
   - Fixed NullPointerException crash when leaving app (added onUserLeaveHint override in MainActivity.kt)
+  - Cleaned up all expo-maps references from codebase
+  - Removed unused packages: @react-navigation/*, expo-image, expo-web-browser
+  - Removed outdated AI_Docs planning documents
+  - Fixed dev build error - app now bundles correctly
