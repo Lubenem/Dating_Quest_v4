@@ -28,10 +28,20 @@ export const MapContent: React.FC = () => {
           const location = await Location.getCurrentPositionAsync({
             accuracy: Location.Accuracy.High,
           });
-          setUserLocation({
+          const coords = {
             latitude: location.coords.latitude,
             longitude: location.coords.longitude,
-          });
+          };
+          setUserLocation(coords);
+          
+          // Animate map to user's location when fetched
+          if (mapRef.current) {
+            mapRef.current.animateToRegion({
+              ...coords,
+              latitudeDelta: 0.0922,
+              longitudeDelta: 0.0421,
+            }, 1000);
+          }
         } catch (error) {
           console.error('Error getting location:', error);
         }
