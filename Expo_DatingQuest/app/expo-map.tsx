@@ -1,9 +1,8 @@
 import React from 'react';
 import { Platform, StyleSheet, View, Text, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useActionsContext } from '../../contexts/ActionsContext';
-import { Colors } from '../../constants';
-import { WebMap } from './WebMap';
+import { useActionsContext } from '../contexts/ActionsContext';
+import { Colors } from '../constants';
 
 let AppleMaps: any;
 let GoogleMaps: any;
@@ -18,7 +17,7 @@ if (Platform.OS !== 'web') {
   }
 }
 
-export const MapContent: React.FC = () => {
+export default function ExpoMapScreen() {
   const { permissionGranted, geoError, userLocation } = useActionsContext();
 
   if (!permissionGranted) {
@@ -29,31 +28,15 @@ export const MapContent: React.FC = () => {
           <Text style={styles.errorMessage}>
             Please enable location permissions to view the map.
           </Text>
-          {geoError && (
-            <Text style={styles.errorDetail}>{geoError}</Text>
-          )}
+          {geoError && <Text style={styles.errorDetail}>{geoError}</Text>}
         </View>
       </SafeAreaView>
     );
   }
 
-  const initialRegion = userLocation
-    ? {
-        latitude: userLocation.latitude,
-        longitude: userLocation.longitude,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
-      }
-    : {
-        latitude: 40.7128,
-        longitude: -74.0060,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
-      };
-
   if (!userLocation && Platform.OS !== 'web') {
     return (
-      <SafeAreaView style={styles.container} edges={['top']}>
+      <SafeAreaView style={styles.container}>
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={Colors.primary} />
           <Text style={styles.loadingText}>Getting your location...</Text>
@@ -64,25 +47,16 @@ export const MapContent: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
+      <View style={styles.header}>
+        <Text style={styles.headerText}>Expo Maps (Apple/Google Native)</Text>
+      </View>
       <View style={styles.mapContainer}>
-        {Platform.OS === 'web' && userLocation ? (
-          <WebMap
-            latitude={userLocation.latitude}
-            longitude={userLocation.longitude}
-            markers={[]}
-          />
-        ) : Platform.OS === 'web' ? (
-          <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color={Colors.primary} />
-            <Text style={styles.loadingText}>Getting your location...</Text>
-          </View>
-        ) : Platform.OS === 'ios' && AppleMaps && userLocation ? (
+        {Platform.OS === 'ios' && AppleMaps && userLocation ? (
           <AppleMaps.View
             style={styles.map}
             colorScheme="DARK"
             showPointsOfInterest={false}
             showBuildings={false}
-            showUserLocation={false}
             cameraPosition={{
               coordinates: {
                 latitude: userLocation.latitude,
@@ -132,18 +106,31 @@ export const MapContent: React.FC = () => {
           <View style={styles.errorContainer}>
             <Text style={styles.errorTitle}>Map Not Available</Text>
             <Text style={styles.errorMessage}>
-              Maps require expo-maps package on mobile devices
+              Expo Maps only available on iOS and Android
             </Text>
           </View>
         )}
       </View>
     </SafeAreaView>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: Colors.background,
+  },
+  header: {
+    padding: 16,
+    backgroundColor: 'rgba(102, 126, 234, 0.1)',
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.primary,
+  },
+  headerText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: Colors.primary,
+    textAlign: 'center',
   },
   mapContainer: {
     flex: 1,
@@ -191,3 +178,4 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
 });
+

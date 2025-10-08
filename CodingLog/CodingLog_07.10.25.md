@@ -32,9 +32,13 @@
 
 # [Commits]
 
-## `07.10.25.Tue`
+## `08.10.25.Wed`
 
-## <Map>
+<Map>
+* Added 3 different maps to test
+
+
+<Map>
 * restructured the project
 
 # [Prompts]
