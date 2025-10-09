@@ -32,15 +32,19 @@
 
 # [Commits]
 
+## `09.10.25.Thu`
+
+<Map>
+* Look and feel fix
+
 ## `08.10.25.Wed`
 
 <Map>
 * Added 3 different maps to test
-
 
 <Map>
 * restructured the project
 
 # [Prompts]
 
-## `07.10.25.Tue`
+## `07.10.25.Thu`

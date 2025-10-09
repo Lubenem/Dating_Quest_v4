@@ -4,11 +4,12 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 const colorSets = [
   ['#667eea', '#764ba2', '#f093fb'],
-  ['#f093fb', '#f5576c', '#feca57'],
   ['#4facfe', '#00f2fe', '#43e97b'],
-  ['#fa709a', '#fee140', '#30cfd0'],
   ['#a8edea', '#fed6e3', '#f093fb'],
   ['#ff9a9e', '#fecfef', '#ffdde1'],
+  ['#f093fb', '#f5576c', '#feca57'],
+  ['#fa709a', '#fee140', '#30cfd0'],
+  ['#667eea', '#764ba2', '#f093fb'],
 ];
 
 const WebAnimatedGradient: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -22,9 +23,11 @@ const WebAnimatedGradient: React.FC<{ children: React.ReactNode }> = ({ children
     return () => clearInterval(interval);
   }, []);
 
+  const currentColors = colorSets[currentIndex];
+
   return (
     <LinearGradient
-      colors={colorSets[currentIndex]}
+      colors={currentColors as [string, string, ...string[]]}
       style={styles.gradient}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
@@ -41,8 +44,8 @@ const NativeAnimatedGradient: React.FC<{ children: React.ReactNode }> = ({ child
   useEffect(() => {
     const animation = RNAnimated.loop(
       RNAnimated.timing(animValue, {
-        toValue: colorSets.length,
-        duration: colorSets.length * 5000,
+        toValue: colorSets.length - 1,
+        duration: (colorSets.length - 1) * 20000,
         useNativeDriver: false,
       })
     );

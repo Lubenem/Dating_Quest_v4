@@ -67,11 +67,15 @@ export default function OpenStreetMapScreen() {
   if (Platform.OS !== 'web') {
     return (
       <SafeAreaView style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.headerText}>OpenStreetMap (Leaflet)</Text>
+        </View>
         <View style={styles.errorContainer}>
-          <Text style={styles.errorTitle}>Web Only</Text>
+          <Text style={styles.errorTitle}>📱 Mobile Not Supported</Text>
           <Text style={styles.errorMessage}>
-            OpenStreetMap is available on web only.{'\n'}
-            Build and test on web browser.
+            Leaflet requires a web browser to run.{'\n\n'}
+            Use "Expo Map" or "React Map" for mobile testing.{'\n\n'}
+            This map is for web browser testing only.
           </Text>
         </View>
       </SafeAreaView>

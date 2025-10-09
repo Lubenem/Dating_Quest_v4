@@ -1,14 +1,19 @@
-import React, { useState } from 'react';
-import { View, TouchableOpacity, Text, StyleSheet, ScrollView } from 'react-native';
+import React, { useMemo, useState } from 'react';
+import { View, TouchableOpacity, Text, StyleSheet, Platform, Animated } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { AnimatedGradient } from '../components/ui/AnimatedGradient';
+import { TopBar } from '../components/ui/TopBar';
 import { DashboardContent } from '../components/Dashboard/DashboardContent';
-import ExpoMapScreen from './expo-map';
 import ReactNativeMapScreen from './react-map';
-import OpenStreetMapScreen from './open-map';
 import { Colors } from '../constants';
-import { Home, Map, MapPin, Globe } from 'lucide-react-native';
+import { Home, MapPin, Globe } from 'lucide-react-native';
 
-type PageType = 'dashboard' | 'expo-map' | 'react-map' | 'open-map';
+let OpenStreetMapScreen: any = null;
+if (Platform.OS === 'web') {
+  OpenStreetMapScreen = require('./open-map').default;
+}
+
+type PageType = 'dashboard' | 'react-map' | 'open-map';
 
 export default function HomeScreen() {
   const [currentPage, setCurrentPage] = useState<PageType>('dashboard');
@@ -16,44 +21,37 @@ export default function HomeScreen() {
   return (
     <AnimatedGradient>
       <View style={styles.container}>
-        {/* Content */}
+        {/* Top Bar */}
+        <TopBar />
+
+        {/* Content with simple cross-fade */}
         <View style={styles.content}>
-          {currentPage === 'dashboard' && <DashboardContent />}
-          {currentPage === 'expo-map' && <ExpoMapScreen />}
-          {currentPage === 'react-map' && <ReactNativeMapScreen />}
-          {currentPage === 'open-map' && <OpenStreetMapScreen />}
+          <CrossFadeView active={currentPage === 'dashboard'}>
+            <DashboardContent />
+          </CrossFadeView>
+          <CrossFadeView active={currentPage === 'react-map'}>
+            <ReactNativeMapScreen />
+          </CrossFadeView>
+          {OpenStreetMapScreen && (
+            <CrossFadeView active={currentPage === 'open-map'}>
+              <OpenStreetMapScreen />
+            </CrossFadeView>
+          )}
         </View>
 
         {/* Bottom Tab Navigation */}
-        <ScrollView 
-          horizontal 
-          style={styles.tabBar}
-          contentContainerStyle={styles.tabBarContent}
-          showsHorizontalScrollIndicator={false}
-        >
+        <SafeAreaView style={styles.tabBarContainer} edges={['bottom']}>
+          <View style={styles.tabBar}>
           <TouchableOpacity
             style={[styles.tab, currentPage === 'dashboard' && styles.tabActive]}
             onPress={() => setCurrentPage('dashboard')}
           >
             <Home
               size={20}
-              color={currentPage === 'dashboard' ? Colors.primary : Colors.textSecondary}
+              color={currentPage === 'dashboard' ? Colors.selectedText : Colors.textSecondary}
             />
             <Text style={[styles.tabText, currentPage === 'dashboard' && styles.tabTextActive]}>
               Dashboard
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.tab, currentPage === 'expo-map' && styles.tabActive]}
-            onPress={() => setCurrentPage('expo-map')}
-          >
-            <Map
-              size={20}
-              color={currentPage === 'expo-map' ? Colors.primary : Colors.textSecondary}
-            />
-            <Text style={[styles.tabText, currentPage === 'expo-map' && styles.tabTextActive]}>
-              Expo Map
             </Text>
           </TouchableOpacity>
 
@@ -63,30 +61,51 @@ export default function HomeScreen() {
           >
             <MapPin
               size={20}
-              color={currentPage === 'react-map' ? Colors.primary : Colors.textSecondary}
+              color={currentPage === 'react-map' ? Colors.selectedText : Colors.textSecondary}
             />
             <Text style={[styles.tabText, currentPage === 'react-map' && styles.tabTextActive]}>
-              React Map
+              Map
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            style={[styles.tab, currentPage === 'open-map' && styles.tabActive]}
-            onPress={() => setCurrentPage('open-map')}
-          >
-            <Globe
-              size={20}
-              color={currentPage === 'open-map' ? Colors.primary : Colors.textSecondary}
-            />
-            <Text style={[styles.tabText, currentPage === 'open-map' && styles.tabTextActive]}>
-              Open Map
-            </Text>
-          </TouchableOpacity>
-        </ScrollView>
+            {Platform.OS === 'web' && (
+              <TouchableOpacity
+                style={[styles.tab, currentPage === 'open-map' && styles.tabActive]}
+                onPress={() => setCurrentPage('open-map')}
+              >
+                <Globe
+                  size={20}
+                  color={currentPage === 'open-map' ? Colors.selectedText : Colors.textSecondary}
+                />
+                <Text style={[styles.tabText, currentPage === 'open-map' && styles.tabTextActive]}>
+                  Open Map
+                </Text>
+              </TouchableOpacity>
+            )}
+          </View>
+        </SafeAreaView>
       </View>
     </AnimatedGradient>
   );
 }
+
+const CrossFadeView: React.FC<{ active: boolean; children: React.ReactNode }> = ({ active, children }) => {
+  const opacity = useMemo(() => new Animated.Value(active ? 1 : 0), []);
+
+  React.useEffect(() => {
+    Animated.timing(opacity, {
+      toValue: active ? 1 : 0,
+      duration: 180,
+      useNativeDriver: true,
+    }).start();
+  }, [active]);
+
+  return (
+    <Animated.View pointerEvents={active ? 'auto' : 'none'} style={[StyleSheet.absoluteFillObject, { opacity }]}>
+      {children}
+    </Animated.View>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -95,28 +114,30 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
   },
-  tabBar: {
+  tabBarContainer: {
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     borderTopWidth: 1,
     borderTopColor: 'rgba(255, 255, 255, 0.1)',
-    paddingBottom: 8,
-    paddingTop: 8,
   },
-  tabBarContent: {
+  tabBar: {
     flexDirection: 'row',
+    justifyContent: 'space-evenly',
     alignItems: 'center',
   },
   tab: {
-    minWidth: 90,
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 8,
+    paddingHorizontal: 8,
+    borderRadius: 6,
     marginHorizontal: 4,
+    alignSelf: 'stretch',
   },
   tabActive: {
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 0,
+    marginHorizontal: 0,
   },
   tabText: {
     color: Colors.textSecondary,
@@ -124,7 +145,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   tabTextActive: {
-    color: Colors.primary,
+    color: Colors.selectedText,
     fontWeight: '600',
   },
 });

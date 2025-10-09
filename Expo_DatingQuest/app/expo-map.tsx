@@ -4,6 +4,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useActionsContext } from '../contexts/ActionsContext';
 import { Colors } from '../constants';
 
+// ========== TEST MODE TOGGLE ==========
+const ENABLE_TEST_MARKERS = true;
+// ======================================
+
 let AppleMaps: any;
 let GoogleMaps: any;
 
@@ -19,6 +23,18 @@ if (Platform.OS !== 'web') {
 
 export default function ExpoMapScreen() {
   const { permissionGranted, geoError, userLocation } = useActionsContext();
+
+  // ========== TEST: Helper function to offset location by ~10m ==========
+  const offsetLocation = (lat: number, lng: number, direction: 'north' | 'east' | 'south' | 'west') => {
+    const offset = 0.00009; // ~10 meters
+    switch (direction) {
+      case 'north': return { latitude: lat + offset, longitude: lng };
+      case 'east': return { latitude: lat, longitude: lng + offset };
+      case 'south': return { latitude: lat - offset, longitude: lng };
+      case 'west': return { latitude: lat, longitude: lng - offset };
+    }
+  };
+  // ====================================================================
 
   if (!permissionGranted) {
     return (
@@ -46,12 +62,8 @@ export default function ExpoMapScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
-      <View style={styles.header}>
-        <Text style={styles.headerText}>Expo Maps (Apple/Google Native)</Text>
-      </View>
-      <View style={styles.mapContainer}>
-        {Platform.OS === 'ios' && AppleMaps && userLocation ? (
+    <View style={styles.container}>
+      {Platform.OS === 'ios' && AppleMaps && userLocation ? (
           <AppleMaps.View
             style={styles.map}
             colorScheme="DARK"
@@ -73,7 +85,36 @@ export default function ExpoMapScreen() {
                 },
                 tintColor: '#667eea',
               },
+              // ========== TEST MARKERS START ==========
+              ...(ENABLE_TEST_MARKERS ? [
+                {
+                  id: 'test-approach',
+                  coordinates: offsetLocation(userLocation.latitude, userLocation.longitude, 'east'),
+                  tintColor: Colors.gradients.approach[0],
+                },
+                {
+                  id: 'test-contact',
+                  coordinates: offsetLocation(userLocation.latitude, userLocation.longitude, 'south'),
+                  tintColor: Colors.gradients.contact[0],
+                },
+                {
+                  id: 'test-instant-date',
+                  coordinates: offsetLocation(userLocation.latitude, userLocation.longitude, 'west'),
+                  tintColor: Colors.gradients.instantDate[0],
+                },
+              ] : []),
+              // ========== TEST MARKERS END ==========
             ]}
+            circles={ENABLE_TEST_MARKERS ? [
+              {
+                id: 'test-yellow-circle',
+                center: offsetLocation(userLocation.latitude, userLocation.longitude, 'north'),
+                radius: 5,
+                fillColor: '#FFD700',
+                strokeColor: '#FFA500',
+                strokeWidth: 2,
+              },
+            ] : []}
           />
         ) : Platform.OS === 'android' && GoogleMaps && userLocation ? (
           <GoogleMaps.View
@@ -100,6 +141,42 @@ export default function ExpoMapScreen() {
                 strokeColor: '#ffffff',
                 strokeWidth: 2,
               },
+              // ========== TEST MARKERS START ==========
+              ...(ENABLE_TEST_MARKERS ? [
+                {
+                  id: 'test-yellow-circle',
+                  center: offsetLocation(userLocation.latitude, userLocation.longitude, 'north'),
+                  radius: 5,
+                  fillColor: '#FFD700',
+                  strokeColor: '#FFA500',
+                  strokeWidth: 2,
+                },
+                {
+                  id: 'test-approach-circle',
+                  center: offsetLocation(userLocation.latitude, userLocation.longitude, 'east'),
+                  radius: 5,
+                  fillColor: Colors.gradients.approach[0],
+                  strokeColor: '#ffffff',
+                  strokeWidth: 2,
+                },
+                {
+                  id: 'test-contact-circle',
+                  center: offsetLocation(userLocation.latitude, userLocation.longitude, 'south'),
+                  radius: 5,
+                  fillColor: Colors.gradients.contact[0],
+                  strokeColor: '#ffffff',
+                  strokeWidth: 2,
+                },
+                {
+                  id: 'test-instant-date-circle',
+                  center: offsetLocation(userLocation.latitude, userLocation.longitude, 'west'),
+                  radius: 5,
+                  fillColor: Colors.gradients.instantDate[0],
+                  strokeColor: '#ffffff',
+                  strokeWidth: 2,
+                },
+              ] : []),
+              // ========== TEST MARKERS END ==========
             ]}
           />
         ) : (
@@ -110,8 +187,7 @@ export default function ExpoMapScreen() {
             </Text>
           </View>
         )}
-      </View>
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -119,21 +195,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.background,
-  },
-  header: {
-    padding: 16,
-    backgroundColor: 'rgba(102, 126, 234, 0.1)',
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.primary,
-  },
-  headerText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: Colors.primary,
-    textAlign: 'center',
-  },
-  mapContainer: {
-    flex: 1,
   },
   map: {
     width: '100%',

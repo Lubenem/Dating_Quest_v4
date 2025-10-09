@@ -4,16 +4,24 @@ export const Colors = {
   background: '#1a1a2e',
   surface: '#2d3748',
   text: '#ffffff',
-  textSecondary: '#9ca3af',
+  textSecondary: '#ffffff',
+  selectedText: '#FFD700',
   success: '#10b981',
   warning: '#f59e0b',
   error: '#ef4444',
   gradients: {
     approach: ['#667eea', '#764ba2'],
-    contact: ['#f093fb', '#f5576c'],
-    instantDate: ['#4facfe', '#00f2fe'],
+    contact: ['#4facfe', '#00f2fe'],
+    instantDate: ['#f093fb', '#f5576c'],
     missedOpportunity: ['#2d3748', '#1a202c'],
   },
+} as const;
+
+export const ActionColors = {
+  approach: '#667eea',
+  contact: '#4facfe',
+  instantDate: '#f093fb',
+  missedOpportunity: '#2d3748',
 } as const;
 
 export const Layout = {

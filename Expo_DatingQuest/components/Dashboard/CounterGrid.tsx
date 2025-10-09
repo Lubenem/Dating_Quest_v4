@@ -15,7 +15,7 @@ interface CounterGridProps {
   disabled?: boolean;
 }
 
-const counterTypes: ActionType[] = ['approach', 'contact', 'instantDate', 'missedOpportunity'];
+const counterTypes: ActionType[] = ['approach', 'missedOpportunity', 'contact', 'instantDate'];
 
 export const CounterGrid: React.FC<CounterGridProps> = ({
   counters,

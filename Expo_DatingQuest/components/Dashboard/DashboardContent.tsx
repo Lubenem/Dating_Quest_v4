@@ -3,7 +3,6 @@ import { View, Text, StyleSheet, ScrollView, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useActionsContext } from '../../contexts/ActionsContext';
 import { CounterGrid } from './CounterGrid';
-import { ProgressBar } from '../ui/ProgressBar';
 import { Colors } from '../../constants';
 import { ActionType } from '../../types';
 
@@ -12,7 +11,6 @@ export const DashboardContent: React.FC = () => {
     addAction, 
     removeLastAction, 
     counters, 
-    dailyGoal, 
     permissionGranted, 
     geoError 
   } = useActionsContext();
@@ -70,12 +68,6 @@ export const DashboardContent: React.FC = () => {
             </View>
           )}
         </View>
-
-        <ProgressBar
-          current={counters.approaches}
-          goal={dailyGoal}
-          color={Colors.primary}
-        />
 
         <CounterGrid
           counters={counters}
