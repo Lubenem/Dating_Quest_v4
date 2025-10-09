@@ -52,6 +52,7 @@ export const DashboardContent: React.FC = () => {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView 
+        style={{ backgroundColor: 'transparent' }}
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
       >
@@ -83,10 +84,11 @@ export const DashboardContent: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'transparent',
   },
   content: {
     padding: 16,
-    paddingBottom: 80,
+    paddingBottom: 20,
     paddingTop: 10,
   },
   header: {

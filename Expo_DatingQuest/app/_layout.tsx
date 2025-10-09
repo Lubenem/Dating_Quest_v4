@@ -5,20 +5,23 @@ import { ActionsProvider } from "../contexts/ActionsContext";
 
 export default function RootLayout() {
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView style={{ flex: 1, backgroundColor: 'transparent' }}>
       <StatusBar style="light" />
       <ActionsProvider>
         <Stack 
           screenOptions={{
             headerShown: false,
             headerStyle: {
-              backgroundColor: '#1a1a2e',
+              backgroundColor: 'transparent',
             },
             headerTintColor: '#ffffff',
             headerTitleStyle: {
               fontWeight: 'bold',
             },
             headerShadowVisible: false,
+            contentStyle: {
+              backgroundColor: 'transparent',
+            },
           }}
         />
       </ActionsProvider>

@@ -35,6 +35,10 @@
 ## `09.10.25.Thu`
 
 <Map>
+* Moved to `react-navigation` for page transition horizontal animation
+* Still need to fix the flickering when go back to `Dashboard`
+
+<Map>
 * Look and feel fix
 
 ## `08.10.25.Wed`
@@ -47,4 +51,4 @@
 
 # [Prompts]
 
-## `07.10.25.Thu`
+## `09.10.25.Thu`

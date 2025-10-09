@@ -247,7 +247,7 @@ export default function ReactNativeMapScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.background,
+    backgroundColor: 'transparent',
   },
   map: {
     width: '100%',
