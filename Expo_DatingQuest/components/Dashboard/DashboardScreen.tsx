@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, ScrollView, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useActionsContext } from '../../contexts/ActionsContext';
 import { CounterGrid } from '../Dashboard/CounterGrid';
-import { Colors, Layout } from '../../constants';
+import { Colors, Layout } from '../../app/constants';
 
 export default function DashboardScreen() {
   const { 
@@ -81,22 +81,26 @@ const styles = StyleSheet.create({
   container: {
     padding: 0,
     flex: 1,
-    backgroundColor: Colors.background,
+    backgroundColor: 'transparent',
   },
   content: {
+    backgroundColor: 'transparent',
     padding: 0,
   },
   header: {
+    backgroundColor: 'transparent',
     marginBottom: 0,
     margin: 0,
   },
-  title: {
+  title: { 
+    backgroundColor: 'transparent',
     fontSize: 32,
     fontWeight: 'bold',
     color: Colors.text,
     marginBottom: 100,
   },
   subtitle: {
+    backgroundColor: 'transparent',
     fontSize: 16,
     color: Colors.textSecondary,
   },

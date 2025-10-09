@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useActionsContext } from '../../contexts/ActionsContext';
-import { Colors } from '../../constants';
+import { Colors } from '../../app/constants';
 
 export const TopBar: React.FC = () => {
   const { counters, dailyGoal } = useActionsContext();

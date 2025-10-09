@@ -35,6 +35,10 @@
 ## `09.10.25.Thu`
 
 <Map>
+* Added `constants.ts`
+* Fixed the web
+
+<Map>
 * Moved to `react-navigation` for page transition horizontal animation
 * Still need to fix the flickering when go back to `Dashboard`
 

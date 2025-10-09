@@ -4,7 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Minus, Users, MessageCircle, Clock, XCircle } from 'lucide-react-native';
 import * as Haptics from 'expo-haptics';
 import { ActionType } from '../../types';
-import { Colors } from '../../constants';
+import { Colors } from '../../app/constants';
 
 interface CounterButtonProps {
   type: ActionType;

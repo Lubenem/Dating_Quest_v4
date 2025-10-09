@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Platform, StyleSheet, View, Text, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useActionsContext } from '../contexts/ActionsContext';
-import { Colors } from '../constants';
+import { Colors } from './constants';
 
 let MapContainer: any;
 let TileLayer: any;
@@ -141,7 +141,7 @@ export default function OpenStreetMapScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.background,
+    backgroundColor: 'transparent',
   },
   header: {
     padding: 16,
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: Colors.background,
+    backgroundColor: 'transparent',
   },
   loadingText: {
     marginTop: 16,
@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 32,
-    backgroundColor: Colors.background,
+    backgroundColor: 'transparent',
   },
   errorTitle: {
     fontSize: 24,

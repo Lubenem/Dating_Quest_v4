@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { View, StyleSheet, Animated, useWindowDimensions } from 'react-native';
 import { useNavigationState } from '@react-navigation/native';
+import { Animation } from '../../app/constants';
 
 interface AnimatedPageContainerProps {
   children: [React.ReactNode, React.ReactNode];
@@ -17,7 +18,7 @@ export const AnimatedPageContainer: React.FC<AnimatedPageContainerProps> = ({ ch
     }
     Animated.timing(translateX, {
       toValue: -routeIndex * width,
-      duration: 220,
+      duration: Animation.pageTransitionMs,
       useNativeDriver: true,
     }).start();
   }, [routeIndex, width]);

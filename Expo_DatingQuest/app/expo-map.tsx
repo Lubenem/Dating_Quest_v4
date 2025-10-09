@@ -2,7 +2,7 @@ import React from 'react';
 import { Platform, StyleSheet, View, Text, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useActionsContext } from '../contexts/ActionsContext';
-import { Colors } from '../constants';
+import { Colors } from './constants';
 
 // ========== TEST MODE TOGGLE ==========
 const ENABLE_TEST_MARKERS = true;

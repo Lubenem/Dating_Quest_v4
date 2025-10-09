@@ -3,7 +3,7 @@ import { Platform } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Home, MapPin, Globe } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Colors } from '../../constants';
+import { Colors } from '../../app/constants';
 
 const Tab = createBottomTabNavigator();
 

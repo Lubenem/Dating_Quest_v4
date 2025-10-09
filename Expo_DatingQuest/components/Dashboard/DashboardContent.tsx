@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, ScrollView, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useActionsContext } from '../../contexts/ActionsContext';
 import { CounterGrid } from './CounterGrid';
-import { Colors } from '../../constants';
+import { Colors } from '../../app/constants';
 import { ActionType } from '../../types';
 
 export const DashboardContent: React.FC = () => {
