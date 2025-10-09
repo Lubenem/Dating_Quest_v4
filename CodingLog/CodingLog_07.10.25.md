@@ -35,6 +35,9 @@
 ## `09.10.25.Thu`
 
 <Map>
+* Start over investigation. Expo Tab Templates
+
+<Map>
 * Added `constants.ts`
 * Fixed the web
 

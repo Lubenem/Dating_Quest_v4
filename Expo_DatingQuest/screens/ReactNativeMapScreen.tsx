@@ -94,12 +94,13 @@ export default function ReactNativeMapScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} collapsable={false}>
       <MapView
         ref={mapRef}
         style={styles.map}
         provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
         customMapStyle={darkMapStyle}
+        cacheEnabled={Platform.OS === 'android'}
         initialRegion={{
           latitude: userLocation.latitude,
           longitude: userLocation.longitude,

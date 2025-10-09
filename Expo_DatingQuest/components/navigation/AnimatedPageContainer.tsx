@@ -25,7 +25,11 @@ export const AnimatedPageContainer: React.FC<AnimatedPageContainerProps> = ({ ch
 
   return (
     <View style={styles.container}>
-      <Animated.View style={[styles.pager, { width: width * 2, transform: [{ translateX }] }]}>
+      <Animated.View 
+        renderToHardwareTextureAndroid
+        shouldRasterizeIOS
+        style={[styles.pager, { width: width * 2, transform: [{ translateX }], backfaceVisibility: 'hidden' }]}
+      >
         <View style={{ width, flex: 1 }}>
           {children[0]}
         </View>
