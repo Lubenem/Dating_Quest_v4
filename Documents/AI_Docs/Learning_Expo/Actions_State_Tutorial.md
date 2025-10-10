@@ -67,7 +67,6 @@ interface Action {
   timestamp: string;             // When did it happen?
   location: LocationData;        // Where did it happen?
   notes?: string;                // Optional notes
-  date: string;                  // Which day? (e.g., "Fri Oct 10 2025")
 }
 ```
 
@@ -75,9 +74,8 @@ interface Action {
 
 **Real-world analogy:** Like an entry in your diary:
 ```
-Date: Friday, October 10, 2025
-Time: 2:30 PM
 Type: Approach
+Time: 2:30 PM
 Where: Coffee shop on 5th Ave (40.7128, -74.0060)
 Notes: "She was reading a book about React!"
 ```
@@ -90,11 +88,9 @@ Notes: "She was reading a book about React!"
   timestamp: "2025-10-10T14:30:00.000Z",
   location: {
     latitude: 40.7128,
-    longitude: -74.0060,
-    timestamp: "2025-10-10T14:30:00.000Z"
+    longitude: -74.0060
   },
-  notes: "Coffee shop on 5th Ave",
-  date: "Fri Oct 10 2025"
+  notes: "Coffee shop on 5th Ave"
 }
 ```
 
@@ -128,7 +124,6 @@ interface LocationData {
   latitude: number;              // North/South position
   longitude: number;             // East/West position
   accuracy?: number;             // How accurate the GPS reading is
-  timestamp: string;             // When the location was recorded
 }
 ```
 
@@ -368,13 +363,9 @@ const addAction = async (type: ActionType, notes: string = ''): Promise<Action |
     const newAction: Action = {
       id: generateId(),                    // Generate unique ID
       type,                                // 'approach'
-      timestamp: new Date().toISOString(), // Current time
-      location: {
-        ...locationData,
-        timestamp: new Date().toISOString()
-      },
-      notes,
-      date: getTodayString()               // "Fri Oct 10 2025"
+      timestamp: new Date().toISOString(), // When it happened
+      location: locationData,              // Where it happened
+      notes
     };
     
     // 3c. Update state
@@ -599,16 +590,19 @@ const [actions, setActions] = useState<Action[]>([]);
 ### Pattern 3: Filtering Arrays
 
 ```typescript
-const todayActions = actions.filter(action => action.date === getTodayString());
+const todayActions = actions.filter(action => 
+  getDateString(action.timestamp) === getTodayString()
+);
 ```
 
 **What it does:** Creates a new array with only actions that match the condition.
 
 **Step-by-step:**
 1. Look at each action in `actions`
-2. Check if `action.date === getTodayString()`
-3. If true, include it in the new array
-4. If false, skip it
+2. Get date from `action.timestamp`
+3. Check if it equals today's date
+4. If true, include it in the new array
+5. If false, skip it
 
 **Real-world analogy:** Like sorting through a deck of cards and picking only the hearts.
 

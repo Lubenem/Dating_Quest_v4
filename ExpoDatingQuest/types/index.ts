@@ -16,26 +16,23 @@
 export type ActionType = 'approach' | 'contact' | 'instantDate' | 'missedOpportunity';
 
 /**
- * LocationData - GPS coordinates and metadata for where an action happened
+ * LocationData - GPS coordinates for where an action happened
  * 
  * @property latitude - North/South position (-90 to 90)
  * @property longitude - East/West position (-180 to 180)
  * @property accuracy - How accurate the GPS reading is (in meters)
- * @property timestamp - When the location was recorded (ISO 8601 format)
  * 
  * Example:
  * {
  *   latitude: 40.7128,
  *   longitude: -74.0060,
- *   accuracy: 10,
- *   timestamp: "2025-10-10T14:30:00.000Z"
+ *   accuracy: 10
  * }
  */
 export interface LocationData {
   latitude: number;
   longitude: number;
   accuracy?: number;
-  timestamp: string;
 }
 
 /**
@@ -50,7 +47,6 @@ export interface LocationData {
  * @property location - Where the action happened (GPS coordinates)
  * @property notes - Optional notes you can add
  * @property tags - Optional tags for categorization (future feature)
- * @property date - The day this action belongs to (e.g., "Fri Oct 10 2025")
  * 
  * Example:
  * {
@@ -59,11 +55,9 @@ export interface LocationData {
  *   timestamp: "2025-10-10T14:30:00.000Z",
  *   location: {
  *     latitude: 40.7128,
- *     longitude: -74.0060,
- *     timestamp: "2025-10-10T14:30:00.000Z"
+ *     longitude: -74.0060
  *   },
- *   notes: "Coffee shop on 5th Ave",
- *   date: "Fri Oct 10 2025"
+ *   notes: "Coffee shop on 5th Ave"
  * }
  */
 export interface Action {
@@ -73,7 +67,6 @@ export interface Action {
   location: LocationData;
   notes?: string;
   tags?: string[];
-  date: string;
 }
 
 /**

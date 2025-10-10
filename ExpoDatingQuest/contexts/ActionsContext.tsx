@@ -117,6 +117,17 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
   };
 
   /**
+   * Get date string from timestamp
+   * Format: "Fri Oct 10 2025"
+   * 
+   * @param {string} timestamp - ISO timestamp
+   * @returns {string} Date string
+   */
+  const getDateString = (timestamp: string): string => {
+    return new Date(timestamp).toDateString();
+  };
+
+  /**
    * Get today's date as a string
    * Format: "Fri Oct 10 2025"
    * 
@@ -211,12 +222,8 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
         id: generateId(),
         type,
         timestamp: new Date().toISOString(),
-        location: {
-          ...locationData,
-          timestamp: new Date().toISOString()
-        },
-        notes,
-        date: getTodayString()
+        location: locationData,
+        notes
       };
 
       // Save it!
@@ -283,7 +290,7 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
    * @returns {Action[]} All actions on that day
    */
   const getDayActions = (date: string): Action[] => {
-    return actions.filter(action => action.date === date);
+    return actions.filter(action => getDateString(action.timestamp) === date);
   };
 
   /**

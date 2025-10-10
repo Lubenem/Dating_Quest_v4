@@ -35,6 +35,9 @@
 ## `10.10.25.Fri`
 
 <Map>
+* `Action` type refactor
+
+<Map>
 * Files/Folders/Naming restructure
 
 <Map>
@@ -66,4 +69,25 @@
 
 # [Prompts]
 
-## `09.10.25.Thu`
+## `10.10.25.Fri`
+
+<> State Management Doc Questions:
+I've read the @Documents\AI_Docs\Learning_Expo\Actions_State_Tutorial.md, and I have questions. Don't perceive it as I am telling you, that you are wrong. Please perceive it rather as I am a young padawan asking for the enlightenment from you, a wise jedi master.
+\
+1. types/index.ts/Action
+Why do we have `timestamp` and `date` and `location.timestamp`, cant' we jsut use Action.timestamp?
+
+{
+  id: "lm3k9js",
+  type: "approach",
+  timestamp: "2025-10-10T14:30:00.000Z",
+  location: {
+    latitude: 40.7128,
+    longitude: -74.0060,
+    timestamp: "2025-10-10T14:30:00.000Z"
+  },
+  notes: "Coffee shop on 5th Ave",
+  date: "Fri Oct 10 2025"
+}
+\
+2. Why do we have Actions and Counters, As I understand we updated both of this data lists when we do one action. How axactly does it help us save resources? Do we only subscribe to the `counters` state in our UI components and pages, or some of them relly also on actions?
