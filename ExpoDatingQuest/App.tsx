@@ -49,7 +49,37 @@ export default function App() {
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
         >
-          <NavigationContainer>
+          <NavigationContainer
+            theme={{
+              dark: false,
+              colors: {
+                primary: '#8b5cf6',
+                background: 'transparent',
+                card: 'transparent',
+                text: '#ffffff',
+                border: 'transparent',
+                notification: '#f093fb',
+              },
+              fonts: {
+                regular: {
+                  fontFamily: 'System',
+                  fontWeight: '400',
+                },
+                medium: {
+                  fontFamily: 'System',
+                  fontWeight: '500',
+                },
+                bold: {
+                  fontFamily: 'System',
+                  fontWeight: '700',
+                },
+                heavy: {
+                  fontFamily: 'System',
+                  fontWeight: '900',
+                },
+              },
+            }}
+          >
             <Tab.Navigator
               initialRouteName="Dashboard"
               screenOptions={{

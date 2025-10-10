@@ -35,6 +35,9 @@
 ## `10.10.25.Fri`
 
 <Map>
+* Added static background gradient
+
+<Map>
 * `Action` type refactor
 
 <Map>
