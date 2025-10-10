@@ -35,6 +35,9 @@
 ## `10.10.25.Fri`
 
 <Map>
+* Files/Folders/Naming restructure
+
+<Map>
 * Started over with `material-top-bar-tabs` template (react-navigation)
 
 ## `09.10.25.Thu`

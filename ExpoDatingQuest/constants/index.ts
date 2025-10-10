@@ -1,0 +1,96 @@
+/**
+ * App-wide Constants
+ * 
+ * This file contains all constant values used throughout the app:
+ * - Colors and gradients for UI
+ * - Layout dimensions
+ * - Animation timings
+ * 
+ * By centralizing these values, we can:
+ * 1. Maintain consistent design across the app
+ * 2. Easily change theme colors in one place
+ * 3. Ensure all components use the same spacing/sizing
+ */
+
+/**
+ * Colors - Main color palette for the app
+ * 
+ * These colors define the visual theme. Change them here to theme the entire app!
+ */
+export const Colors = {
+  // Core brand colors
+  primary: '#8b5cf6',           // Purple - main accent color
+  secondary: '#f093fb',         // Pink - secondary accent
+  
+  // Background colors
+  background: '#1a1a2e',        // Dark blue-gray - main background
+  surface: '#2d3748',           // Lighter gray - card/surface background
+  
+  // Text colors
+  text: '#ffffff',              // White - primary text
+  textSecondary: '#a0aec0',     // Light gray - secondary text
+  selectedText: '#FFD700',      // Gold - selected/active text (navbar, etc.)
+  
+  // Status colors
+  success: '#10b981',           // Green - success messages
+  warning: '#f59e0b',           // Orange - warning messages
+  error: '#ef4444',             // Red - error messages
+  
+  /**
+   * Gradients - Beautiful gradient combinations for action buttons
+   * Each action type has its own unique gradient to make it visually distinct
+   */
+  gradients: {
+    // Approach: Purple gradient (confident, bold)
+    approach: ['#667eea', '#764ba2'],
+    
+    // Contact: Blue gradient (communication, connection)
+    contact: ['#4facfe', '#00f2fe'],
+    
+    // Instant Date: Pink/red gradient (romantic, exciting)
+    instantDate: ['#f093fb', '#f5576c'],
+    
+    // Missed Opportunity: Dark gradient (regret, learning)
+    missedOpportunity: ['#2d3748', '#1a202c'],
+  },
+} as const;
+
+/**
+ * ActionColors - Solid colors for each action type
+ * Used for map markers, charts, and other visualizations
+ * 
+ * These match the first color in each gradient above for consistency
+ */
+export const ActionColors = {
+  approach: '#667eea',          // Purple
+  contact: '#4facfe',           // Blue
+  instantDate: '#f093fb',       // Pink
+  missedOpportunity: '#2d3748', // Dark gray
+} as const;
+
+/**
+ * Layout - Spacing and sizing constants
+ * Keep these consistent for a polished UI
+ */
+export const Layout = {
+  padding: 16,              // Standard padding for containers
+  borderRadius: 12,         // Standard border radius for rounded corners
+  buttonHeight: 120,        // Standard height for buttons
+  iconSize: 24,             // Standard size for icons
+  
+  // Counter button specific sizes
+  counterWidth: 180,        // Width of each counter button
+  counterHeight: 220,       // Height of each counter button
+} as const;
+
+/**
+ * Animation - Timing constants for animations
+ * Adjust these to make animations faster/slower
+ */
+export const Animation = {
+  pageTransitionMs: 300,    // How long page slide animations take
+  buttonPressMs: 100,       // How long button press animations take
+  fadeMs: 200,              // How long fade in/out animations take
+} as const;
+
+
