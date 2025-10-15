@@ -5,36 +5,20 @@
  * It sets up:
  * - ActionsProvider (global state)
  * - LinearGradient background
- * - Material Top Tabs navigation
- * - Dashboard and Map pages
+ * - TopBar (persistent progress bar)
+ * - BottomBar (tab navigation)
  */
 
 import 'react-native-gesture-handler';
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { StyleSheet, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Home, MapPin } from 'lucide-react-native';
 
-// Import our context provider
 import { ActionsProvider } from './contexts/ActionsContext';
-
-// Import pages
-import { DashboardPage } from './pages/DashboardPage';
-
-/**
- * Placeholder Map Screen (will implement later)
- */
-function MapScreen() {
-  return (
-    <View style={styles.screen}>
-    </View>
-  );
-}
-
-const Tab = createMaterialTopTabNavigator();
+import { TopBar } from './components/bars/TopBar';
+import { BottomBar } from './components/bars/BottomBar';
 
 /**
  * Main App Component
@@ -80,45 +64,8 @@ export default function App() {
               },
             }}
           >
-            <Tab.Navigator
-              initialRouteName="Dashboard"
-              screenOptions={{
-                tabBarActiveTintColor: '#FFD700',
-                tabBarInactiveTintColor: '#ffffff',
-                tabBarLabelStyle: {
-                  fontSize: 12,
-                  fontWeight: '600',
-                  textTransform: 'none',
-                },
-                tabBarStyle: {
-                  backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                  borderTopWidth: 1,
-                  borderTopColor: 'rgba(255, 255, 255, 0.1)',
-                },
-                tabBarIndicatorStyle: {
-                  backgroundColor: '#FFD700',
-                  height: 3,
-                },
-                tabBarShowIcon: true,
-                swipeEnabled: true,
-              }}
-              tabBarPosition="bottom"
-            >
-              <Tab.Screen 
-                name="Dashboard" 
-                component={DashboardPage}
-                options={{
-                  tabBarIcon: ({ color }) => <Home size={20} color={color} />,
-                }}
-              />
-              <Tab.Screen 
-                name="Map" 
-                component={MapScreen}
-                options={{
-                  tabBarIcon: ({ color }) => <MapPin size={20} color={color} />,
-                }}
-              />
-            </Tab.Navigator>
+            <TopBar />
+            <BottomBar />
           </NavigationContainer>
         </LinearGradient>
       </SafeAreaProvider>
@@ -129,11 +76,5 @@ export default function App() {
 const styles = StyleSheet.create({
   gradient: {
     flex: 1,
-  },
-  screen: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'transparent',
   },
 });
