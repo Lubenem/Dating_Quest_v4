@@ -1,24 +1,18 @@
 import React from 'react';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { Home, MapPin } from 'lucide-react-native';
-import { View, StyleSheet } from 'react-native';
 import { DashboardPage } from '../../pages/DashboardPage';
+import { MapPage } from '../../pages/MapPage';
+import { Colors } from '../../constants';
 
 const Tab = createMaterialTopTabNavigator();
-
-function MapScreen() {
-  return (
-    <View style={styles.screen}>
-    </View>
-  );
-}
 
 export const BottomBar: React.FC = () => {
   return (
     <Tab.Navigator
       initialRouteName="Dashboard"
       screenOptions={{
-        tabBarActiveTintColor: '#FFD700',
+        tabBarActiveTintColor: Colors.accent,
         tabBarInactiveTintColor: '#ffffff',
         tabBarLabelStyle: {
           fontSize: 12,
@@ -31,11 +25,12 @@ export const BottomBar: React.FC = () => {
           borderTopColor: 'rgba(255, 255, 255, 0.1)',
         },
         tabBarIndicatorStyle: {
-          backgroundColor: '#FFD700',
+          backgroundColor: Colors.accent,
           height: 3,
         },
         tabBarShowIcon: true,
         swipeEnabled: true,
+        lazy: false,
       }}
       tabBarPosition="bottom"
     >
@@ -48,7 +43,7 @@ export const BottomBar: React.FC = () => {
       />
       <Tab.Screen 
         name="Map" 
-        component={MapScreen}
+        component={MapPage}
         options={{
           tabBarIcon: ({ color }) => <MapPin size={20} color={color} />,
         }}
@@ -56,13 +51,3 @@ export const BottomBar: React.FC = () => {
     </Tab.Navigator>
   );
 };
-
-const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'transparent',
-  },
-});
-

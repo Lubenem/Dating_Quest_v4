@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useActionsContext } from '../../contexts/ActionsContext';
+import { Colors } from '../../constants';
 
 export const TopBar: React.FC = () => {
   const insets = useSafeAreaInsets();
@@ -59,7 +60,7 @@ const styles = StyleSheet.create({
   progressText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#FFD700',
+    color: Colors.accent,
   },
   progressBarContainer: {
     height: 3,
@@ -67,7 +68,7 @@ const styles = StyleSheet.create({
   },
   progressBar: {
     height: '100%',
-    backgroundColor: '#FFD700',
+    backgroundColor: Colors.accent,
   },
 });
 

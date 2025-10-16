@@ -29,7 +29,9 @@ export const Colors = {
   // Text colors
   text: '#ffffff',              // White - primary text
   textSecondary: '#a0aec0',     // Light gray - secondary text
-  selectedText: '#FFD700',      // Gold - selected/active text (navbar, etc.)
+  
+  // Accent colors
+  accent: '#FFD700',            // Gold - main accent (progress, selected items, highlights)
   
   // Status colors
   success: '#10b981',           // Green - success messages
@@ -91,6 +93,13 @@ export const Animation = {
   pageTransitionMs: 300,    // How long page slide animations take
   buttonPressMs: 100,       // How long button press animations take
   fadeMs: 200,              // How long fade in/out animations take
+} as const;
+
+/**
+ * Map - Map-related constants
+ */
+export const Map = {
+  initialScale: 1000,       // Initial map scale in meters (radius from center)
 } as const;
 
 
