@@ -64,17 +64,7 @@ export const DashboardPage: React.FC = () => {
    * @param type - Which action type to decrement
    */
   const handleDecrement = (type: ActionType) => {
-    // Try to remove the last action of this type
-    const success = removeLastAction(type);
-    
-    // If failed (no actions to remove), show an alert
-    if (!success) {
-      Alert.alert(
-        'No Actions',
-        'No actions of this type to remove.',
-        [{ text: 'OK' }]
-      );
-    }
+    removeLastAction(type);
   };
 
   /**
@@ -143,6 +133,7 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: 'transparent',
     marginBottom: 20,
+    alignItems: 'center',
   },
   title: { 
     backgroundColor: 'transparent',
@@ -150,11 +141,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: Colors.text,
     marginBottom: 8,
+    textAlign: 'center',
   },
   subtitle: {
     backgroundColor: 'transparent',
     fontSize: 16,
     color: Colors.textSecondary,
+    textAlign: 'center',
   },
   warningContainer: {
     marginTop: 16,
