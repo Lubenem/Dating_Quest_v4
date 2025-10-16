@@ -28,7 +28,7 @@ export const Colors = {
   
   // Text colors
   text: '#ffffff',              // White - primary text
-  textSecondary: '#a0aec0',     // Light gray - secondary text
+  textSecondary: '#ffffff',     // Light gray - secondary text
   
   // Accent colors
   accent: '#FFD700',            // Gold - main accent (progress, selected items, highlights)

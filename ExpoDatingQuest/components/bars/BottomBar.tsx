@@ -1,5 +1,6 @@
 import React from 'react';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Home, MapPin } from 'lucide-react-native';
 import { DashboardPage } from '../../pages/DashboardPage';
 import { MapPage } from '../../pages/MapPage';
@@ -8,6 +9,8 @@ import { Colors } from '../../constants';
 const Tab = createMaterialTopTabNavigator();
 
 export const BottomBar: React.FC = () => {
+  const insets = useSafeAreaInsets();
+  
   return (
     <Tab.Navigator
       initialRouteName="Dashboard"
@@ -23,11 +26,22 @@ export const BottomBar: React.FC = () => {
           backgroundColor: 'rgba(0, 0, 0, 0.5)',
           borderTopWidth: 1,
           borderTopColor: 'rgba(255, 255, 255, 0.1)',
+          paddingBottom: insets.bottom,
+          elevation: 0,
+        },
+        tabBarContentContainerStyle: {
+          padding: 0,
+          margin: 0,
+        },
+        tabBarItemStyle: {
+          padding: 0,
+          paddingVertical: 8,
         },
         tabBarIndicatorStyle: {
           backgroundColor: Colors.accent,
           height: 3,
         },
+        tabBarPressColor: 'rgba(255, 255, 255, 0.1)',
         tabBarShowIcon: true,
         swipeEnabled: true,
         lazy: false,

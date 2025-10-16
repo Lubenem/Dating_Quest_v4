@@ -36,6 +36,9 @@
 
 ## `16.10.25.Thu`
 
+## <BottomNavBar>
+* Removed padding
+
 ## <TopProgressBar>
 ## <BottomNavBar>
 ## <Dashboard>
