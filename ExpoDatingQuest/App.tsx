@@ -12,13 +12,14 @@
 import 'react-native-gesture-handler';
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 
 import { ActionsProvider } from './contexts/ActionsContext';
 import { TopBar } from './components/bars/TopBar';
 import { BottomBar } from './components/bars/BottomBar';
+import { Colors } from './constants';
 
 /**
  * Main App Component
@@ -28,7 +29,7 @@ export default function App() {
     <ActionsProvider>
       <SafeAreaProvider>
         <LinearGradient
-          colors={['#667eea', '#764ba2', '#f093fb', '#f5576c']}
+          colors={Colors.gradients.background}
           style={styles.gradient}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
@@ -37,12 +38,12 @@ export default function App() {
             theme={{
               dark: false,
               colors: {
-                primary: '#8b5cf6',
+                primary: Colors.primary,
                 background: 'transparent',
                 card: 'transparent',
-                text: '#ffffff',
+                text: Colors.text,
                 border: 'transparent',
-                notification: '#f093fb',
+                notification: Colors.secondary,
               },
               fonts: {
                 regular: {

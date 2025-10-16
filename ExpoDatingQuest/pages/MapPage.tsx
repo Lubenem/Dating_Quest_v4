@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { View, StyleSheet, Platform, Text, ActivityIndicator } from 'react-native';
 import { useLocation } from '../hooks/useLocation';
-import { Map as MapConstants } from '../constants';
+import { Map as MapConstants, Colors } from '../constants';
 
 let MapView: any;
 let PROVIDER_GOOGLE: any;
@@ -63,7 +63,7 @@ export const MapPage: React.FC = () => {
     return (
       <View style={styles.container}>
         <View style={styles.messageContainer}>
-          <ActivityIndicator size="large" color="#8b5cf6" />
+          <ActivityIndicator size="large" color={Colors.primary} />
           <Text style={styles.messageText}>Getting your location...</Text>
         </View>
       </View>
@@ -211,19 +211,19 @@ const styles = StyleSheet.create({
   messageTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#ffffff',
+    color: Colors.text,
     marginBottom: 10,
     textAlign: 'center',
   },
   messageText: {
     fontSize: 16,
-    color: '#a0aec0',
+    color: Colors.textSecondary,
     textAlign: 'center',
     marginTop: 10,
   },
   errorText: {
     fontSize: 14,
-    color: '#ef4444',
+    color: Colors.error,
     marginTop: 10,
     textAlign: 'center',
   },

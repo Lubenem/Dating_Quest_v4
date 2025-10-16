@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#ffffff',
+    color: Colors.text,
   },
   progressContainer: {
     backgroundColor: 'rgba(255, 255, 255, 0.1)',

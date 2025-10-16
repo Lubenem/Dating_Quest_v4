@@ -103,10 +103,12 @@ export const CounterGrid: React.FC<CounterGridProps> = ({
 const styles = StyleSheet.create({
   grid: {
     marginTop: 20,
-    flexDirection: 'row',       // Arrange buttons in rows
-    flexWrap: 'wrap',           // Wrap to next row when needed
-    justifyContent: 'space-between', // Space buttons evenly
-    paddingHorizontal: 0,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    paddingTop: 12,
+    paddingHorizontal: 8,
+    overflow: 'visible',
   },
 });
 

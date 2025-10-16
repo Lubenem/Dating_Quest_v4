@@ -43,6 +43,9 @@ export const Colors = {
    * Each action type has its own unique gradient to make it visually distinct
    */
   gradients: {
+    // Background: Main app background gradient
+    background: ['#667eea', '#764ba2', '#f093fb', '#f5576c'],
+    
     // Approach: Purple gradient (confident, bold)
     approach: ['#667eea', '#764ba2'],
     

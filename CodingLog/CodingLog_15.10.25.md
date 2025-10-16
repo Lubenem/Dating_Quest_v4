@@ -36,6 +36,9 @@
 
 ## `16.10.25.Thu`
 
+## <Dashboard>
+* Counters UI improvement
+
 ## <BottomNavBar>
 * EdgeToEdge = false
 

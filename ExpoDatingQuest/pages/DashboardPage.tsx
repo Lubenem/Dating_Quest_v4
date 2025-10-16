@@ -131,12 +131,14 @@ export const DashboardPage: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'transparent', // Let gradient show through
-    padding: 20,
+    backgroundColor: 'transparent',
+    padding: 10,
+    overflow: 'visible',
   },
   content: {
     backgroundColor: 'transparent',
-    paddingBottom: 40, // Extra padding at bottom
+    paddingBottom: 40,
+    overflow: 'visible',
   },
   header: {
     backgroundColor: 'transparent',
