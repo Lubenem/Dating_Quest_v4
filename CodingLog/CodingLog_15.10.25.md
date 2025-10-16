@@ -37,6 +37,9 @@
 ## `16.10.25.Thu`
 
 ## <BottomNavBar>
+* EdgeToEdge = false
+
+## <BottomNavBar>
 * Removed padding
 
 ## <TopProgressBar>
