@@ -1,5 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { View, StyleSheet, Platform, Text, ActivityIndicator } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import { Users, MessageCircle, Clock, XCircle } from 'lucide-react-native';
 import { useLocation } from '../hooks/useLocation';
 import { useActionsContext } from '../contexts/ActionsContext';
@@ -42,6 +43,20 @@ export const MapPage: React.FC = () => {
   const hasAnimatedToLocation = useRef(false);
   const [mapReady, setMapReady] = useState(false);
   const [markersRendered, setMarkersRendered] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
+  const actionsLengthRef = useRef(actions.length);
+
+  useFocusEffect(
+    useCallback(() => {
+      setIsFocused(true);
+      setMarkersRendered(false);
+      actionsLengthRef.current = actions.length;
+      
+      return () => {
+        setIsFocused(false);
+      };
+    }, [actions.length])
+  );
 
   useEffect(() => {
     if (location && mapRef.current && !hasAnimatedToLocation.current && Platform.OS !== 'web') {
@@ -55,18 +70,10 @@ export const MapPage: React.FC = () => {
     }
   }, [location]);
 
-  useEffect(() => {
-    if (mapReady) {
-      setMarkersRendered(false);
-    }
-  }, [mapReady, actions.length]);
-
   const todayActions = React.useMemo(() => {
-    const dayActions = getDayActions(new Date().toDateString());
+    if (!isFocused) return [];
     
-    console.log('MapPage - actions.length:', actions.length);
-    console.log('MapPage - todayActions.length:', dayActions.length);
-    console.log('MapPage - isLoading:', isLoading);
+    const dayActions = getDayActions(new Date().toDateString());
     
     const priorityOrder: Record<ActionType, number> = {
       missedOpportunity: 1,
@@ -76,7 +83,7 @@ export const MapPage: React.FC = () => {
     };
     
     return dayActions.sort((a, b) => priorityOrder[a.type] - priorityOrder[b.type]);
-  }, [actions, getDayActions, isLoading]);
+  }, [isFocused, actions.length, getDayActions]);
 
   if (Platform.OS === 'web') {
     return (
@@ -158,11 +165,9 @@ export const MapPage: React.FC = () => {
           const IconComponent = getIconForActionType(action.type);
           const markerColor = ActionColors[action.type];
           
-          console.log(`Rendering marker ${index}: ${action.type} tracksViewChanges:`, !markersRendered);
-          
           return (
             <Marker
-              key={`${action.id}-${actions.length}`}
+              key={action.id}
               coordinate={{
                 latitude: action.location.latitude,
                 longitude: action.location.longitude,

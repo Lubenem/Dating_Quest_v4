@@ -26,7 +26,7 @@
 ## <Map>
 [x] Add react-map (empty with just current location)
 [] Adjust the style (dark and fancy)
-[] Add the markers logic (from React app)
+[x] Add the markers logic (from React app)
 
 ## <TopProgressBar>
 ## <BottomNavBar>
@@ -38,6 +38,9 @@
 # [Commits]
 
 ## `20.10.25.Mon`
+
+## <Map>
+* Fixed and optimized the markers logic
 
 ## <Map>
 * Add the markers logic (from React app)
