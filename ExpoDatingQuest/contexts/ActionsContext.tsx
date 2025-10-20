@@ -14,10 +14,11 @@
  * Any component can access this data by using the useActionsContext() hook!
  */
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Action, ActionType, Counters } from '../types';
 import { useLocation } from '../hooks/useLocation';
+import { Map as MapConstants } from '../constants';
 
 /**
  * ActionsContextType - Defines what the context provides
@@ -30,6 +31,7 @@ interface ActionsContextType {
   actions: Action[];                                    // All actions ever recorded
   counters: Counters;                                   // Today's counters
   dailyGoal: number;                                    // User's daily approach goal
+  isLoading: boolean;                                   // Is data loading from storage?
   
   // ACTIONS - Functions to modify state
   addAction: (type: ActionType, notes?: string) => Promise<Action | null>;
@@ -105,6 +107,8 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
   });
   const [dailyGoal, setDailyGoalState] = useState<number>(10);
   const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [hasInitialized, setHasInitialized] = useState<boolean>(false);
 
   /**
    * Generate a unique ID for actions
@@ -114,6 +118,29 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
    */
   const generateId = (): string => {
     return Date.now().toString(36) + Math.random().toString(36).substr(2);
+  };
+
+  const generateRandomCoordinates = (
+    centerLat: number,
+    centerLng: number,
+    radiusMeters: number
+  ): { latitude: number; longitude: number } => {
+    const radiusInDegrees = radiusMeters / 111000;
+    
+    const u = Math.random();
+    const v = Math.random();
+    const w = radiusInDegrees * Math.sqrt(u);
+    const t = 2 * Math.PI * v;
+    const x = w * Math.cos(t);
+    const y = w * Math.sin(t);
+    
+    const newLat = centerLat + y;
+    const newLng = centerLng + x / Math.cos(centerLat * Math.PI / 180);
+    
+    return {
+      latitude: newLat,
+      longitude: newLng,
+    };
   };
 
   /**
@@ -168,10 +195,21 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
   };
 
   /**
+   * Get all actions for a specific day
+   * Useful for calendar view or historical data!
+   * 
+   * @param {string} date - Date string (e.g., "Fri Oct 10 2025")
+   * @returns {Action[]} All actions on that day
+   */
+  const getDayActions = useCallback((date: string): Action[] => {
+    return actions.filter(action => getDateString(action.timestamp) === date);
+  }, [actions]);
+
+  /**
    * Update counters based on today's actions
    * Counts how many of each action type happened today
    */
-  const updateCounters = (): void => {
+  const updateCounters = useCallback((): void => {
     const todayActions = getDayActions(getTodayString());
     const newCounters: Counters = {
       // Approaches = all actions except missed opportunities
@@ -183,7 +221,7 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
       missedOpportunities: todayActions.filter(action => action.type === 'missedOpportunity').length,
     };
     setCounters(newCounters);
-  };
+  }, [getDayActions]);
 
   /**
    * Add a new action
@@ -204,11 +242,21 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
       let locationData: { latitude: number; longitude: number };
       
       if (permissionGranted && location) {
-        // Use actual GPS location
-        locationData = {
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
-        };
+        const realLat = location.coords.latitude;
+        const realLng = location.coords.longitude;
+        
+        if (MapConstants.testMode.enabled) {
+          locationData = generateRandomCoordinates(
+            realLat,
+            realLng,
+            MapConstants.testMode.radiusMeters
+          );
+        } else {
+          locationData = {
+            latitude: realLat,
+            longitude: realLng,
+          };
+        }
       } else {
         // Fallback to NYC coordinates if no GPS available
         locationData = {
@@ -282,16 +330,6 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
     return true;
   };
 
-  /**
-   * Get all actions for a specific day
-   * Useful for calendar view or historical data!
-   * 
-   * @param {string} date - Date string (e.g., "Fri Oct 10 2025")
-   * @returns {Action[]} All actions on that day
-   */
-  const getDayActions = (date: string): Action[] => {
-    return actions.filter(action => getDateString(action.timestamp) === date);
-  };
 
   /**
    * Get counters for a specific day
@@ -299,7 +337,7 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
    * @param {string} date - Date string (e.g., "Fri Oct 10 2025")
    * @returns {Counters} Counter totals for that day
    */
-  const getDayCounters = (date: string): Counters => {
+  const getDayCounters = useCallback((date: string): Counters => {
     const dayActions = getDayActions(date);
     return {
       approaches: dayActions.filter(action => action.type !== 'missedOpportunity').length,
@@ -307,7 +345,7 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
       instantDates: dayActions.filter(action => action.type === 'instantDate').length,
       missedOpportunities: dayActions.filter(action => action.type === 'missedOpportunity').length,
     };
-  };
+  }, [getDayActions]);
 
   /**
    * Get today's counters (convenience function)
@@ -339,12 +377,9 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
    */
   useEffect(() => {
     const initializeData = async () => {
-      // Load actions from storage
       const loadedActions = await loadActions();
       setActions(loadedActions);
-      updateCounters();
       
-      // Load daily goal from storage
       try {
         const storedGoal = await AsyncStorage.getItem('approachesDayGoal');
         if (storedGoal) {
@@ -353,10 +388,18 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
       } catch (error) {
         console.error('Error loading daily goal:', error);
       }
+      
+      setHasInitialized(true);
     };
 
     initializeData();
   }, []);
+
+  useEffect(() => {
+    if (hasInitialized && isLoading) {
+      setIsLoading(false);
+    }
+  }, [hasInitialized, isLoading]);
 
   /**
    * EFFECT: Update counters when actions change
@@ -389,6 +432,7 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
     actions,
     counters,
     dailyGoal,
+    isLoading,
     addAction,
     removeLastAction,
     getDayActions,

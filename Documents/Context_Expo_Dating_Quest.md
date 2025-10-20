@@ -6,3 +6,9 @@
  - expo app v0.1: <OldVersions\ExpoDatingQuest\Expo_First_DatingQuest/>
 Here is the current version of our expo app:
 * current expo app v0.2: <ExpoDatingQuest/>
+\
+* In your code, solutions, decisions and explanations always respect: `KISS` and `DRY`
+* !Important As Hell! | Always! Use! Best Practices! and common practices proposed by official documentations of packages and frameworks (or other reliable web resources, like Q/A forums), instead of just making up shitty solutions on the spot, browse the web and consult the docs. I will list some of them here:
+ - `React-Native-Maps`: https://github.com/react-native-maps/react-native-maps/tree/master
+ - `Expo`: https://docs.expo.dev/
+ - `React-Native`: https://reactnative.dev/docs/getting-started 
