@@ -18,10 +18,10 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Animated, Platform } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Minus, Users, MessageCircle, Clock, XCircle } from 'lucide-react-native';
+import { Minus, Users, MessageCircle, Heart, Clock } from 'lucide-react-native';
 import * as Haptics from 'expo-haptics';
 import { ActionType } from '../../types';
-import { Colors, Layout } from '../../constants';
+import { Colors, Layout, ActionIcons } from '../../constants';
 
 /**
  * Props for CounterButton
@@ -35,6 +35,24 @@ interface CounterButtonProps {
 }
 
 /**
+ * Get icon component from icon name
+ */
+const getIconComponent = (iconName: string) => {
+  switch (iconName) {
+    case 'Users':
+      return Users;
+    case 'MessageCircle':
+      return MessageCircle;
+    case 'Heart':
+      return Heart;
+    case 'Clock':
+      return Clock;
+    default:
+      return Users;
+  }
+};
+
+/**
  * Configuration for each action type
  * Maps action type to label, gradient colors, and icon
  */
@@ -44,25 +62,25 @@ const getCounterConfig = (type: ActionType) => {
       return {
         label: 'Approaches',
         gradient: Colors.gradients.approach,
-        icon: Users,
+        icon: getIconComponent(ActionIcons.approach),
       };
     case 'contact':
       return {
         label: 'Contacts',
         gradient: Colors.gradients.contact,
-        icon: MessageCircle,
+        icon: getIconComponent(ActionIcons.contact),
       };
     case 'instantDate':
       return {
         label: 'Instant Dates',
         gradient: Colors.gradients.instantDate,
-        icon: Clock,
+        icon: getIconComponent(ActionIcons.instantDate),
       };
     case 'missedOpportunity':
       return {
         label: 'Missed Opportunities',
         gradient: Colors.gradients.missedOpportunity,
-        icon: XCircle,
+        icon: getIconComponent(ActionIcons.missedOpportunity),
       };
   }
 };

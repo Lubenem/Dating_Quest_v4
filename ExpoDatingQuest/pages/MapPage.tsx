@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { View, StyleSheet, Platform, Text, ActivityIndicator, Animated } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
-import { Users, MessageCircle, Clock, XCircle } from 'lucide-react-native';
+import { Users, MessageCircle, Heart, Clock } from 'lucide-react-native';
 import { useLocation } from '../hooks/useLocation';
 import { useActionsContext } from '../contexts/ActionsContext';
-import { Map as MapConstants, Colors, ActionColors } from '../constants';
+import { Map as MapConstants, Colors, ActionColors, ActionIcons } from '../constants';
 import { ActionType } from '../types';
 
 let MapView: any;
@@ -23,17 +23,23 @@ if (Platform.OS !== 'web') {
 const LATITUDE_DELTA = MapConstants.initialScale / 111000;
 const LONGITUDE_DELTA = MapConstants.initialScale / (111000 * Math.cos(0));
 
-const getIconForActionType = (type: ActionType) => {
-  switch (type) {
-    case 'approach':
+const getIconComponent = (iconName: string) => {
+  switch (iconName) {
+    case 'Users':
       return Users;
-    case 'contact':
+    case 'MessageCircle':
       return MessageCircle;
-    case 'instantDate':
+    case 'Heart':
+      return Heart;
+    case 'Clock':
       return Clock;
-    case 'missedOpportunity':
-      return XCircle;
+    default:
+      return Users;
   }
+};
+
+const getIconForActionType = (type: ActionType) => {
+  return getIconComponent(ActionIcons[type]);
 };
 
 export const MapPage: React.FC = () => {

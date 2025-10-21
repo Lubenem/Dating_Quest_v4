@@ -44,7 +44,7 @@ export const Colors = {
    */
   gradients: {
     // Background: Main app background gradient
-    background: ['#667eea', '#764ba2', '#f093fb', '#f5576c'],
+    background: ['#f5576c', '#f093fb', '#764ba2', '#667eea'],
     
     // Approach: Purple gradient (confident, bold)
     approach: ['#667eea', '#764ba2'],
@@ -71,6 +71,18 @@ export const ActionColors = {
   contact: '#4facfe',           // Blue
   instantDate: '#f093fb',       // Pink
   missedOpportunity: '#2d3748', // Dark gray
+} as const;
+
+/**
+ * ActionIcons - Icon names for each action type
+ * Centralized icon configuration for app-wide consistency
+ * Icons from lucide-react-native
+ */
+export const ActionIcons = {
+  approach: 'Users',
+  contact: 'MessageCircle',
+  instantDate: 'Heart',
+  missedOpportunity: 'Clock',
 } as const;
 
 /**
@@ -109,7 +121,7 @@ export const Map = {
     radiusMeters: 500,     // Radius in meters for random coordinates (1000m = 1km)
   },
   
-  textColor: '#FFD700',     // Map text color (street names, labels, etc.)
+  textColor: '#d4aa04',     // Map text color (street names, labels, etc.)
 } as const;
 
 

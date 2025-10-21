@@ -10,34 +10,40 @@
 [] Add popups, explanations, suggestions
 [] Add `Levels/XP`
 
---- --- ---
-
 ## <MVP_V0.5>
 [] Add `Contacts`
 [] Add `Calendar`
-[] Add `TopProgressBar`
-[] Add `BottomNavBar`
+[] Add `TopBar`
+[] Add `BottomBar`
 [] Add `Map`
 [] Add `Dashboard`
 
-## <Calendar>
+--- --- ---
+
+## <TopBar>
+## <BottomBar>
 ## <Contacts>
+## <Map> 
+## <Dashboard>
+## <Calendar>
 
-## <Map>
-[x] Add react-map (empty with just current location)
-[x] Add the markers logic (from React app)
-[] Adjust the style (dark and fancy)
-
-## <TopProgressBar>
-## <BottomNavBar>
+--- --- ---
 
 ## <Dashboard>
 [] Fix the counter animations
-[] Change teh missedOp and InstantDate icons (heart...)
+
+--- --- ---
+
+
+## <Calendar>
+[] Add simple calendar to topbar
 
 # [Commits]
 
 ## `21.10.25.Tue`
+
+## <Dashboard>
+* Change the missedOp and InstantDate icons (heart...)
 
 ## <Map>
 * Added the map text color const
@@ -76,7 +82,17 @@
 
 ## <Map>
 
-[] MAP | Dev build
+## `21.10.25.Tue`
+
+[x] Dashboard & Map | Change action icons
+* For `missedOps` I want an icon from current `InstantDates` (clock)
+* For `InstantDates` I want an icon of a heart.
+* Apply both to dashboard and map, not color changes required
+* Make sure in both places the icon come from one configurable source, so if I would wanna later change the icon it would be one action that applies it app-wide
+
+## `20.10.25.Mon`
+
+[x] MAP | Dev build
 When dev build, I only sit at one place and it is difficult for me to test the map markers. Implement the logic of instead of saving the real coordinates each time the action is done, we save randomly generated mocked coordinates in radius of 1 km from my real position. The radius should be a configurable variable. There should be a `MapTestMode` it is only active by default for the dev build, but if I want I can mannualy set it of even for my dev build, to test a couple of makrers at one location
 
 [x] MAP | Display order
@@ -96,3 +112,10 @@ Add display order logic, when more then one marker at one place. They should be 
 * The map should be focused at my current location with scale like 1000 meters (I should be able to configure this variable)
 * There should be not re-loading each time I switch to map page, it should be loaded and focuesd on me just once, and then stay active like that even if it is not visible, let's not care much about the resources, the UX matters much more.
 * Dark theme
+
+# [Done]
+
+## <Map>
+[x] Add react-map (empty with just current location)
+[x] Add the markers logic (from React app)
+[x] Adjust the style (dark and fancy)
