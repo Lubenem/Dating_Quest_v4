@@ -50,11 +50,19 @@ export const TopBar: React.FC = () => {
         <Text style={styles.title}>Dating Quest</Text>
         
         <View style={styles.datePickerContainer}>
-          <TouchableOpacity onPress={goToPreviousDay} style={styles.dateArrow}>
+          <TouchableOpacity 
+            onPress={goToPreviousDay} 
+            style={styles.dateArrow}
+            hitSlop={{ top: 10, bottom: 10, left: 15, right: 15 }}
+          >
             <ChevronLeft size={20} color={!isToday ? Colors.accent : Colors.text} />
           </TouchableOpacity>
           
-          <TouchableOpacity onPress={isToday ? undefined : goToToday} style={styles.dateDisplay}>
+          <TouchableOpacity 
+            onPress={isToday ? undefined : goToToday} 
+            style={styles.dateDisplay}
+            hitSlop={{ top: 8, bottom: 8, left: 4, right: 4 }}
+          >
             <Text style={[styles.dateText, !isToday && styles.dateTextPast]}>
               {formatDate(selectedDate)}
             </Text>
@@ -64,6 +72,7 @@ export const TopBar: React.FC = () => {
             onPress={goToNextDay} 
             style={styles.dateArrow}
             disabled={isToday}
+            hitSlop={{ top: 10, bottom: 10, left: 15, right: 15 }}
           >
             <ChevronRight 
               size={20} 
@@ -124,7 +133,7 @@ const styles = StyleSheet.create({
     padding: 0,
   },
   dateDisplay: {
-    paddingHorizontal: 8,
+    paddingHorizontal: 4,
     paddingVertical: 0,
   },
   dateText: {

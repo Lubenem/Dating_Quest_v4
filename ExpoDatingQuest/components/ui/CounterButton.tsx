@@ -23,7 +23,7 @@ import * as Haptics from 'expo-haptics';
 import { ActionType } from '../../types';
 import { Colors, Layout, ActionIcons } from '../../constants';
 
-const DISABLED_OPACITY = 0.6;
+const DISABLED_OPACITY = 0.7;
 
 /**
  * Props for CounterButton

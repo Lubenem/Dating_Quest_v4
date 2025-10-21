@@ -50,14 +50,12 @@ export const MapPage: React.FC = () => {
   const [mapReady, setMapReady] = useState(false);
   const [markersRendered, setMarkersRendered] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
-  const actionsLengthRef = useRef(actions.length);
+  const selectedDateRef = useRef(selectedDate.toDateString());
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useFocusEffect(
     useCallback(() => {
       setIsFocused(true);
-      setMarkersRendered(false);
-      actionsLengthRef.current = actions.length;
       
       if (mapRef.current) {
         setMapReady(true);
@@ -74,11 +72,15 @@ export const MapPage: React.FC = () => {
       return () => {
         setIsFocused(false);
       };
-    }, [actions.length, fadeAnim])
+    }, [fadeAnim])
   );
 
   useEffect(() => {
-    setMarkersRendered(false);
+    const newDateString = selectedDate.toDateString();
+    if (selectedDateRef.current !== newDateString) {
+      selectedDateRef.current = newDateString;
+      setMarkersRendered(false);
+    }
   }, [selectedDate]);
 
   useEffect(() => {
@@ -196,7 +198,7 @@ export const MapPage: React.FC = () => {
           
           return (
             <Marker
-              key={`${action.id}-${selectedDate.toDateString()}`}
+              key={action.id}
               coordinate={{
                 latitude: action.location.latitude,
                 longitude: action.location.longitude,

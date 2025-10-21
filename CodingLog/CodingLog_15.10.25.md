@@ -38,6 +38,9 @@
 
 ## `21.10.25.Tue`
 
+## <Dashboard>
+* Ui fixes
+
 ## <Calendar>
 * Add simple calendar to topbar
 
