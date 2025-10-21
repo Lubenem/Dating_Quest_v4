@@ -4,12 +4,13 @@ import { useFocusEffect } from '@react-navigation/native';
 import { Users, MessageCircle, Heart, Clock } from 'lucide-react-native';
 import { useLocation } from '../hooks/useLocation';
 import { useActionsContext } from '../contexts/ActionsContext';
-import { Map as MapConstants, Colors, ActionColors, ActionIcons } from '../constants';
+import { Map as MapConstants, Colors, ActionColors, ActionIcons, MapTrail } from '../constants';
 import { ActionType } from '../types';
 
 let MapView: any;
 let Marker: any;
 let Circle: any;
+let Polyline: any;
 let PROVIDER_GOOGLE: any;
 
 if (Platform.OS !== 'web') {
@@ -17,6 +18,7 @@ if (Platform.OS !== 'web') {
   MapView = RNMaps.default;
   Marker = RNMaps.Marker;
   Circle = RNMaps.Circle;
+  Polyline = RNMaps.Polyline;
   PROVIDER_GOOGLE = RNMaps.PROVIDER_GOOGLE;
 }
 
@@ -111,6 +113,19 @@ export const MapPage: React.FC = () => {
     return dayActions.sort((a, b) => priorityOrder[a.type] - priorityOrder[b.type]);
   }, [isFocused, actions.length, getDayActions, selectedDate]);
 
+  const trailCoordinates = React.useMemo(() => {
+    if (!isFocused || selectedDateActions.length < 2) return [];
+    
+    const sortedByTime = [...selectedDateActions].sort((a, b) => 
+      new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+    );
+    
+    return sortedByTime.map(action => ({
+      latitude: action.location.latitude,
+      longitude: action.location.longitude,
+    }));
+  }, [selectedDateActions, isFocused]);
+
   if (Platform.OS === 'web') {
     return (
       <View style={styles.container}>
@@ -192,6 +207,15 @@ export const MapPage: React.FC = () => {
           strokeWidth={2}
         />
 
+        {mapReady && MapTrail.display && trailCoordinates.length > 0 && (
+          <Polyline
+            coordinates={trailCoordinates}
+            strokeColor={MapTrail.color}
+            strokeWidth={MapTrail.width}
+            zIndex={1}
+          />
+        )}
+
         {mapReady && selectedDateActions.map((action, index) => {
           const IconComponent = getIconForActionType(action.type);
           const markerColor = ActionColors[action.type];
@@ -204,6 +228,7 @@ export const MapPage: React.FC = () => {
                 longitude: action.location.longitude,
               }}
               tracksViewChanges={!markersRendered}
+              zIndex={2}
             >
               <View 
                 style={styles.markerContainer}

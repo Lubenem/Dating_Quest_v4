@@ -38,6 +38,9 @@
 
 ## `21.10.25.Tue`
 
+## <Map>
+* Added the trail logic
+
 ## <Dashboard>
 * Ui fixes
 
@@ -85,6 +88,9 @@
 ## <Map>
 
 ## `21.10.25.Tue`
+
+[x] ## <Map> | Trail
+* Let's display trail. A line which connects action markers on the map in chronological order. Move the line color to constant (make it green), make it look nice and thick, z-index hirarchy should be belove markers
 
 [x] ## <Calendar> | Change action icons
 * Ok, now a big one

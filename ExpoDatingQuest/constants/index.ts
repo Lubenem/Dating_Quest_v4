@@ -74,6 +74,15 @@ export const ActionColors = {
 } as const;
 
 /**
+ * MapTrail - Configuration for the trail line on the map
+ */
+export const MapTrail = {
+  display: false,               // Show/hide trail line
+  color: '#10b981',             // Green - trail color connecting markers
+  width: 1,                     // Line thickness
+} as const;
+
+/**
  * ActionIcons - Icon names for each action type
  * Centralized icon configuration for app-wide consistency
  * Icons from lucide-react-native
