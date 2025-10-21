@@ -1,20 +1,78 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { ChevronLeft, ChevronRight } from 'lucide-react-native';
 import { useActionsContext } from '../../contexts/ActionsContext';
 import { Colors } from '../../constants';
 
 export const TopBar: React.FC = () => {
   const insets = useSafeAreaInsets();
-  const { counters, dailyGoal } = useActionsContext();
+  const { counters, dailyGoal, selectedDate, setSelectedDate, isToday } = useActionsContext();
 
   const progress = dailyGoal > 0 ? (counters.approaches / dailyGoal) * 100 : 0;
   const progressClamped = Math.min(progress, 100);
+
+  const goToPreviousDay = () => {
+    const newDate = new Date(selectedDate);
+    newDate.setDate(newDate.getDate() - 1);
+    setSelectedDate(newDate);
+  };
+
+  const goToNextDay = () => {
+    if (isToday) return;
+    const newDate = new Date(selectedDate);
+    newDate.setDate(newDate.getDate() + 1);
+    setSelectedDate(newDate);
+  };
+
+  const goToToday = () => {
+    setSelectedDate(new Date());
+  };
+
+  const formatDate = (date: Date): string => {
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    if (date.toDateString() === today.toDateString()) {
+      return 'Today';
+    } else if (date.toDateString() === yesterday.toDateString()) {
+      return 'Yesterday';
+    } else {
+      const options: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric' };
+      return date.toLocaleDateString('en-US', options);
+    }
+  };
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.content}>
         <Text style={styles.title}>Dating Quest</Text>
+        
+        <View style={styles.datePickerContainer}>
+          <TouchableOpacity onPress={goToPreviousDay} style={styles.dateArrow}>
+            <ChevronLeft size={20} color={!isToday ? Colors.accent : Colors.text} />
+          </TouchableOpacity>
+          
+          <TouchableOpacity onPress={isToday ? undefined : goToToday} style={styles.dateDisplay}>
+            <Text style={[styles.dateText, !isToday && styles.dateTextPast]}>
+              {formatDate(selectedDate)}
+            </Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            onPress={goToNextDay} 
+            style={styles.dateArrow}
+            disabled={isToday}
+          >
+            <ChevronRight 
+              size={20} 
+              color={!isToday ? Colors.accent : Colors.text}
+              opacity={isToday ? 0.3 : 1}
+            />
+          </TouchableOpacity>
+        </View>
+
         <View style={styles.progressContainer}>
           <Text style={styles.progressText}>
             {counters.approaches} / {dailyGoal}
@@ -45,17 +103,47 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 12,
+    gap: 12,
   },
   title: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: '700',
     color: Colors.text,
+    minWidth: 100,
+  },
+  datePickerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 12,
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+    justifyContent: 'center',
+  },
+  dateArrow: {
+    padding: 0,
+  },
+  dateDisplay: {
+    paddingHorizontal: 8,
+    paddingVertical: 0,
+  },
+  dateText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: Colors.text,
+    minWidth: 80,
+    textAlign: 'center',
+  },
+  dateTextPast: {
+    color: Colors.accent,
   },
   progressContainer: {
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 12,
+    alignItems: 'flex-end',
+    minWidth: 60,
   },
   progressText: {
     fontSize: 14,

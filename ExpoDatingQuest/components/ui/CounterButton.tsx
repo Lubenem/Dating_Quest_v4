@@ -23,6 +23,8 @@ import * as Haptics from 'expo-haptics';
 import { ActionType } from '../../types';
 import { Colors, Layout, ActionIcons } from '../../constants';
 
+const DISABLED_OPACITY = 0.6;
+
 /**
  * Props for CounterButton
  */
@@ -183,25 +185,25 @@ export const CounterButton: React.FC<CounterButtonProps> = ({
           end={{ x: 1, y: 1 }}
         >
           {/* Icon in top-left corner */}
-          <View style={styles.iconContainer}>
+          <View style={[styles.iconContainer, disabled && styles.iconContainerDisabled]}>
             {IconComponent && <IconComponent size={32} color="white" />}
           </View>
           
           {/* Minus button in top-right corner */}
           <TouchableOpacity
-            style={[styles.minusButton, count === 0 && styles.minusButtonDisabled]}
+            style={[styles.minusButton, (count === 0 || disabled) && styles.minusButtonDisabled]}
             onPress={handleDecrement}
-            disabled={count === 0}
+            disabled={count === 0 || disabled}
             activeOpacity={0.7}
           >
             <Minus size={22} color="white" />
           </TouchableOpacity>
           
           {/* Label text */}
-          <Text style={styles.title}>{config?.label || 'Counter'}</Text>
+          <Text style={[styles.title, disabled && styles.textDisabled]}>{config?.label || 'Counter'}</Text>
           
           {/* Count number (big and bold!) */}
-          <Text style={styles.count}>{count}</Text>
+          <Text style={[styles.count, disabled && styles.textDisabled]}>{count}</Text>
         </LinearGradient>
       </TouchableOpacity>
     </Animated.View>
@@ -256,6 +258,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'rgba(255, 255, 255, 0.25)',
   },
+  iconContainerDisabled: {
+    opacity: DISABLED_OPACITY,
+  },
   minusButton: {
     position: 'absolute',
     top: 10,
@@ -291,6 +296,9 @@ const styles = StyleSheet.create({
     textShadowColor: 'rgba(0, 0, 0, 0.5)',
     textShadowOffset: { width: 0, height: 3 },
     textShadowRadius: 6,
+  },
+  textDisabled: {
+    opacity: DISABLED_OPACITY,
   },
 });
 

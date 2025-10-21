@@ -29,9 +29,11 @@ import { Map as MapConstants } from '../constants';
 interface ActionsContextType {
   // STATE - Current data
   actions: Action[];                                    // All actions ever recorded
-  counters: Counters;                                   // Today's counters
+  counters: Counters;                                   // Today's counters (for selected date)
   dailyGoal: number;                                    // User's daily approach goal
   isLoading: boolean;                                   // Is data loading from storage?
+  selectedDate: Date;                                   // Currently selected date for viewing
+  isToday: boolean;                                     // Is selected date today?
   
   // ACTIONS - Functions to modify state
   addAction: (type: ActionType, notes?: string) => Promise<Action | null>;
@@ -40,6 +42,7 @@ interface ActionsContextType {
   getDayCounters: (date: string) => Counters;
   getTodayCounters: () => Counters;
   setDailyGoal: (goal: number) => void;
+  setSelectedDate: (date: Date) => void;               // Set the selected date
   
   // GEOLOCATION - Location tracking
   permissionGranted: boolean;                           // Does user allow location?
@@ -109,6 +112,8 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
   const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [hasInitialized, setHasInitialized] = useState<boolean>(false);
+  const [selectedDate, setSelectedDateState] = useState<Date>(new Date());
+  const [isToday, setIsToday] = useState<boolean>(true);
 
   /**
    * Generate a unique ID for actions
@@ -210,18 +215,19 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
    * Counts how many of each action type happened today
    */
   const updateCounters = useCallback((): void => {
-    const todayActions = getDayActions(getTodayString());
+    const selectedDateString = selectedDate.toDateString();
+    const dayActions = getDayActions(selectedDateString);
     const newCounters: Counters = {
       // Approaches = all actions except missed opportunities
-      approaches: todayActions.filter(action => action.type !== 'missedOpportunity').length,
+      approaches: dayActions.filter(action => action.type !== 'missedOpportunity').length,
       
       // Count each specific type
-      contacts: todayActions.filter(action => action.type === 'contact').length,
-      instantDates: todayActions.filter(action => action.type === 'instantDate').length,
-      missedOpportunities: todayActions.filter(action => action.type === 'missedOpportunity').length,
+      contacts: dayActions.filter(action => action.type === 'contact').length,
+      instantDates: dayActions.filter(action => action.type === 'instantDate').length,
+      missedOpportunities: dayActions.filter(action => action.type === 'missedOpportunity').length,
     };
     setCounters(newCounters);
-  }, [getDayActions]);
+  }, [getDayActions, selectedDate]);
 
   /**
    * Add a new action
@@ -371,6 +377,13 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
     }
   };
 
+  const setSelectedDate = (date: Date): void => {
+    setSelectedDateState(date);
+    const today = new Date();
+    const isSameDay = date.toDateString() === today.toDateString();
+    setIsToday(isSameDay);
+  };
+
   /**
    * EFFECT: Load data when app starts
    * This runs once when the provider mounts
@@ -407,7 +420,7 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
    */
   useEffect(() => {
     updateCounters();
-  }, [actions]);
+  }, [actions, selectedDate, updateCounters]);
 
   /**
    * EFFECT: Update userLocation when GPS coordinates change
@@ -433,12 +446,15 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
     counters,
     dailyGoal,
     isLoading,
+    selectedDate,
+    isToday,
     addAction,
     removeLastAction,
     getDayActions,
     getDayCounters,
     getTodayCounters,
     setDailyGoal,
+    setSelectedDate,
     permissionGranted,
     geoError,
     userLocation,

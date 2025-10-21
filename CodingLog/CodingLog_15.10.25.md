@@ -34,13 +34,12 @@
 
 --- --- ---
 
-
-## <Calendar>
-[] Add simple calendar to topbar
-
 # [Commits]
 
 ## `21.10.25.Tue`
+
+## <Calendar>
+* Add simple calendar to topbar
 
 ## <Dashboard>
 * Change the missedOp and InstantDate icons (heart...)
@@ -84,6 +83,12 @@
 
 ## `21.10.25.Tue`
 
+[x] ## <Calendar> | Change action icons
+* Ok, now a big one
+* I want to be able to set an app-wide variable `selectedDate`. Should be stored in state. It will affect all our other pages. For example `Dashboard` now will access the current `selectedDate` prop from our state beofre displaying anything an use it to get the actions for the date. Same with the `Map`.
+* Date selection logic: To our `TopBar` we will add a simple date selection component, so it will be possible to change the app's `selectedDate` from any page. Make it look nice, and align with other already exisitng UI elements on the topbar well. Default `selectedDate` should be always today ;), store it only in state.
+* There should not be a possibility to change the past or future :) If we choose any date except for today, the action buttons on dashboard should be blocked (make it look nice)
+
 [x] Dashboard & Map | Change action icons
 * For `missedOps` I want an icon from current `InstantDates` (clock)
 * For `InstantDates` I want an icon of a heart.
@@ -112,10 +117,3 @@ Add display order logic, when more then one marker at one place. They should be 
 * The map should be focused at my current location with scale like 1000 meters (I should be able to configure this variable)
 * There should be not re-loading each time I switch to map page, it should be loaded and focuesd on me just once, and then stay active like that even if it is not visible, let's not care much about the resources, the UX matters much more.
 * Dark theme
-
-# [Done]
-
-## <Map>
-[x] Add react-map (empty with just current location)
-[x] Add the markers logic (from React app)
-[x] Adjust the style (dark and fancy)

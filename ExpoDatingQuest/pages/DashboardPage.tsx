@@ -34,9 +34,11 @@ export const DashboardPage: React.FC = () => {
   const { 
     addAction,              // Function to add an action
     removeLastAction,       // Function to remove an action
-    counters,               // Today's counter values
+    counters,               // Counter values for selected date
     permissionGranted,      // Does user allow location?
-    geoError                // Any location errors?
+    geoError,               // Any location errors?
+    selectedDate,           // Currently selected date
+    isToday,                // Is selected date today?
   } = useActionsContext();
 
   /**
@@ -68,20 +70,19 @@ export const DashboardPage: React.FC = () => {
   };
 
   /**
-   * Format today's date in a nice readable format
+   * Format selected date in a nice readable format
    * Example: "Friday, October 10, 2025"
    * 
    * @returns Formatted date string
    */
   const formatDate = (): string => {
-    const today = new Date();
     const options: Intl.DateTimeFormatOptions = { 
       weekday: 'long', 
       year: 'numeric', 
       month: 'long', 
       day: 'numeric' 
     };
-    return today.toLocaleDateString('en-US', options);
+    return selectedDate.toLocaleDateString('en-US', options);
   };
 
   return (
@@ -108,7 +109,7 @@ export const DashboardPage: React.FC = () => {
           counters={counters}
           onIncrement={handleIncrement}
           onDecrement={handleDecrement}
-          disabled={!permissionGranted}
+          disabled={!permissionGranted || !isToday}
         />
       </ScrollView>
     </SafeAreaView>

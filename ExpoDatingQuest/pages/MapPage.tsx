@@ -44,7 +44,7 @@ const getIconForActionType = (type: ActionType) => {
 
 export const MapPage: React.FC = () => {
   const { location, permissionGranted, error } = useLocation();
-  const { actions, getDayActions, isLoading } = useActionsContext();
+  const { actions, getDayActions, isLoading, selectedDate } = useActionsContext();
   const mapRef = useRef<any>(null);
   const hasAnimatedToLocation = useRef(false);
   const [mapReady, setMapReady] = useState(false);
@@ -78,6 +78,10 @@ export const MapPage: React.FC = () => {
   );
 
   useEffect(() => {
+    setMarkersRendered(false);
+  }, [selectedDate]);
+
+  useEffect(() => {
     if (location && mapRef.current && !hasAnimatedToLocation.current && Platform.OS !== 'web') {
       mapRef.current.animateToRegion({
         latitude: location.coords.latitude,
@@ -89,10 +93,11 @@ export const MapPage: React.FC = () => {
     }
   }, [location]);
 
-  const todayActions = React.useMemo(() => {
+  const selectedDateActions = React.useMemo(() => {
     if (!isFocused) return [];
     
-    const dayActions = getDayActions(new Date().toDateString());
+    const selectedDateString = selectedDate.toDateString();
+    const dayActions = getDayActions(selectedDateString);
     
     const priorityOrder: Record<ActionType, number> = {
       missedOpportunity: 1,
@@ -102,7 +107,7 @@ export const MapPage: React.FC = () => {
     };
     
     return dayActions.sort((a, b) => priorityOrder[a.type] - priorityOrder[b.type]);
-  }, [isFocused, actions.length, getDayActions]);
+  }, [isFocused, actions.length, getDayActions, selectedDate]);
 
   if (Platform.OS === 'web') {
     return (
@@ -185,13 +190,13 @@ export const MapPage: React.FC = () => {
           strokeWidth={2}
         />
 
-        {mapReady && todayActions.map((action, index) => {
+        {mapReady && selectedDateActions.map((action, index) => {
           const IconComponent = getIconForActionType(action.type);
           const markerColor = ActionColors[action.type];
           
           return (
             <Marker
-              key={action.id}
+              key={`${action.id}-${selectedDate.toDateString()}`}
               coordinate={{
                 latitude: action.location.latitude,
                 longitude: action.location.longitude,
@@ -201,7 +206,7 @@ export const MapPage: React.FC = () => {
               <View 
                 style={styles.markerContainer}
                 onLayout={() => {
-                  if (!markersRendered && index === todayActions.length - 1) {
+                  if (!markersRendered && index === selectedDateActions.length - 1) {
                     setMarkersRendered(true);
                   }
                 }}
