@@ -25,8 +25,8 @@
 
 ## <Map>
 [x] Add react-map (empty with just current location)
-[] Adjust the style (dark and fancy)
 [x] Add the markers logic (from React app)
+[] Adjust the style (dark and fancy)
 
 ## <TopProgressBar>
 ## <BottomNavBar>
@@ -36,6 +36,12 @@
 [] Change teh missedOp and InstantDate icons (heart...)
 
 # [Commits]
+
+## `21.10.25.Tue`
+
+## <Map>
+* Added the map text color const
+* Smooth Dash -> Map transition fix attempt
 
 ## `20.10.25.Mon`
 

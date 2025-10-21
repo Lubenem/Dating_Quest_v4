@@ -40,7 +40,8 @@ export const BottomBar: React.FC = () => {
         tabBarPressColor: 'rgba(255, 255, 255, 0.1)',
         tabBarShowIcon: true,
         swipeEnabled: true,
-        lazy: true,
+        lazy: false,
+        lazyPreloadDistance: 0,
       }}
       tabBarPosition="bottom"
     >

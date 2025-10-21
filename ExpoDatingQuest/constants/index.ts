@@ -93,7 +93,7 @@ export const Layout = {
  * Adjust these to make animations faster/slower
  */
 export const Animation = {
-  pageTransitionMs: 300,    // How long page slide animations take
+  pageTransitionMs: 600,    // How long page slide animations take
   buttonPressMs: 100,       // How long button press animations take
   fadeMs: 200,              // How long fade in/out animations take
 } as const;
@@ -108,6 +108,8 @@ export const Map = {
     enabled: __DEV__,       // Automatically enable for dev builds. Set to false to disable, or true to force enable in production
     radiusMeters: 500,     // Radius in meters for random coordinates (1000m = 1km)
   },
+  
+  textColor: '#FFD700',     // Map text color (street names, labels, etc.)
 } as const;
 
 

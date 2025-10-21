@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { View, StyleSheet, Platform, Text, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, Platform, Text, ActivityIndicator, Animated } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { Users, MessageCircle, Clock, XCircle } from 'lucide-react-native';
 import { useLocation } from '../hooks/useLocation';
@@ -45,6 +45,7 @@ export const MapPage: React.FC = () => {
   const [markersRendered, setMarkersRendered] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const actionsLengthRef = useRef(actions.length);
+  const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useFocusEffect(
     useCallback(() => {
@@ -52,10 +53,22 @@ export const MapPage: React.FC = () => {
       setMarkersRendered(false);
       actionsLengthRef.current = actions.length;
       
+      if (mapRef.current) {
+        setMapReady(true);
+      } else {
+        setMapReady(false);
+        fadeAnim.setValue(0);
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 300,
+          useNativeDriver: true,
+        }).start();
+      }
+      
       return () => {
         setIsFocused(false);
       };
-    }, [actions.length])
+    }, [actions.length, fadeAnim])
   );
 
   useEffect(() => {
@@ -134,6 +147,12 @@ export const MapPage: React.FC = () => {
 
   return (
     <View style={styles.container}>
+      {!mapReady && (
+        <Animated.View style={[styles.loadingOverlay, { opacity: fadeAnim }]}>
+          <ActivityIndicator size="large" color={Colors.accent} />
+          <Text style={styles.loadingText}>Loading map...</Text>
+        </Animated.View>
+      )}
       <MapView
         ref={mapRef}
         provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
@@ -143,7 +162,6 @@ export const MapPage: React.FC = () => {
         showsMyLocationButton={true}
         customMapStyle={darkMapStyle}
         onMapReady={() => {
-          console.log('MapView - onMapReady fired, map is ready for markers');
           setMapReady(true);
         }}
       >
@@ -205,7 +223,7 @@ const darkMapStyle = [
   },
   {
     elementType: 'labels.text.fill',
-    stylers: [{ color: '#757575' }],
+    stylers: [{ color: MapConstants.textColor }],
   },
   {
     elementType: 'labels.text.stroke',
@@ -219,7 +237,7 @@ const darkMapStyle = [
   {
     featureType: 'administrative.country',
     elementType: 'labels.text.fill',
-    stylers: [{ color: '#9e9e9e' }],
+    stylers: [{ color: MapConstants.textColor }],
   },
   {
     featureType: 'administrative.land_parcel',
@@ -228,12 +246,12 @@ const darkMapStyle = [
   {
     featureType: 'administrative.locality',
     elementType: 'labels.text.fill',
-    stylers: [{ color: '#bdbdbd' }],
+    stylers: [{ color: MapConstants.textColor }],
   },
   {
     featureType: 'poi',
     elementType: 'labels.text.fill',
-    stylers: [{ color: '#757575' }],
+    stylers: [{ color: MapConstants.textColor }],
   },
   {
     featureType: 'poi.park',
@@ -243,7 +261,7 @@ const darkMapStyle = [
   {
     featureType: 'poi.park',
     elementType: 'labels.text.fill',
-    stylers: [{ color: '#616161' }],
+    stylers: [{ color: MapConstants.textColor }],
   },
   {
     featureType: 'poi.park',
@@ -258,7 +276,7 @@ const darkMapStyle = [
   {
     featureType: 'road',
     elementType: 'labels.text.fill',
-    stylers: [{ color: '#8a8a8a' }],
+    stylers: [{ color: MapConstants.textColor }],
   },
   {
     featureType: 'road.arterial',
@@ -278,12 +296,12 @@ const darkMapStyle = [
   {
     featureType: 'road.local',
     elementType: 'labels.text.fill',
-    stylers: [{ color: '#616161' }],
+    stylers: [{ color: MapConstants.textColor }],
   },
   {
     featureType: 'transit',
     elementType: 'labels.text.fill',
-    stylers: [{ color: '#757575' }],
+    stylers: [{ color: MapConstants.textColor }],
   },
   {
     featureType: 'water',
@@ -293,7 +311,7 @@ const darkMapStyle = [
   {
     featureType: 'water',
     elementType: 'labels.text.fill',
-    stylers: [{ color: '#3d3d3d' }],
+    stylers: [{ color: MapConstants.textColor }],
   },
 ];
 
@@ -303,6 +321,22 @@ const styles = StyleSheet.create({
   },
   map: {
     flex: 1,
+  },
+  loadingOverlay: {
+    position: 'absolute' as 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    justifyContent: 'center' as 'center',
+    alignItems: 'center' as 'center',
+    zIndex: 1000,
+  },
+  loadingText: {
+    fontSize: 16,
+    color: Colors.accent,
+    marginTop: 10,
   },
   messageContainer: {
     flex: 1,
