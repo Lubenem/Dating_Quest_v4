@@ -52,12 +52,12 @@ export const MapPage: React.FC = () => {
   const [mapReady, setMapReady] = useState(false);
   const [markersRendered, setMarkersRendered] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
-  const selectedDateRef = useRef(selectedDate.toDateString());
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useFocusEffect(
     useCallback(() => {
       setIsFocused(true);
+      setMarkersRendered(false);
       
       if (mapRef.current) {
         setMapReady(true);
@@ -78,12 +78,10 @@ export const MapPage: React.FC = () => {
   );
 
   useEffect(() => {
-    const newDateString = selectedDate.toDateString();
-    if (selectedDateRef.current !== newDateString) {
-      selectedDateRef.current = newDateString;
+    if (isFocused) {
       setMarkersRendered(false);
     }
-  }, [selectedDate]);
+  }, [selectedDate, isFocused]);
 
   useEffect(() => {
     if (location && mapRef.current && !hasAnimatedToLocation.current && Platform.OS !== 'web') {

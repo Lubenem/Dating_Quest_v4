@@ -39,6 +39,9 @@
 ## `21.10.25.Tue`
 
 ## <Map>
+* Markers display fix (still flickering)
+
+## <Map>
 * Added the trail logic
 
 ## <Dashboard>
