@@ -26,7 +26,8 @@ export const BottomBar: React.FC = () => {
           elevation: 0,
         },
         tabBarContentContainerStyle: {
-          padding: 0,
+          padding:0,
+          paddingBottom: 15,
           margin: 0,
         },
         tabBarItemStyle: {
@@ -35,7 +36,8 @@ export const BottomBar: React.FC = () => {
         },
         tabBarIndicatorStyle: {
           backgroundColor: Colors.accent,
-          height: 3,
+          height: 2,
+          top: 0,
         },
         tabBarPressColor: 'rgba(255, 255, 255, 0.1)',
         tabBarShowIcon: true,
