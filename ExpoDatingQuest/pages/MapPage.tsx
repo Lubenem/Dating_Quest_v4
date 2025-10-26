@@ -294,14 +294,15 @@ export const MapPage: React.FC = () => {
                 }}
               >
                 <View style={styles.markerInner}>
-                  <View style={[styles.iconWrapper, { backgroundColor: markerColor }]}>
-                    <IconComponent size={22} color="#ffffff" />
+                  <View style={[
+                    styles.iconWrapper, 
+                    { 
+                      backgroundColor: markerColor,
+                      borderColor: isCluster ? Colors.accent : '#ffffff'
+                    }
+                  ]}>
+                    <IconComponent size={20} color={isCluster ? Colors.accent : '#ffffff'} />
                   </View>
-                  {isCluster && (
-                    <View style={styles.clusterBadge}>
-                      <Text style={styles.clusterText}>{cluster.actions.length}</Text>
-                    </View>
-                  )}
                 </View>
               </View>
               <Callout tooltip>
@@ -355,12 +356,13 @@ export const MapPage: React.FC = () => {
                     <View style={[styles.actionIcon, { backgroundColor: actionColor }]}>
                       <IconComponent size={16} color="#ffffff" />
                     </View>
-                    <View style={styles.actionDetails}>
-                      <Text style={styles.actionType}>
-                        {action.type === 'instantDate' ? 'Instant Date' : 
-                         action.type === 'missedOpportunity' ? 'Missed Opportunity' :
-                         action.type.charAt(0).toUpperCase() + action.type.slice(1)}
-                      </Text>
+                  <View style={styles.actionDetails}>
+                    <Text style={styles.actionType}>
+                      {action.type === 'approach' ? 'Approach' :
+                       action.type === 'contact' ? 'Contact' :
+                       action.type === 'instantDate' ? 'Instant Date' : 
+                       'Missed Opportunity'}
+                    </Text>
                       <Text style={styles.actionTime}>{time}</Text>
                       {action.notes && (
                         <Text style={styles.actionNotes}>{action.notes}</Text>
@@ -532,33 +534,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 2,
-    borderColor: '#ffffff',
     backgroundColor: Colors.primary,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 3,
     elevation: 5,
-  },
-  clusterBadge: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    backgroundColor: Colors.accent,
-    borderRadius: 10,
-    minWidth: 20,
-    height: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 4,
-    borderWidth: 2,
-    borderColor: '#ffffff',
-    elevation: 8,
-  },
-  clusterText: {
-    color: '#000000',
-    fontSize: 11,
-    fontWeight: 'bold',
   },
   modalOverlay: {
     flex: 1,
@@ -613,6 +594,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,
+    borderWidth: 2,
+    borderColor: '#ffffff',
   },
   actionDetails: {
     flex: 1,

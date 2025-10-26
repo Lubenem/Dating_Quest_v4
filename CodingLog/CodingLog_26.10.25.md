@@ -51,9 +51,10 @@
 [?] Map | Page transition problem
 [?] Map | Cluster popup and badge issue
 
-
-
-
 # [Commits]
 
 ## `26.10.25.Sun`
+
+## <Field2Fixes>
+* Map | Improved map clusters logic
+
