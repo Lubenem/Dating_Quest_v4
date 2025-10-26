@@ -125,8 +125,10 @@ export const Animation = {
 export const Map = {
   initialScale: 1000,       // Initial map scale in meters (radius from center)
   
+  clusterRadius: 5,        // Cluster markers within this radius (meters)
+  
   testMode: {
-    enabled: __DEV__,       // Automatically enable for dev builds. Set to false to disable, or true to force enable in production
+    enabled: false,       // Automatically enable for dev builds. Set to false to disable, or true to force enable in production
     radiusMeters: 500,     // Radius in meters for random coordinates (1000m = 1km)
   },
   

@@ -12,3 +12,4 @@ Here is the current version of our expo app:
  - `React-Native-Maps`: https://github.com/react-native-maps/react-native-maps/tree/master
  - `Expo`: https://docs.expo.dev/
  - `React-Native`: https://reactnative.dev/docs/getting-started 
+* Create as less files as possible. Don't create documentation if not asked (.md)
