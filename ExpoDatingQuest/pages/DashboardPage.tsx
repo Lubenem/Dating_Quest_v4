@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
   warningContainer: {
     marginTop: 16,
     padding: 12,
-    backgroundColor: Colors.error + '20', // Red with 20% opacity
+    backgroundColor: Colors.error + '20',
     borderRadius: 8,
     borderLeftWidth: 4,
     borderLeftColor: Colors.error,

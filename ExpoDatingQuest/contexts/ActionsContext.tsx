@@ -244,34 +244,29 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
    */
   const addAction = async (type: ActionType, notes: string = ''): Promise<Action | null> => {
     try {
-      // Get GPS coordinates
+      if (!permissionGranted || !location) {
+        console.error('Cannot add action: Location not available');
+        return null;
+      }
+
+      const realLat = location.coords.latitude;
+      const realLng = location.coords.longitude;
+      
       let locationData: { latitude: number; longitude: number };
       
-      if (permissionGranted && location) {
-        const realLat = location.coords.latitude;
-        const realLng = location.coords.longitude;
-        
-        if (MapConstants.testMode.enabled) {
-          locationData = generateRandomCoordinates(
-            realLat,
-            realLng,
-            MapConstants.testMode.radiusMeters
-          );
-        } else {
-          locationData = {
-            latitude: realLat,
-            longitude: realLng,
-          };
-        }
+      if (MapConstants.testMode.enabled) {
+        locationData = generateRandomCoordinates(
+          realLat,
+          realLng,
+          MapConstants.testMode.radiusMeters
+        );
       } else {
-        // Fallback to NYC coordinates if no GPS available
         locationData = {
-          latitude: 40.7128,
-          longitude: -74.0060,
+          latitude: realLat,
+          longitude: realLng,
         };
       }
 
-      // Create the new action object
       const newAction: Action = {
         id: generateId(),
         type,
@@ -280,7 +275,6 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
         notes
       };
 
-      // Save it!
       const updatedActions = [...actions, newAction];
       setActions(updatedActions);
       await saveActions(updatedActions);

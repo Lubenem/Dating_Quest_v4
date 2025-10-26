@@ -27,13 +27,6 @@
 ## <Dashboard>
 ## <Calendar>
 
---- --- ---
-
-## <Dashboard>
-[] Fix the counter animations
-
---- --- ---
-
 # [Commits]
 
 ## `21.10.25.Tue`

@@ -16,10 +16,56 @@ import { StyleSheet } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 
-import { ActionsProvider } from './contexts/ActionsContext';
+import { ActionsProvider, useActionsContext } from './contexts/ActionsContext';
 import { TopBar } from './components/bars/TopBar';
 import { BottomBar } from './components/bars/BottomBar';
+import { LoadingOverlay } from './components/ui/LoadingOverlay';
 import { Colors } from './constants';
+
+const AppContent: React.FC = () => {
+  const { permissionGranted, userLocation } = useActionsContext();
+  const shouldShowLoader = permissionGranted && !userLocation;
+
+  return (
+    <>
+      <NavigationContainer
+        theme={{
+          dark: false,
+          colors: {
+            primary: Colors.primary,
+            background: 'transparent',
+            card: 'transparent',
+            text: Colors.text,
+            border: 'transparent',
+            notification: Colors.secondary,
+          },
+          fonts: {
+            regular: {
+              fontFamily: 'System',
+              fontWeight: '400',
+            },
+            medium: {
+              fontFamily: 'System',
+              fontWeight: '500',
+            },
+            bold: {
+              fontFamily: 'System',
+              fontWeight: '700',
+            },
+            heavy: {
+              fontFamily: 'System',
+              fontWeight: '900',
+            },
+          },
+        }}
+      >
+        <TopBar />
+        <BottomBar />
+      </NavigationContainer>
+      {shouldShowLoader && <LoadingOverlay />}
+    </>
+  );
+};
 
 /**
  * Main App Component
@@ -34,40 +80,7 @@ export default function App() {
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
         >
-          <NavigationContainer
-            theme={{
-              dark: false,
-              colors: {
-                primary: Colors.primary,
-                background: 'transparent',
-                card: 'transparent',
-                text: Colors.text,
-                border: 'transparent',
-                notification: Colors.secondary,
-              },
-              fonts: {
-                regular: {
-                  fontFamily: 'System',
-                  fontWeight: '400',
-                },
-                medium: {
-                  fontFamily: 'System',
-                  fontWeight: '500',
-                },
-                bold: {
-                  fontFamily: 'System',
-                  fontWeight: '700',
-                },
-                heavy: {
-                  fontFamily: 'System',
-                  fontWeight: '900',
-                },
-              },
-            }}
-          >
-            <TopBar />
-            <BottomBar />
-          </NavigationContainer>
+          <AppContent />
         </LinearGradient>
       </SafeAreaProvider>
     </ActionsProvider>

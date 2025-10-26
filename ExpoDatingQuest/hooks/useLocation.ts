@@ -158,11 +158,76 @@ export const useLocation = () => {
   };
 
   /**
-   * Effect: Get location on component mount
-   * This automatically fetches the user's location when the hook is first used
+   * Effect: Watch location continuously
+   * This keeps the location up-to-date as the user moves
    */
   useEffect(() => {
-    getCurrentLocation();
+    let subscription: any;
+    let watchId: number;
+    
+    const startWatching = async () => {
+      if (Platform.OS === 'web') {
+        if ('geolocation' in navigator) {
+          watchId = navigator.geolocation.watchPosition(
+            (position) => {
+              const webLocation: LocationObject = {
+                coords: {
+                  latitude: position.coords.latitude,
+                  longitude: position.coords.longitude,
+                  altitude: position.coords.altitude,
+                  accuracy: position.coords.accuracy,
+                  altitudeAccuracy: position.coords.altitudeAccuracy,
+                  heading: position.coords.heading,
+                  speed: position.coords.speed,
+                },
+                timestamp: position.timestamp,
+              };
+              setLocation(webLocation);
+              setPermissionGranted(true);
+              setError(null);
+            },
+            (error) => {
+              setError('Web geolocation error: ' + error.message);
+              setPermissionGranted(false);
+            },
+            {
+              enableHighAccuracy: false,
+              timeout: 10000,
+              maximumAge: 5000,
+            }
+          );
+        } else {
+          setError('Geolocation not supported in this browser');
+          setPermissionGranted(false);
+        }
+        return;
+      }
+      
+      const hasPermission = await requestPermission();
+      if (!hasPermission) return;
+      
+      subscription = await Location.watchPositionAsync(
+        {
+          accuracy: Location.Accuracy.Balanced,
+          timeInterval: 5000,
+          distanceInterval: 10,
+        },
+        (newLocation: LocationObject) => {
+          setLocation(newLocation);
+          setError(null);
+        }
+      );
+    };
+    
+    startWatching();
+    
+    return () => {
+      if (Platform.OS === 'web' && watchId) {
+        navigator.geolocation.clearWatch(watchId);
+      } else if (subscription) {
+        subscription.remove();
+      }
+    };
   }, []);
 
   return {
