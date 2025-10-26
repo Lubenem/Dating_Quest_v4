@@ -4,10 +4,13 @@ import { Home, MapPin } from 'lucide-react-native';
 import { DashboardPage } from '../../pages/DashboardPage';
 import { MapPage } from '../../pages/MapPage';
 import { Colors } from '../../constants';
+import { useActionsContext } from '../../contexts/ActionsContext';
 
 const Tab = createMaterialTopTabNavigator();
 
 export const BottomBar: React.FC = () => {
+  const { appMode } = useActionsContext();
+  
   return (
     <Tab.Navigator
       initialRouteName="Dashboard"
@@ -41,7 +44,7 @@ export const BottomBar: React.FC = () => {
         },
         tabBarPressColor: 'rgba(255, 255, 255, 0.1)',
         tabBarShowIcon: true,
-        swipeEnabled: true,
+        swipeEnabled: appMode === 'fullscale',
         lazy: false,
         lazyPreloadDistance: 0,
       }}
@@ -54,13 +57,15 @@ export const BottomBar: React.FC = () => {
           tabBarIcon: ({ color }) => <Home size={20} color={color} />,
         }}
       />
-      <Tab.Screen 
-        name="Map" 
-        component={MapPage}
-        options={{
-          tabBarIcon: ({ color }) => <MapPin size={20} color={color} />,
-        }}
-      />
+      {appMode === 'fullscale' && (
+        <Tab.Screen 
+          name="Map" 
+          component={MapPage}
+          options={{
+            tabBarIcon: ({ color }) => <MapPin size={20} color={color} />,
+          }}
+        />
+      )}
     </Tab.Navigator>
   );
 };

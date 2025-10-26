@@ -27,6 +27,42 @@
 ## <Dashboard>
 ## <Calendar>
 
+## <NextSteps>
+[] Calendar, should look nice, streak logic with fire emojis (if that day the approaches goal for that day was satisfied)
+[] Level system:
+ - we start from 1st level, if you are not doing a base of 1 appraoches for 3 days in a row => you go to 0 level (approaches goal: 1)
+ - 3 times 10 approaches a day in a row => go to 2nd level, approaches goal: 15
+ - 3 times 15 approaches a day in a row => go to 3rd level, approaches goal: 20
+ - 3 times 20 approaches a day in a row => go to 4th level, approaches goal: 25
+ - 3 times 25 approaches a day in a row => go to 5th level, approaches goal: 30
+* If you do less approaches then level's base (e.g. 1 level base is 1, 2 level base is 10) for 3 days in a row you lose one level. This way if you stop playing game, every 3 days you loose level
+* The approaches daily goal for each level should be configurable (const)
+* Remove the `App.defaultDailyGoal: 15,` from consts, not needed anymore, instead give me the ability to set `currentLevel` set to null by default (meaning defined by the system and users progress), but if not null, use the level from consts (for testing)
+* Display the current level nicely on the top bar, add the fire icon if there is a more than 2 days of achiveing the day goal, if more then 3 days, add 3 fire icons
+
+## <Field2Fixes>
+[x] Let's introduce two app modes `BasicMode` and `FullscaleMode`
+* `FullScaleMode` contains everything we have right now.
+* `BasicMode` only includes Dashboard page, Bottom Bar with one nav item, and topbar with progress,
+no map, no geolocation traking, just counters, the locations can be saved as null or smth like that, and it will be fine.
+* When the user opens the app first time we ask for the geo locations right, 
+ - if given => `FullscaleMode`
+ - if refused => `BasicMode`
+* When asked for geo once, remember the answer and don't ask again, till the app is reinstalled
+* In the future `FullscaleMode` will require payed subscription (don't worry about that right now)
+[x] Move The daily approaches goal variable to consts, so I could configure it, and set 15 instead of 10
+
+# [Commits]
+
+## `26.10.25.Sun`
+
+## <Field2Fixes>
+* Introduced two app modes `BasicMode` and `FullscaleMode`
+
+## <Field2Fixes>
+* Map | Improved map clusters logic
+
+# [Done]
 
 ## <Field1Fixes>
 [x] GPPs coordinates are not saving correctly, I need to reaload the app each time to update the position
@@ -50,11 +86,4 @@
 [?] Flickering still persistce when change date on map
 [?] Map | Page transition problem
 [?] Map | Cluster popup and badge issue
-
-# [Commits]
-
-## `26.10.25.Sun`
-
-## <Field2Fixes>
-* Map | Improved map clusters logic
 

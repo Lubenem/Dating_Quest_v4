@@ -39,6 +39,7 @@ export const DashboardPage: React.FC = () => {
     geoError,               // Any location errors?
     selectedDate,           // Currently selected date
     isToday,                // Is selected date today?
+    appMode,                // App mode (basic or fullscale)
   } = useActionsContext();
 
   /**
@@ -93,8 +94,8 @@ export const DashboardPage: React.FC = () => {
           <Text style={styles.title}>Dating Quest</Text>
           <Text style={styles.subtitle}>{formatDate()}</Text>
           
-          {/* Show warning if location permission denied */}
-          {!permissionGranted && geoError && (
+          {/* Show warning if location permission denied in fullscale mode */}
+          {appMode === 'fullscale' && !permissionGranted && geoError && (
             <View style={styles.warningContainer}>
               <Text style={styles.warningText}>
                 ⚠️ Location permission denied - action tracking disabled
@@ -109,7 +110,7 @@ export const DashboardPage: React.FC = () => {
           counters={counters}
           onIncrement={handleIncrement}
           onDecrement={handleDecrement}
-          disabled={!permissionGranted || !isToday}
+          disabled={!isToday || (appMode === 'fullscale' && !permissionGranted)}
         />
       </ScrollView>
     </SafeAreaView>

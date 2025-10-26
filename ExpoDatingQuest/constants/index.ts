@@ -120,6 +120,13 @@ export const Animation = {
 } as const;
 
 /**
+ * App - App-wide settings
+ */
+export const App = {
+  defaultDailyGoal: 15,     // Default daily approaches goal
+} as const;
+
+/**
  * Map - Map-related constants
  */
 export const Map = {
@@ -128,7 +135,7 @@ export const Map = {
   clusterRadius: 10,        // Cluster markers within this radius (meters)
   
   testMode: {
-    enabled: __DEV__,       // Automatically enable for dev builds. Set to false to disable, or true to force enable in production
+    enabled: false,       // Automatically enable for dev builds. Set to false to disable, or true to force enable in production
     radiusMeters: 500,     // Radius in meters for random coordinates (1000m = 1km)
   },
   

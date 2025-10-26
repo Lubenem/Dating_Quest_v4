@@ -18,7 +18,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode, useCa
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Action, ActionType, Counters } from '../types';
 import { useLocation } from '../hooks/useLocation';
-import { Map as MapConstants } from '../constants';
+import { Map as MapConstants, App as AppConstants } from '../constants';
 
 /**
  * ActionsContextType - Defines what the context provides
@@ -34,6 +34,8 @@ interface ActionsContextType {
   isLoading: boolean;                                   // Is data loading from storage?
   selectedDate: Date;                                   // Currently selected date for viewing
   isToday: boolean;                                     // Is selected date today?
+  appMode: 'basic' | 'fullscale';                       // App mode: basic or fullscale
+  setAppMode: (mode: 'basic' | 'fullscale') => void;   // Set app mode
   
   // ACTIONS - Functions to modify state
   addAction: (type: ActionType, notes?: string) => Promise<Action | null>;
@@ -108,12 +110,13 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
     instantDates: 0,
     missedOpportunities: 0,
   });
-  const [dailyGoal, setDailyGoalState] = useState<number>(10);
+  const [dailyGoal, setDailyGoalState] = useState<number>(AppConstants.defaultDailyGoal);
   const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [hasInitialized, setHasInitialized] = useState<boolean>(false);
   const [selectedDate, setSelectedDateState] = useState<Date>(new Date());
   const [isToday, setIsToday] = useState<boolean>(true);
+  const [appMode, setAppModeState] = useState<'basic' | 'fullscale'>('fullscale');
 
   /**
    * Generate a unique ID for actions
@@ -244,27 +247,26 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
    */
   const addAction = async (type: ActionType, notes: string = ''): Promise<Action | null> => {
     try {
-      if (!permissionGranted || !location) {
-        console.error('Cannot add action: Location not available');
-        return null;
-      }
-
-      const realLat = location.coords.latitude;
-      const realLng = location.coords.longitude;
-      
       let locationData: { latitude: number; longitude: number };
-      
-      if (MapConstants.testMode.enabled) {
-        locationData = generateRandomCoordinates(
-          realLat,
-          realLng,
-          MapConstants.testMode.radiusMeters
-        );
+
+      if (appMode === 'basic' || !permissionGranted || !location) {
+        locationData = { latitude: 0, longitude: 0 };
       } else {
-        locationData = {
-          latitude: realLat,
-          longitude: realLng,
-        };
+        const realLat = location.coords.latitude;
+        const realLng = location.coords.longitude;
+        
+        if (MapConstants.testMode.enabled) {
+          locationData = generateRandomCoordinates(
+            realLat,
+            realLng,
+            MapConstants.testMode.radiusMeters
+          );
+        } else {
+          locationData = {
+            latitude: realLat,
+            longitude: realLng,
+          };
+        }
       }
 
       const newAction: Action = {
@@ -378,6 +380,15 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
     setIsToday(isSameDay);
   };
 
+  const setAppMode = async (mode: 'basic' | 'fullscale'): Promise<void> => {
+    setAppModeState(mode);
+    try {
+      await AsyncStorage.setItem('appMode', mode);
+    } catch (error) {
+      console.error('Error saving app mode:', error);
+    }
+  };
+
   /**
    * EFFECT: Load data when app starts
    * This runs once when the provider mounts
@@ -392,15 +403,33 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
         if (storedGoal) {
           setDailyGoalState(parseInt(storedGoal, 10));
         }
+
+        const storedMode = await AsyncStorage.getItem('appMode');
+        
+        if (permissionGranted) {
+          if (storedMode !== 'fullscale') {
+            setAppModeState('fullscale');
+            await AsyncStorage.setItem('appMode', 'fullscale');
+          } else {
+            setAppModeState('fullscale');
+          }
+        } else {
+          if (storedMode !== 'basic') {
+            setAppModeState('basic');
+            await AsyncStorage.setItem('appMode', 'basic');
+          } else {
+            setAppModeState('basic');
+          }
+        }
       } catch (error) {
-        console.error('Error loading daily goal:', error);
+        console.error('Error loading settings:', error);
       }
       
       setHasInitialized(true);
     };
 
     initializeData();
-  }, []);
+  }, [permissionGranted]);
 
   useEffect(() => {
     if (hasInitialized && isLoading) {
@@ -452,6 +481,8 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
     permissionGranted,
     geoError,
     userLocation,
+    appMode,
+    setAppMode,
   };
 
   return (
