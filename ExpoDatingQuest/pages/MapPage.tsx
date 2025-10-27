@@ -1,11 +1,13 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { View, StyleSheet, Platform, Text, ActivityIndicator, Modal, TouchableOpacity, FlatList } from 'react-native';
+import { View, StyleSheet, Platform, Text, ActivityIndicator } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
-import { Users, MessageCircle, Heart, Clock, X } from 'lucide-react-native';
+import { Users, MessageCircle, Heart, Clock } from 'lucide-react-native';
 import { useLocation } from '../hooks/useLocation';
 import { useActionsContext } from '../contexts/ActionsContext';
+import { usePopup } from '../contexts/PopupContext';
 import { Map as MapConstants, Colors, ActionColors, ActionIcons, MapTrail } from '../constants';
 import { ActionType, Action } from '../types';
+import { MapClusterPopup } from '../components/ui/MapClusterPopup';
 
 let MapView: any;
 let Marker: any;
@@ -81,12 +83,12 @@ type MarkerCluster = {
 export const MapPage: React.FC = () => {
   const { location, permissionGranted, error } = useLocation();
   const { actions, getDayActions, isLoading, selectedDate } = useActionsContext();
+  const { showMapClusterPopup } = usePopup();
   const mapRef = useRef<any>(null);
   const hasAnimatedToLocation = useRef(false);
   const [mapReady, setMapReady] = useState(false);
   const [markersRendered, setMarkersRendered] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
-  const [selectedCluster, setSelectedCluster] = useState<MarkerCluster | null>(null);
 
   useFocusEffect(
     useCallback(() => {
@@ -281,7 +283,7 @@ export const MapPage: React.FC = () => {
               tracksViewChanges={!markersRendered}
               zIndex={zIndexValue}
               onPress={() => {
-                setSelectedCluster(cluster);
+                showMapClusterPopup(cluster.actions);
               }}
               anchor={{ x: 0.5, y: 0.5 }}
             >
@@ -313,68 +315,6 @@ export const MapPage: React.FC = () => {
         })}
       </MapView>
 
-      <Modal
-        visible={selectedCluster !== null}
-        transparent={true}
-        animationType="slide"
-        onRequestClose={() => setSelectedCluster(null)}
-      >
-        <View style={styles.modalOverlay}>
-          <TouchableOpacity 
-            style={styles.modalBackdrop}
-            activeOpacity={1} 
-            onPress={() => setSelectedCluster(null)}
-          />
-          <View style={styles.modalContainer}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>
-                {selectedCluster && selectedCluster.actions.length > 1
-                  ? `${selectedCluster.actions.length} Actions Here`
-                  : 'Action Details'}
-              </Text>
-              <TouchableOpacity onPress={() => setSelectedCluster(null)} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
-                <X size={24} color={Colors.text} />
-              </TouchableOpacity>
-            </View>
-            
-            <FlatList
-              data={selectedCluster?.actions || []}
-              keyExtractor={(item) => item.id}
-              showsVerticalScrollIndicator={true}
-              style={styles.flatList}
-              contentContainerStyle={styles.flatListContent}
-              renderItem={({ item: action }) => {
-                const IconComponent = getIconForActionType(action.type);
-                const actionColor = ActionColors[action.type];
-                const time = new Date(action.timestamp).toLocaleTimeString('en-US', {
-                  hour: 'numeric',
-                  minute: '2-digit',
-                });
-                
-                return (
-                  <View style={styles.actionItem}>
-                    <View style={[styles.actionIcon, { backgroundColor: actionColor }]}>
-                      <IconComponent size={16} color="#ffffff" />
-                    </View>
-                  <View style={styles.actionDetails}>
-                    <Text style={styles.actionType}>
-                      {action.type === 'approach' ? 'Approach' :
-                       action.type === 'contact' ? 'Contact' :
-                       action.type === 'instantDate' ? 'Instant Date' : 
-                       'Missed Opportunity'}
-                    </Text>
-                      <Text style={styles.actionTime}>{time}</Text>
-                      {action.notes && (
-                        <Text style={styles.actionNotes}>{action.notes}</Text>
-                      )}
-                    </View>
-                  </View>
-                );
-              }}
-            />
-          </View>
-        </View>
-      </Modal>
     </View>
   );
 };
@@ -540,81 +480,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 3,
     elevation: 5,
-  },
-  modalOverlay: {
-    flex: 1,
-    justifyContent: 'flex-end',
-  },
-  modalBackdrop: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-  },
-  modalContainer: {
-    backgroundColor: Colors.surface,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    paddingTop: 20,
-    paddingHorizontal: 20,
-    paddingBottom: 40,
-    maxHeight: '80%',
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: Colors.text,
-  },
-  flatList: {
-    flexGrow: 0,
-  },
-  flatListContent: {
-    paddingBottom: 10,
-  },
-  actionItem: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    marginBottom: 16,
-    paddingBottom: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255, 255, 255, 0.1)',
-  },
-  actionIcon: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 12,
-    borderWidth: 2,
-    borderColor: '#ffffff',
-  },
-  actionDetails: {
-    flex: 1,
-  },
-  actionType: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: Colors.text,
-    marginBottom: 4,
-  },
-  actionTime: {
-    fontSize: 14,
-    color: Colors.textSecondary,
-    marginBottom: 4,
-  },
-  actionNotes: {
-    fontSize: 14,
-    color: Colors.textSecondary,
-    fontStyle: 'italic',
   },
 });
 

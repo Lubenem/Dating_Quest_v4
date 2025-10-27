@@ -17,14 +17,16 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 
 import { ActionsProvider, useActionsContext } from './contexts/ActionsContext';
+import { PopupProvider } from './contexts/PopupContext';
 import { TopBar } from './components/bars/TopBar';
 import { BottomBar } from './components/bars/BottomBar';
 import { LoadingOverlay } from './components/ui/LoadingOverlay';
-import { LevelUpPopup } from './components/ui/LevelUpPopup';
+import { PopupContainer } from './components/PopupContainer';
+import { LevelUpManager } from './components/LevelUpManager';
 import { Colors } from './constants';
 
 const AppContent: React.FC = () => {
-  const { permissionGranted, userLocation, showLevelUpPopup, dismissLevelUpPopup, currentLevel } = useActionsContext();
+  const { permissionGranted, userLocation } = useActionsContext();
   const shouldShowLoader = permissionGranted && !userLocation;
 
   return (
@@ -64,11 +66,8 @@ const AppContent: React.FC = () => {
         <BottomBar />
       </NavigationContainer>
       {shouldShowLoader && <LoadingOverlay />}
-      <LevelUpPopup 
-        visible={showLevelUpPopup} 
-        level={currentLevel} 
-        onDismiss={dismissLevelUpPopup}
-      />
+      <LevelUpManager />
+      <PopupContainer />
     </>
   );
 };
@@ -79,21 +78,23 @@ const AppContent: React.FC = () => {
 export default function App() {
   return (
     <ActionsProvider>
-      <SafeAreaProvider>
-        <StatusBar
-          barStyle="light-content"
-          backgroundColor="#000000"
-          translucent={Platform.OS === 'android'}
-        />
-        <LinearGradient
-          colors={Colors.gradients.background}
-          style={styles.gradient}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-        >
-          <AppContent />
-        </LinearGradient>
-      </SafeAreaProvider>
+      <PopupProvider>
+        <SafeAreaProvider>
+          <StatusBar
+            barStyle="light-content"
+            backgroundColor="#000000"
+            translucent={Platform.OS === 'android'}
+          />
+          <LinearGradient
+            colors={Colors.gradients.background}
+            style={styles.gradient}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+          >
+            <AppContent />
+          </LinearGradient>
+        </SafeAreaProvider>
+      </PopupProvider>
     </ActionsProvider>
   );
 }

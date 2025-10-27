@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text, StyleSheet, Modal, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { TrendingUp, Award } from 'lucide-react-native';
 import { Colors, App as AppConstants } from '../../constants';
+import { BasePopup } from './BasePopup';
 
 interface LevelUpPopupProps {
   visible: boolean;
@@ -16,63 +17,39 @@ export const LevelUpPopup: React.FC<LevelUpPopupProps> = ({ visible, level, onDi
   if (!levelConfig) return null;
 
   return (
-    <Modal
-      visible={visible}
-      transparent
-      animationType="fade"
-      onRequestClose={onDismiss}
-    >
-      <View style={styles.backdrop}>
-        <View style={styles.container}>
-          <View style={styles.iconContainer}>
-            {effectiveLevel === 0 ? (
-              <TrendingUp size={48} color={Colors.accent} />
-            ) : (
-              <Award size={48} color={Colors.accent} />
-            )}
-          </View>
-          
-          <Text style={styles.title}>
-            {effectiveLevel === 0 ? 'Back to Start' : `Level ${effectiveLevel} Reached!`}
-          </Text>
-          
-          <Text style={styles.subtitle}>
-            Your new daily goal: {levelConfig.goal} approaches
-          </Text>
-          
-          <TouchableOpacity 
-            style={styles.button}
-            onPress={onDismiss}
-            activeOpacity={0.8}
-          >
-            <Text style={styles.buttonText}>Let's Go!</Text>
-          </TouchableOpacity>
+    <BasePopup visible={visible} onDismiss={onDismiss}>
+      <View style={styles.content}>
+        <View style={styles.iconContainer}>
+          {effectiveLevel === 0 ? (
+            <TrendingUp size={48} color={Colors.accent} />
+          ) : (
+            <Award size={48} color={Colors.accent} />
+          )}
         </View>
+        
+        <Text style={styles.title}>
+          {effectiveLevel === 0 ? 'Back to Start' : `Level ${effectiveLevel} Reached!`}
+        </Text>
+        
+        <Text style={styles.subtitle}>
+          Your new daily goal: {levelConfig.goal} approaches
+        </Text>
+        
+        <TouchableOpacity 
+          style={styles.button}
+          onPress={onDismiss}
+          activeOpacity={0.8}
+        >
+          <Text style={styles.buttonText}>Let's Go!</Text>
+        </TouchableOpacity>
       </View>
-    </Modal>
+    </BasePopup>
   );
 };
 
 const styles = StyleSheet.create({
-  backdrop: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    justifyContent: 'center',
+  content: {
     alignItems: 'center',
-    padding: 20,
-  },
-  container: {
-    backgroundColor: Colors.surface,
-    borderRadius: 20,
-    padding: 32,
-    alignItems: 'center',
-    width: '100%',
-    maxWidth: 400,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 8,
   },
   iconContainer: {
     marginBottom: 16,

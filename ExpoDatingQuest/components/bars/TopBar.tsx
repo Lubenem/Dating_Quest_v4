@@ -3,11 +3,13 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ChevronLeft, ChevronRight, Flame } from 'lucide-react-native';
 import { useActionsContext } from '../../contexts/ActionsContext';
+import { usePopup } from '../../contexts/PopupContext';
 import { Colors, App as AppConstants } from '../../constants';
 
 export const TopBar: React.FC = () => {
   const insets = useSafeAreaInsets();
-  const { counters, dailyGoal, currentLevel, streak, selectedDate, setSelectedDate, isToday, showLevelInfo } = useActionsContext();
+  const { counters, dailyGoal, currentLevel, streak, selectedDate, setSelectedDate, isToday } = useActionsContext();
+  const { showLevelUpPopup } = usePopup();
 
   const progress = dailyGoal > 0 ? (counters.approaches / dailyGoal) * 100 : 0;
   const progressClamped = Math.min(progress, 100);
@@ -52,7 +54,7 @@ export const TopBar: React.FC = () => {
       <View style={styles.content}>
         <TouchableOpacity 
           style={styles.levelContainer}
-          onPress={showLevelInfo}
+          onPress={() => showLevelUpPopup(currentLevel)}
           activeOpacity={0.7}
         >
           <Text style={styles.levelText}>Lvl {currentLevel ?? 1}</Text>
@@ -100,7 +102,7 @@ export const TopBar: React.FC = () => {
 
         <TouchableOpacity 
           style={styles.progressContainer}
-          onPress={showLevelInfo}
+          onPress={() => showLevelUpPopup(currentLevel)}
           activeOpacity={0.7}
         >
           <Text style={styles.progressText}>

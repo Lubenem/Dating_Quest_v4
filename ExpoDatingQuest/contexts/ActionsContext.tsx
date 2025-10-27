@@ -38,9 +38,6 @@ interface ActionsContextType {
   isToday: boolean;                                     // Is selected date today?
   appMode: 'basic' | 'fullscale';                       // App mode: basic or fullscale
   setAppMode: (mode: 'basic' | 'fullscale') => void;   // Set app mode
-  showLevelUpPopup: boolean;                            // Should show level up popup
-  dismissLevelUpPopup: () => void;                      // Dismiss level up popup
-  showLevelInfo: () => void;                            // Show level info popup on demand
   
   // ACTIONS - Functions to modify state
   addAction: (type: ActionType, notes?: string) => Promise<Action | null>;
@@ -124,7 +121,6 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
   const [selectedDate, setSelectedDateState] = useState<Date>(new Date());
   const [isToday, setIsToday] = useState<boolean>(true);
   const [appMode, setAppModeState] = useState<'basic' | 'fullscale'>('fullscale');
-  const [showLevelUpPopup, setShowLevelUpPopup] = useState<boolean>(false);
 
   /**
    * Generate a unique ID for actions
@@ -379,16 +375,6 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
     await StorageService.setAppMode(mode);
   };
 
-  const dismissLevelUpPopup = async (): Promise<void> => {
-    setShowLevelUpPopup(false);
-    if (currentLevel !== null) {
-      await StorageService.setLevelUpPopupShown(currentLevel);
-    }
-  };
-
-  const showLevelInfo = (): void => {
-    setShowLevelUpPopup(true);
-  };
 
   const getLevelConfig = (level: number | null) => {
     if (level === null) return AppConstants.levels[1];
@@ -437,12 +423,6 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
         await StorageService.setCurrentLevel(newLevel);
         const newLevelConfig = getLevelConfig(newLevel);
         setDailyGoalState(newLevelConfig.goal);
-        
-        const lastShownLevel = await StorageService.getLevelUpPopupShown();
-        
-        if (lastShownLevel !== newLevel) {
-          setShowLevelUpPopup(true);
-        }
       }
     }
 
@@ -499,14 +479,6 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
 
         const storedStreak = await StorageService.getStreak();
         setStreak(storedStreak);
-
-        if (level !== null) {
-          const lastShownLevel = await StorageService.getLevelUpPopupShown();
-          
-          if (lastShownLevel !== level) {
-            setShowLevelUpPopup(true);
-          }
-        }
 
         const storedMode = await StorageService.getAppMode();
         
@@ -577,9 +549,6 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
     isLoading,
     selectedDate,
     isToday,
-    showLevelUpPopup,
-    dismissLevelUpPopup,
-    showLevelInfo,
     addAction,
     removeLastAction,
     getDayActions,
