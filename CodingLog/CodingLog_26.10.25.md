@@ -37,6 +37,9 @@
 
 ## `27.10.25.Mon`
 
+## <TopBar>
+* DatePicker | made wider
+
 ## <Levels>
 * Added simple level system
 

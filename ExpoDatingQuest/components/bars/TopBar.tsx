@@ -164,9 +164,10 @@ const styles = StyleSheet.create({
   },
   dateArrow: {
     padding: 0,
+    paddingHorizontal: 15,
   },
   dateDisplay: {
-    paddingHorizontal: 4,
+    paddingHorizontal: 6,
     paddingVertical: 0,
   },
   dateText: {
