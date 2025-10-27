@@ -28,14 +28,16 @@
 ## <Calendar>
 [] Calendar, should look nice, streak logic with fire emojis (if that day the approaches goal for that day was satisfied)
 
-## <Popups>
-[x] Let's unify our popup logic and styling!
-* I like how you've currently implement the popup on the dashboard, as a separate component/file, as it should be. Only thing there I want you to add the `x` button on the top right corner (like on the map cluster popup), to be able to close the poupup like that
-* MapClusterPopup, should be rewriten and use the same code for popup we use for `LevelPopup`(on dashboard), use same styling, and logic. The scroll should be inside popup, if content is too big. If we will not manage to handle scrolling, we will search the web for best practices libs for poupups on expo/reactnative and implement it
 
 # [Commits]
 
 ## `27.10.25.Mon`
+
+## <Calendar>
+* Added clendar view app from figma AI (based on pcicture from old flutter app)
+
+## <Popups>
+[x] Let's unify our popup logic and styling!
 
 ## <TopBar>
 * DatePicker | made wider
@@ -51,7 +53,12 @@
 ## <Field2Fixes>
 * Map | Improved map clusters logic
 
-# [Done]
+# [Prompts]
+
+## <Popups>
+[x] Let's unify our popup logic and styling!
+* I like how you've currently implement the popup on the dashboard, as a separate component/file, as it should be. Only thing there I want you to add the `x` button on the top right corner (like on the map cluster popup), to be able to close the poupup like that
+* MapClusterPopup, should be rewriten and use the same code for popup we use for `LevelPopup`(on dashboard), use same styling, and logic. The scroll should be inside popup, if content is too big. If we will not manage to handle scrolling, we will search the web for best practices libs for poupups on expo/reactnative and implement it
 
 ## <Levels>
 [x] Level system:
