@@ -123,8 +123,22 @@ export const Animation = {
  * App - App-wide settings
  */
 export const App = {
-  defaultDailyGoal: 15,     // Default daily approaches goal
-} as const;
+  currentLevel: null as number | null, // Set to a number (0-5) for testing, null for automatic
+  
+  levels: [
+    { level: 0, base: 0, goal: 1 },
+    { level: 1, base: 1, goal: 10 },
+    { level: 2, base: 10, goal: 15 },
+    { level: 3, base: 15, goal: 20 },
+    { level: 4, base: 20, goal: 25 },
+    { level: 5, base: 25, goal: 30 },
+  ],
+  
+  streakThresholds: {
+    twoFires: 2,
+    threeFires: 3,
+  },
+};
 
 /**
  * Map - Map-related constants

@@ -20,10 +20,11 @@ import { ActionsProvider, useActionsContext } from './contexts/ActionsContext';
 import { TopBar } from './components/bars/TopBar';
 import { BottomBar } from './components/bars/BottomBar';
 import { LoadingOverlay } from './components/ui/LoadingOverlay';
+import { LevelUpPopup } from './components/ui/LevelUpPopup';
 import { Colors } from './constants';
 
 const AppContent: React.FC = () => {
-  const { permissionGranted, userLocation } = useActionsContext();
+  const { permissionGranted, userLocation, showLevelUpPopup, dismissLevelUpPopup, currentLevel } = useActionsContext();
   const shouldShowLoader = permissionGranted && !userLocation;
 
   return (
@@ -63,6 +64,11 @@ const AppContent: React.FC = () => {
         <BottomBar />
       </NavigationContainer>
       {shouldShowLoader && <LoadingOverlay />}
+      <LevelUpPopup 
+        visible={showLevelUpPopup} 
+        level={currentLevel} 
+        onDismiss={dismissLevelUpPopup}
+      />
     </>
   );
 };

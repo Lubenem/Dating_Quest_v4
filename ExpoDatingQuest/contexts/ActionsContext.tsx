@@ -15,10 +15,10 @@
  */
 
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Action, ActionType, Counters } from '../types';
 import { useLocation } from '../hooks/useLocation';
 import { Map as MapConstants, App as AppConstants } from '../constants';
+import { StorageService } from '../services/storage';
 
 /**
  * ActionsContextType - Defines what the context provides
@@ -31,11 +31,16 @@ interface ActionsContextType {
   actions: Action[];                                    // All actions ever recorded
   counters: Counters;                                   // Today's counters (for selected date)
   dailyGoal: number;                                    // User's daily approach goal
+  currentLevel: number | null;                          // User's current level (0-5), null until calculated
+  streak: number;                                       // Consecutive days of meeting goal
   isLoading: boolean;                                   // Is data loading from storage?
   selectedDate: Date;                                   // Currently selected date for viewing
   isToday: boolean;                                     // Is selected date today?
   appMode: 'basic' | 'fullscale';                       // App mode: basic or fullscale
   setAppMode: (mode: 'basic' | 'fullscale') => void;   // Set app mode
+  showLevelUpPopup: boolean;                            // Should show level up popup
+  dismissLevelUpPopup: () => void;                      // Dismiss level up popup
+  showLevelInfo: () => void;                            // Show level info popup on demand
   
   // ACTIONS - Functions to modify state
   addAction: (type: ActionType, notes?: string) => Promise<Action | null>;
@@ -110,13 +115,16 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
     instantDates: 0,
     missedOpportunities: 0,
   });
-  const [dailyGoal, setDailyGoalState] = useState<number>(AppConstants.defaultDailyGoal);
+  const [currentLevel, setCurrentLevel] = useState<number | null>(null);
+  const [streak, setStreak] = useState<number>(0);
+  const [dailyGoal, setDailyGoalState] = useState<number>(10);
   const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [hasInitialized, setHasInitialized] = useState<boolean>(false);
   const [selectedDate, setSelectedDateState] = useState<Date>(new Date());
   const [isToday, setIsToday] = useState<boolean>(true);
   const [appMode, setAppModeState] = useState<'basic' | 'fullscale'>('fullscale');
+  const [showLevelUpPopup, setShowLevelUpPopup] = useState<boolean>(false);
 
   /**
    * Generate a unique ID for actions
@@ -179,13 +187,7 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
    * @returns {Promise<Action[]>} All saved actions
    */
   const loadActions = async (): Promise<Action[]> => {
-    try {
-      const stored = await AsyncStorage.getItem('actions');
-      return stored ? JSON.parse(stored) : [];
-    } catch (error) {
-      console.error('Error loading actions:', error);
-      return [];
-    }
+    return await StorageService.getActions();
   };
 
   /**
@@ -195,11 +197,7 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
    * @param {Action[]} actionsToSave - Actions to save
    */
   const saveActions = async (actionsToSave: Action[]): Promise<void> => {
-    try {
-      await AsyncStorage.setItem('actions', JSON.stringify(actionsToSave));
-    } catch (error) {
-      console.error('Error saving actions:', error);
-    }
+    await StorageService.setActions(actionsToSave);
   };
 
   /**
@@ -366,11 +364,7 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
    */
   const setDailyGoal = async (goal: number): Promise<void> => {
     setDailyGoalState(goal);
-    try {
-      await AsyncStorage.setItem('approachesDayGoal', goal.toString());
-    } catch (error) {
-      console.error('Error saving daily goal:', error);
-    }
+    await StorageService.setDailyGoal(goal);
   };
 
   const setSelectedDate = (date: Date): void => {
@@ -382,12 +376,103 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
 
   const setAppMode = async (mode: 'basic' | 'fullscale'): Promise<void> => {
     setAppModeState(mode);
-    try {
-      await AsyncStorage.setItem('appMode', mode);
-    } catch (error) {
-      console.error('Error saving app mode:', error);
+    await StorageService.setAppMode(mode);
+  };
+
+  const dismissLevelUpPopup = async (): Promise<void> => {
+    setShowLevelUpPopup(false);
+    if (currentLevel !== null) {
+      await StorageService.setLevelUpPopupShown(currentLevel);
     }
   };
+
+  const showLevelInfo = (): void => {
+    setShowLevelUpPopup(true);
+  };
+
+  const getLevelConfig = (level: number | null) => {
+    if (level === null) return AppConstants.levels[1];
+    return AppConstants.levels.find(l => l.level === level) || AppConstants.levels[1];
+  };
+
+  const calculateLevelAndStreak = useCallback(async () => {
+    // CRITICAL: If currentLevel is hardcoded for testing, force it to that value
+    if (AppConstants.currentLevel !== null && currentLevel !== AppConstants.currentLevel) {
+      setCurrentLevel(AppConstants.currentLevel);
+      const levelConfig = getLevelConfig(AppConstants.currentLevel);
+      setDailyGoalState(levelConfig.goal);
+      return;
+    }
+    
+    // Skip level calculation if currentLevel is manually set for testing
+    if (AppConstants.currentLevel === null) {
+      const last3Days: string[] = [];
+      
+      for (let i = 0; i < 3; i++) {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        last3Days.push(date.toDateString());
+      }
+
+      const dailyProgress = last3Days.map(dateStr => {
+        const dayActions = getDayActions(dateStr);
+        const approaches = dayActions.filter(a => a.type !== 'missedOpportunity').length;
+        return { date: dateStr, approaches };
+      });
+
+      let newLevel = currentLevel ?? 1;
+      const levelConfig = getLevelConfig(newLevel);
+
+      const last3ProgressGoal = dailyProgress.slice(0, 3).every(day => day.approaches >= levelConfig.goal);
+      const last3ProgressBase = dailyProgress.slice(0, 3).every(day => day.approaches < levelConfig.base);
+
+      if (last3ProgressGoal && newLevel < 5) {
+        newLevel = newLevel + 1;
+      } else if (last3ProgressBase && newLevel > 0) {
+        newLevel = newLevel - 1;
+      }
+
+      if (newLevel !== currentLevel) {
+        setCurrentLevel(newLevel);
+        await StorageService.setCurrentLevel(newLevel);
+        const newLevelConfig = getLevelConfig(newLevel);
+        setDailyGoalState(newLevelConfig.goal);
+        
+        const lastShownLevel = await StorageService.getLevelUpPopupShown();
+        
+        if (lastShownLevel !== newLevel) {
+          setShowLevelUpPopup(true);
+        }
+      }
+    }
+
+    // Calculate streak (always runs, even in test mode)
+    const effectiveLevel = currentLevel ?? 1;
+    let currentStreak = 0;
+    for (let i = 1; i <= 30; i++) {
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      const dateStr = date.toDateString();
+      const dayActions = getDayActions(dateStr);
+      const approaches = dayActions.filter(a => a.type !== 'missedOpportunity').length;
+      const dayLevelConfig = getLevelConfig(effectiveLevel);
+      
+      if (approaches >= dayLevelConfig.goal) {
+        currentStreak++;
+      } else {
+        break;
+      }
+    }
+
+    setStreak(currentStreak);
+    await StorageService.setStreak(currentStreak);
+  }, [actions, currentLevel, getDayActions]);
+
+  useEffect(() => {
+    if (hasInitialized) {
+      calculateLevelAndStreak();
+    }
+  }, [actions, hasInitialized]);
 
   /**
    * EFFECT: Load data when app starts
@@ -399,24 +484,43 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
       setActions(loadedActions);
       
       try {
-        const storedGoal = await AsyncStorage.getItem('approachesDayGoal');
-        if (storedGoal) {
-          setDailyGoalState(parseInt(storedGoal, 10));
+        let level: number | null;
+        
+        if (AppConstants.currentLevel !== null) {
+          level = AppConstants.currentLevel;
+        } else {
+          level = await StorageService.getCurrentLevel();
+        }
+        
+        setCurrentLevel(level);
+        
+        const levelConfig = getLevelConfig(level);
+        setDailyGoalState(levelConfig.goal);
+
+        const storedStreak = await StorageService.getStreak();
+        setStreak(storedStreak);
+
+        if (level !== null) {
+          const lastShownLevel = await StorageService.getLevelUpPopupShown();
+          
+          if (lastShownLevel !== level) {
+            setShowLevelUpPopup(true);
+          }
         }
 
-        const storedMode = await AsyncStorage.getItem('appMode');
+        const storedMode = await StorageService.getAppMode();
         
         if (permissionGranted) {
           if (storedMode !== 'fullscale') {
             setAppModeState('fullscale');
-            await AsyncStorage.setItem('appMode', 'fullscale');
+            await StorageService.setAppMode('fullscale');
           } else {
             setAppModeState('fullscale');
           }
         } else {
           if (storedMode !== 'basic') {
             setAppModeState('basic');
-            await AsyncStorage.setItem('appMode', 'basic');
+            await StorageService.setAppMode('basic');
           } else {
             setAppModeState('basic');
           }
@@ -468,9 +572,14 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
     actions,
     counters,
     dailyGoal,
+    currentLevel,
+    streak,
     isLoading,
     selectedDate,
     isToday,
+    showLevelUpPopup,
+    dismissLevelUpPopup,
+    showLevelInfo,
     addAction,
     removeLastAction,
     getDayActions,

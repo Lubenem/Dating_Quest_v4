@@ -1,16 +1,19 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { ChevronLeft, ChevronRight } from 'lucide-react-native';
+import { ChevronLeft, ChevronRight, Flame } from 'lucide-react-native';
 import { useActionsContext } from '../../contexts/ActionsContext';
-import { Colors } from '../../constants';
+import { Colors, App as AppConstants } from '../../constants';
 
 export const TopBar: React.FC = () => {
   const insets = useSafeAreaInsets();
-  const { counters, dailyGoal, selectedDate, setSelectedDate, isToday } = useActionsContext();
+  const { counters, dailyGoal, currentLevel, streak, selectedDate, setSelectedDate, isToday, showLevelInfo } = useActionsContext();
 
   const progress = dailyGoal > 0 ? (counters.approaches / dailyGoal) * 100 : 0;
   const progressClamped = Math.min(progress, 100);
+
+  const showFireIcons = streak >= AppConstants.streakThresholds.twoFires;
+  const fireCount = streak >= AppConstants.streakThresholds.threeFires ? 3 : 2;
 
   const goToPreviousDay = () => {
     const newDate = new Date(selectedDate);
@@ -47,7 +50,20 @@ export const TopBar: React.FC = () => {
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.content}>
-        <Text style={styles.title}>Dating Quest</Text>
+        <TouchableOpacity 
+          style={styles.levelContainer}
+          onPress={showLevelInfo}
+          activeOpacity={0.7}
+        >
+          <Text style={styles.levelText}>Lvl {currentLevel ?? 1}</Text>
+          {showFireIcons && (
+            <View style={styles.fireIconsContainer}>
+              {Array.from({ length: fireCount }).map((_, i) => (
+                <Flame key={i} size={14} color={Colors.accent} fill={Colors.accent} />
+              ))}
+            </View>
+          )}
+        </TouchableOpacity>
         
         <View style={styles.datePickerContainer}>
           <TouchableOpacity 
@@ -82,11 +98,15 @@ export const TopBar: React.FC = () => {
           </TouchableOpacity>
         </View>
 
-        <View style={styles.progressContainer}>
+        <TouchableOpacity 
+          style={styles.progressContainer}
+          onPress={showLevelInfo}
+          activeOpacity={0.7}
+        >
           <Text style={styles.progressText}>
             {counters.approaches} / {dailyGoal}
           </Text>
-        </View>
+        </TouchableOpacity>
       </View>
       <View style={styles.progressBarContainer}>
         <View 
@@ -114,11 +134,24 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     gap: 12,
   },
-  title: {
-    fontSize: 18,
+  levelContainer: {
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    minWidth: 70,
+  },
+  levelText: {
+    fontSize: 14,
     fontWeight: '700',
     color: Colors.text,
-    minWidth: 100,
+  },
+  fireIconsContainer: {
+    flexDirection: 'row',
+    gap: 2,
   },
   datePickerContainer: {
     flexDirection: 'row',
