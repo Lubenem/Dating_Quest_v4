@@ -14,8 +14,7 @@ export const TopBar: React.FC = () => {
   const progress = dailyGoal > 0 ? (counters.approaches / dailyGoal) * 100 : 0;
   const progressClamped = Math.min(progress, 100);
 
-  const showFireIcons = streak >= AppConstants.streakThresholds.twoFires;
-  const fireCount = streak >= AppConstants.streakThresholds.threeFires ? 3 : 2;
+  const showFireIcon = streak >= AppConstants.streakThresholds.twoFires;
 
   const goToPreviousDay = () => {
     const newDate = new Date(selectedDate);
@@ -58,12 +57,8 @@ export const TopBar: React.FC = () => {
           activeOpacity={0.7}
         >
           <Text style={styles.levelText}>Lvl {currentLevel ?? 1}</Text>
-          {showFireIcons && (
-            <View style={styles.fireIconsContainer}>
-              {Array.from({ length: fireCount }).map((_, i) => (
-                <Flame key={i} size={14} color={Colors.accent} fill={Colors.accent} />
-              ))}
-            </View>
+          {showFireIcon && (
+            <Flame size={14} color={Colors.accent} fill={Colors.accent} />
           )}
         </TouchableOpacity>
         
@@ -150,10 +145,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '700',
     color: Colors.text,
-  },
-  fireIconsContainer: {
-    flexDirection: 'row',
-    gap: 2,
   },
   datePickerContainer: {
     flexDirection: 'row',

@@ -1,8 +1,9 @@
 import React from 'react';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { Home, MapPin } from 'lucide-react-native';
+import { Home, MapPin, Calendar } from 'lucide-react-native';
 import { DashboardPage } from '../../pages/DashboardPage';
 import { MapPage } from '../../pages/MapPage';
+import { CalendarPage } from '../../pages/CalendarPage';
 import { Colors } from '../../constants';
 import { useActionsContext } from '../../contexts/ActionsContext';
 
@@ -50,13 +51,6 @@ export const BottomBar: React.FC = () => {
       }}
       tabBarPosition="bottom"
     >
-      <Tab.Screen 
-        name="Dashboard" 
-        component={DashboardPage}
-        options={{
-          tabBarIcon: ({ color }) => <Home size={20} color={color} />,
-        }}
-      />
       {appMode === 'fullscale' && (
         <Tab.Screen 
           name="Map" 
@@ -66,6 +60,20 @@ export const BottomBar: React.FC = () => {
           }}
         />
       )}
+      <Tab.Screen 
+        name="Dashboard" 
+        component={DashboardPage}
+        options={{
+          tabBarIcon: ({ color }) => <Home size={20} color={color} />,
+        }}
+      />
+      <Tab.Screen 
+        name="Calendar" 
+        component={CalendarPage}
+        options={{
+          tabBarIcon: ({ color }) => <Calendar size={20} color={color} />,
+        }}
+      />
     </Tab.Navigator>
   );
 };

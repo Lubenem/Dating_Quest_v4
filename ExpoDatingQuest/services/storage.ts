@@ -8,6 +8,7 @@ const STORAGE_KEYS = {
   DAILY_GOAL: 'approachesDayGoal',
   APP_MODE: 'appMode',
   LEVEL_UP_POPUP_SHOWN: 'levelUpPopupShown',
+  DAILY_GOALS_HISTORY: 'dailyGoalsHistory',
 } as const;
 
 export const StorageService = {
@@ -119,6 +120,36 @@ export const StorageService = {
       await AsyncStorage.setItem(STORAGE_KEYS.LEVEL_UP_POPUP_SHOWN, level.toString());
     } catch (error) {
       console.error('Error saving level up popup status:', error);
+    }
+  },
+
+  async getDailyGoalsHistory(): Promise<Record<string, number>> {
+    try {
+      const stored = await AsyncStorage.getItem(STORAGE_KEYS.DAILY_GOALS_HISTORY);
+      return stored ? JSON.parse(stored) : {};
+    } catch (error) {
+      console.error('Error loading daily goals history:', error);
+      return {};
+    }
+  },
+
+  async setDailyGoalForDate(dateStr: string, goal: number): Promise<void> {
+    try {
+      const history = await this.getDailyGoalsHistory();
+      history[dateStr] = goal;
+      await AsyncStorage.setItem(STORAGE_KEYS.DAILY_GOALS_HISTORY, JSON.stringify(history));
+    } catch (error) {
+      console.error('Error saving daily goal for date:', error);
+    }
+  },
+
+  async getDailyGoalForDate(dateStr: string): Promise<number | null> {
+    try {
+      const history = await this.getDailyGoalsHistory();
+      return history[dateStr] ?? null;
+    } catch (error) {
+      console.error('Error loading daily goal for date:', error);
+      return null;
     }
   },
 

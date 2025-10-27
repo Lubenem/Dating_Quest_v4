@@ -52,6 +52,9 @@ interface ActionsContextType {
   permissionGranted: boolean;                           // Does user allow location?
   geoError: string | null;                              // Any location errors?
   userLocation: { latitude: number; longitude: number } | null; // Current GPS position
+  
+  // UTILITIES
+  getDailyGoalForDate: (dateStr: string) => Promise<number>; // Get goal for specific date
 }
 
 /**
@@ -381,6 +384,21 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
     return AppConstants.levels.find(l => l.level === level) || AppConstants.levels[1];
   };
 
+  const getDailyGoalForDate = async (dateStr: string): Promise<number> => {
+    if (AppConstants.goalShenanigans) {
+      return -1;
+    }
+    
+    const storedGoal = await StorageService.getDailyGoalForDate(dateStr);
+    if (storedGoal !== null) {
+      return storedGoal;
+    }
+    
+    // No stored goal = user didn't open app that day
+    // Return 1 (minimum goal) so 0 approaches < 1 = goal not met
+    return 1;
+  };
+
   const calculateLevelAndStreak = useCallback(async () => {
     // CRITICAL: If currentLevel is hardcoded for testing, force it to that value
     if (AppConstants.currentLevel !== null && currentLevel !== AppConstants.currentLevel) {
@@ -400,16 +418,19 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
         last3Days.push(date.toDateString());
       }
 
-      const dailyProgress = last3Days.map(dateStr => {
-        const dayActions = getDayActions(dateStr);
-        const approaches = dayActions.filter(a => a.type !== 'missedOpportunity').length;
-        return { date: dateStr, approaches };
-      });
+      const dailyProgress = await Promise.all(
+        last3Days.map(async (dateStr) => {
+          const dayActions = getDayActions(dateStr);
+          const approaches = dayActions.filter(a => a.type !== 'missedOpportunity').length;
+          const goal = await getDailyGoalForDate(dateStr);
+          return { date: dateStr, approaches, goal };
+        })
+      );
 
       let newLevel = currentLevel ?? 1;
       const levelConfig = getLevelConfig(newLevel);
 
-      const last3ProgressGoal = dailyProgress.slice(0, 3).every(day => day.approaches >= levelConfig.goal);
+      const last3ProgressGoal = dailyProgress.slice(0, 3).every(day => day.approaches >= day.goal);
       const last3ProgressBase = dailyProgress.slice(0, 3).every(day => day.approaches < levelConfig.base);
 
       if (last3ProgressGoal && newLevel < 5) {
@@ -423,11 +444,13 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
         await StorageService.setCurrentLevel(newLevel);
         const newLevelConfig = getLevelConfig(newLevel);
         setDailyGoalState(newLevelConfig.goal);
+        
+        const todayStr = getTodayString();
+        await StorageService.setDailyGoalForDate(todayStr, newLevelConfig.goal);
       }
     }
 
     // Calculate streak (always runs, even in test mode)
-    const effectiveLevel = currentLevel ?? 1;
     let currentStreak = 0;
     for (let i = 1; i <= 30; i++) {
       const date = new Date();
@@ -435,9 +458,9 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
       const dateStr = date.toDateString();
       const dayActions = getDayActions(dateStr);
       const approaches = dayActions.filter(a => a.type !== 'missedOpportunity').length;
-      const dayLevelConfig = getLevelConfig(effectiveLevel);
+      const dayGoal = await getDailyGoalForDate(dateStr);
       
-      if (approaches >= dayLevelConfig.goal) {
+      if (approaches >= dayGoal) {
         currentStreak++;
       } else {
         break;
@@ -476,6 +499,12 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
         
         const levelConfig = getLevelConfig(level);
         setDailyGoalState(levelConfig.goal);
+
+        const todayStr = getTodayString();
+        const todayGoal = await StorageService.getDailyGoalForDate(todayStr);
+        if (todayGoal === null) {
+          await StorageService.setDailyGoalForDate(todayStr, levelConfig.goal);
+        }
 
         const storedStreak = await StorageService.getStreak();
         setStreak(storedStreak);
@@ -561,6 +590,7 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
     userLocation,
     appMode,
     setAppMode,
+    getDailyGoalForDate,
   };
 
   return (
