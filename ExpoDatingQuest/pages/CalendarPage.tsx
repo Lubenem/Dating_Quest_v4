@@ -1,8 +1,8 @@
-import React, { useState, useMemo, useCallback, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-import { ChevronLeft, ChevronRight, Flame } from 'lucide-react-native';
+import React, { useState, useMemo, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { ChevronLeft, ChevronRight, Flame, Users, MessageCircle, Heart, Clock } from 'lucide-react-native';
 import { useActionsContext } from '../contexts/ActionsContext';
-import { Colors } from '../constants';
+import { Colors, ActionColors } from '../constants';
 
 interface DayCellProps {
   date: Date;
@@ -73,8 +73,31 @@ const DayCell: React.FC<DayCellProps> = ({
 };
 
 export const CalendarPage: React.FC = () => {
-  const { getDayActions, setSelectedDate, selectedDate, getDailyGoalForDate } = useActionsContext();
+  const { getDayActions, setSelectedDate, selectedDate, getDailyGoalForDate, actions } = useActionsContext();
   const [viewDate, setViewDate] = useState(new Date());
+
+  const selectedDateActions = useMemo(() => {
+    const dateStr = selectedDate.toDateString();
+    return getDayActions(dateStr);
+  }, [selectedDate, getDayActions]);
+
+  const selectedDateCounts = useMemo(() => {
+    return {
+      approach: selectedDateActions.filter(a => a.type === 'approach').length,
+      contact: selectedDateActions.filter(a => a.type === 'contact').length,
+      instantDate: selectedDateActions.filter(a => a.type === 'instantDate').length,
+      missedOpportunity: selectedDateActions.filter(a => a.type === 'missedOpportunity').length,
+    };
+  }, [selectedDateActions]);
+
+  const totalCounts = useMemo(() => {
+    return {
+      approach: actions.filter(a => a.type === 'approach').length,
+      contact: actions.filter(a => a.type === 'contact').length,
+      instantDate: actions.filter(a => a.type === 'instantDate').length,
+      missedOpportunity: actions.filter(a => a.type === 'missedOpportunity').length,
+    };
+  }, [actions]);
 
   const calendarData = useMemo(() => {
     const year = viewDate.getFullYear();
@@ -139,7 +162,7 @@ export const CalendarPage: React.FC = () => {
   const monthName = viewDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={goToPreviousMonth} style={styles.navButton}>
           <ChevronLeft size={24} color={Colors.text} />
@@ -175,32 +198,81 @@ export const CalendarPage: React.FC = () => {
         ))}
       </View>
 
-      <View style={styles.legend}>
-        <Text style={styles.legendTitle}>Legend</Text>
-        <View style={styles.legendGrid}>
-          <View style={styles.legendItem}>
-            <Flame size={16} color={Colors.accent} fill={Colors.accent} />
-            <Text style={styles.legendText}>Daily goal reached</Text>
+      <View style={styles.statsContainer}>
+        <View style={styles.statsBlock}>
+          <Text style={styles.statsTitle}>Selected</Text>
+          <View style={styles.statsItems}>
+            <View style={styles.statsItem}>
+              <View style={[styles.iconCircle, { backgroundColor: ActionColors.approach }]}>
+                <Users size={20} color="#ffffff" />
+              </View>
+              <Text style={styles.statsCount}>{selectedDateCounts.approach}</Text>
+            </View>
+            <View style={styles.statsItem}>
+              <View style={[styles.iconCircle, { backgroundColor: ActionColors.contact }]}>
+                <MessageCircle size={20} color="#ffffff" />
+              </View>
+              <Text style={styles.statsCount}>{selectedDateCounts.contact}</Text>
+            </View>
+            <View style={styles.statsItem}>
+              <View style={[styles.iconCircle, { backgroundColor: ActionColors.instantDate }]}>
+                <Heart size={20} color="#ffffff" />
+              </View>
+              <Text style={styles.statsCount}>{selectedDateCounts.instantDate}</Text>
+            </View>
+            <View style={styles.statsItem}>
+              <View style={[styles.iconCircle, { backgroundColor: ActionColors.missedOpportunity }]}>
+                <Clock size={20} color="#ffffff" />
+              </View>
+              <Text style={styles.statsCount}>{selectedDateCounts.missedOpportunity}</Text>
+            </View>
+          </View>
+        </View>
+
+        <View style={styles.statsBlock}>
+          <Text style={styles.statsTitle}>Total</Text>
+          <View style={styles.statsItems}>
+            <View style={styles.statsItem}>
+              <View style={[styles.iconCircle, { backgroundColor: ActionColors.approach }]}>
+                <Users size={20} color="#ffffff" />
+              </View>
+              <Text style={styles.statsCount}>{totalCounts.approach}</Text>
+            </View>
+            <View style={styles.statsItem}>
+              <View style={[styles.iconCircle, { backgroundColor: ActionColors.contact }]}>
+                <MessageCircle size={20} color="#ffffff" />
+              </View>
+              <Text style={styles.statsCount}>{totalCounts.contact}</Text>
+            </View>
+            <View style={styles.statsItem}>
+              <View style={[styles.iconCircle, { backgroundColor: ActionColors.instantDate }]}>
+                <Heart size={20} color="#ffffff" />
+              </View>
+              <Text style={styles.statsCount}>{totalCounts.instantDate}</Text>
+            </View>
+            <View style={styles.statsItem}>
+              <View style={[styles.iconCircle, { backgroundColor: ActionColors.missedOpportunity }]}>
+                <Clock size={20} color="#ffffff" />
+              </View>
+              <Text style={styles.statsCount}>{totalCounts.missedOpportunity}</Text>
+            </View>
           </View>
         </View>
       </View>
-    </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  content: {
-    padding: 16,
-    paddingBottom: 40,
+    padding: 10,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 24,
+    marginBottom: 1,
   },
   navButton: {
     padding: 8,
@@ -213,34 +285,35 @@ const styles = StyleSheet.create({
   },
   weekDays: {
     flexDirection: 'row',
-    marginBottom: 12,
+    marginBottom: 8,
+    justifyContent: 'space-between',
   },
   weekDayText: {
-    flex: 1,
+    width: '14.6%',
+    marginHorizontal: '1%',
     textAlign: 'center',
     fontSize: 12,
     fontWeight: '600',
-    color: Colors.textSecondary,
-    opacity: 0.7,
+    color: '#ffffff',
   },
   calendarGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    marginBottom: 24,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 0,
   },
   dayCell: {
     width: '14.6%',
-    
     aspectRatio: 1,
-    padding: 4,
     marginHorizontal: '1%',
+    marginTop: 3,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 12,
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: 'rgba(255, 255, 255, 0.1)',
     backgroundColor: 'rgba(255, 255, 255, 0.05)',
-    marginBottom: 6,
     position: 'relative',
   },
   dayCellInactive: {
@@ -249,22 +322,20 @@ const styles = StyleSheet.create({
   },
   dayCellToday: {
     borderColor: '#ffffff',
-    borderWidth: 2,
   },
   dayCellSelected: {
     backgroundColor: 'transparent',
     borderColor: Colors.accent,
-    borderWidth: 2,
   },
   dayText: {
     fontSize: 14,
     fontWeight: '600',
-    color: Colors.text,
+    color: '#ffffff',
     zIndex: 10,
   },
   dayTextInactive: {
-    color: Colors.textSecondary,
-    opacity: 0.3,
+    color: '#ffffff',
+    opacity: 0.2,
   },
   fireBackground: {
     position: 'absolute',
@@ -272,32 +343,49 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     opacity: 0.5,
   },
-  legend: {
+  statsContainer: {
+    flexDirection: 'row',
+    gap: 16,
+  },
+  statsBlock: {
+    flex: 1,
     backgroundColor: 'rgba(255, 255, 255, 0.05)',
     borderRadius: 16,
-    padding: 16,
+    padding: 12,
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.1)',
+    margin: 0,
   },
-  legendTitle: {
+  statsTitle: {
     fontSize: 16,
     fontWeight: '700',
-    color: Colors.text,
-    marginBottom: 12,
+    color: '#ffffff',
+    marginBottom: 0,
+    textAlign: 'center',
   },
-  legendGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 12,
+  statsItems: {
+    gap: 8,
+    alignItems: 'center',
   },
-  legendItem: {
+  statsItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: 12,
   },
-  legendText: {
-    fontSize: 14,
-    color: Colors.textSecondary,
+  iconCircle: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: '#ffffff',
+  },
+  statsCount: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#ffffff',
+    minWidth: 24,
   },
 });
 

@@ -26,17 +26,24 @@
 ---
 
 ## <Calendar>
-[x] Let's add a Calendar page finaly :)
-* Should look nice and transparent look here for reference [FigamCalendarApp](OldVersions\FigmaCalendarView\src\components\CalendarComponent.tsx), but remember to KISS. Step by step. I've used FIGMA AI to generate that page.
-* Add Streak logic with fire emojis (if that day the approaches goal for that day was satisfied)
-* The calendar should simply show different days, and show us how we did that particular day, we should be able to select a day and check data for the day (actions)
+[] Let's improve the Calendar :)
+* The text color should be always white, no opacity (accept for when the color is of `accent`, but we don't have this in calendar)
+* When we select a date, the cell's row height changes, cells size shoud be fixed, no matter weather it is selected and has border or not.
 \
-* BottomBar | I've changed the order of item in navbar, make sure no matter what first page that is selected right after app init is always `Dashboard`, currently `Calendar`
-* Calendar | let's simplify the markers on the date, remove the dots logic, instead just mark only the days where the goal was reached with fire icon or smth cool like that. I think it should be a simple logic: Each time we init an app when we calculate level we should also store the day goal for current day, and then when we open calend for each displayed day we just compare `selctedCalendarDate.Approaches` and `selctedCalendarDate.ApproachesGoal`, if `approaches` is greater then goal was completed for that day, and we show fire. Adjust the current `streak calc` logic, and `level up/down calc` logic to also use this new approach.
-* Calendar | for testing purposes, in our consts configs let's add the `goalShenanigans` bool, which will do a next thing, everywhere in the system where we are trying to fetch the `ApproachesGoal` for a certain date in the past, it will replace it with `-1`, so we pretend like we always reached our goal even with 0 approaches, and the calendar should be on fire :)
-Remember KISS, DRY, Best Practices and Optimization!
+* Below the calendar we will do smth interesting :)
+Remove the legend. Instead we will have two block, aligned horizontally. Take all posible space
+ - `Selected` | Current Date's info. This tab is selected by default
+ - `Total` | Shows total info
+ - Inside  each block we just list vertically each actions icon and number after
+ Should look, simple neat and nice
+
 
 # [Commits]
+
+## `28.10.25.Tue`
+
+## <Calendar>
+* Calendar v0.8
 
 ## `27.10.25.Mon`
 
