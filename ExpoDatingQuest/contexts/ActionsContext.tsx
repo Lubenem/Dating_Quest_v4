@@ -408,6 +408,18 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
       return;
     }
     
+    // Skip level calculation completely if goalShenanigans is enabled (testing mode)
+    // Reset to level 1 for consistent testing
+    if (AppConstants.goalShenanigans) {
+      if (currentLevel !== 1) {
+        setCurrentLevel(1);
+        await StorageService.setCurrentLevel(1);
+        const levelConfig = getLevelConfig(1);
+        setDailyGoalState(levelConfig.goal);
+      }
+      return;
+    }
+    
     // Skip level calculation if currentLevel is manually set for testing
     if (AppConstants.currentLevel === null) {
       const last3Days: string[] = [];
@@ -469,13 +481,10 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
 
     setStreak(currentStreak);
     await StorageService.setStreak(currentStreak);
-  }, [actions, currentLevel, getDayActions]);
+  }, [currentLevel, getDayActions]);
 
-  useEffect(() => {
-    if (hasInitialized) {
-      calculateLevelAndStreak();
-    }
-  }, [actions, hasInitialized]);
+  // REMOVED: This was causing level recalculation after every action
+  // Level/streak calculation now only happens at app init (see initializeData)
 
   /**
    * EFFECT: Load data when app starts
@@ -508,6 +517,9 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
 
         const storedStreak = await StorageService.getStreak();
         setStreak(storedStreak);
+        
+        // Calculate level and streak only once at app init
+        await calculateLevelAndStreak();
 
         const storedMode = await StorageService.getAppMode();
         

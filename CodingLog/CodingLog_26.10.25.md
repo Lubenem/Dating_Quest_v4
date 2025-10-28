@@ -43,6 +43,10 @@ Remove the legend. Instead we will have two block, aligned horizontally. Take al
 ## `28.10.25.Tue`
 
 ## <Calendar>
+* Calendar v0.9
+* Goal shineningans, reset to 1
+
+## <Calendar>
 * Calendar v0.8
 
 ## `27.10.25.Mon`

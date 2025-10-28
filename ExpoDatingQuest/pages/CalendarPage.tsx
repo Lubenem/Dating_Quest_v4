@@ -56,7 +56,7 @@ const DayCell: React.FC<DayCellProps> = ({
     >
       {goalMet && (
         <View style={styles.fireBackground}>
-          <Flame size={38} color={Colors.accent} fill={Colors.accent} strokeWidth={1.5} />
+          <Flame size={50} color={Colors.accent} fill={Colors.accent} strokeWidth={1.5} />
         </View>
       )}
       
@@ -106,13 +106,17 @@ export const CalendarPage: React.FC = () => {
     const firstDay = new Date(year, month, 1);
     const lastDay = new Date(year, month + 1, 0);
     const daysInMonth = lastDay.getDate();
-    const startDayOfWeek = firstDay.getDay();
+    
+    // Convert getDay() from Sunday=0 to Monday=0 format
+    // Sunday becomes 6, Monday becomes 0, etc.
+    const startDayOfWeek = (firstDay.getDay() + 6) % 7;
     
     const prevMonth = new Date(year, month, 0);
     const prevMonthDays = prevMonth.getDate();
     
     const days: Array<{ date: Date; isCurrentMonth: boolean }> = [];
     
+    // Add days from previous month to fill the first week
     for (let i = startDayOfWeek - 1; i >= 0; i--) {
       days.push({
         date: new Date(year, month - 1, prevMonthDays - i),
@@ -120,6 +124,7 @@ export const CalendarPage: React.FC = () => {
       });
     }
     
+    // Add days of the current month
     for (let i = 1; i <= daysInMonth; i++) {
       days.push({
         date: new Date(year, month, i),
@@ -127,6 +132,7 @@ export const CalendarPage: React.FC = () => {
       });
     }
     
+    // Add days from next month to fill the last week(s)
     const remainingDays = 42 - days.length;
     for (let i = 1; i <= remainingDays; i++) {
       days.push({
@@ -176,7 +182,7 @@ export const CalendarPage: React.FC = () => {
       </View>
 
       <View style={styles.weekDays}>
-        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
+        {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) => (
           <Text key={day} style={styles.weekDayText}>
             {day}
           </Text>
@@ -284,13 +290,13 @@ const styles = StyleSheet.create({
     color: Colors.text,
   },
   weekDays: {
+    marginTop: 10,
+    marginBottom: 15,
     flexDirection: 'row',
-    marginBottom: 8,
     justifyContent: 'space-between',
   },
   weekDayText: {
-    width: '14.6%',
-    marginHorizontal: '1%',
+    width: '13%',
     textAlign: 'center',
     fontSize: 12,
     fontWeight: '600',
@@ -301,12 +307,11 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 0,
+    marginBottom: 10,
   },
   dayCell: {
-    width: '14.6%',
+    width: '13%',
     aspectRatio: 1,
-    marginHorizontal: '1%',
     marginTop: 3,
     alignItems: 'center',
     justifyContent: 'center',
@@ -341,7 +346,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     alignItems: 'center',
     justifyContent: 'center',
-    opacity: 0.5,
+    opacity: 0.8,
+    bottom: 0,
   },
   statsContainer: {
     flexDirection: 'row',
@@ -360,7 +366,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '700',
     color: '#ffffff',
-    marginBottom: 0,
+    marginBottom: 10,
     textAlign: 'center',
   },
   statsItems: {
