@@ -1,8 +1,13 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { ChevronLeft, ChevronRight, Flame, Users, MessageCircle, Heart, Clock } from 'lucide-react-native';
 import { useActionsContext } from '../contexts/ActionsContext';
 import { Colors, ActionColors } from '../constants';
+
+// Calendar color constants for streak days
+const STREAK_FIRE_COLOR = '#FF4444';
+const STREAK_BORDER_COLOR = '#000000';
+const STREAK_TEXT_COLOR = '#000000';
 
 interface DayCellProps {
   date: Date;
@@ -26,21 +31,29 @@ const DayCell: React.FC<DayCellProps> = ({
   const [goalMet, setGoalMet] = useState(false);
 
   useEffect(() => {
-    const checkGoal = async () => {
-      if (!isCurrentMonth) {
-        setGoalMet(false);
-        return;
-      }
+    if (!isCurrentMonth) {
+      setGoalMet(false);
+      return;
+    }
 
+    let isMounted = true;
+    
+    const checkGoal = async () => {
       const dateStr = date.toDateString();
       const dayActions = getDayActions(dateStr);
       const approaches = dayActions.filter(a => a.type !== 'missedOpportunity').length;
       const dayGoal = await getDailyGoalForDate(dateStr);
       
-      setGoalMet(approaches >= dayGoal);
+      if (isMounted) {
+        setGoalMet(approaches >= dayGoal);
+      }
     };
 
     checkGoal();
+    
+    return () => {
+      isMounted = false;
+    };
   }, [date, isCurrentMonth, getDayActions, getDailyGoalForDate]);
 
   return (
@@ -48,6 +61,7 @@ const DayCell: React.FC<DayCellProps> = ({
       style={[
         styles.dayCell,
         !isCurrentMonth && styles.dayCellInactive,
+        goalMet && !isTodayDate && !isSelectedDate && { borderColor: STREAK_BORDER_COLOR },
         isTodayDate && styles.dayCellToday,
         isSelectedDate && styles.dayCellSelected,
       ]}
@@ -56,7 +70,7 @@ const DayCell: React.FC<DayCellProps> = ({
     >
       {goalMet && (
         <View style={styles.fireBackground}>
-          <Flame size={50} color={Colors.accent} fill={Colors.accent} strokeWidth={1.5} />
+          <Flame size={67} color={Colors.accent} fill={Colors.accent} strokeWidth={1} stroke={STREAK_FIRE_COLOR} strokeOpacity={1} />
         </View>
       )}
       
@@ -64,6 +78,7 @@ const DayCell: React.FC<DayCellProps> = ({
         style={[
           styles.dayText,
           !isCurrentMonth && styles.dayTextInactive,
+          goalMet && isCurrentMonth && { color: STREAK_TEXT_COLOR },
         ]}
       >
         {date.getDate()}
@@ -74,7 +89,7 @@ const DayCell: React.FC<DayCellProps> = ({
 
 export const CalendarPage: React.FC = () => {
   const { getDayActions, setSelectedDate, selectedDate, getDailyGoalForDate, actions } = useActionsContext();
-  const [viewDate, setViewDate] = useState(new Date());
+  const [viewDate, setViewDate] = useState(selectedDate);
 
   const selectedDateActions = useMemo(() => {
     const dateStr = selectedDate.toDateString();
@@ -144,17 +159,29 @@ export const CalendarPage: React.FC = () => {
     return days;
   }, [viewDate]);
 
-  const goToPreviousMonth = () => {
-    setViewDate(new Date(viewDate.getFullYear(), viewDate.getMonth() - 1, 1));
+  const goToPreviousMonth = async () => {
+    const newViewDate = new Date(viewDate.getFullYear(), viewDate.getMonth() - 1, 1);
+    setViewDate(newViewDate);
+    
+    // If selected date is not in this month, select the first day of the new month
+    if (selectedDate.getMonth() !== newViewDate.getMonth() || selectedDate.getFullYear() !== newViewDate.getFullYear()) {
+      await setSelectedDate(newViewDate);
+    }
   };
 
-  const goToNextMonth = () => {
-    setViewDate(new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 1));
+  const goToNextMonth = async () => {
+    const newViewDate = new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 1);
+    setViewDate(newViewDate);
+    
+    // If selected date is not in this month, select the first day of the new month
+    if (selectedDate.getMonth() !== newViewDate.getMonth() || selectedDate.getFullYear() !== newViewDate.getFullYear()) {
+      await setSelectedDate(newViewDate);
+    }
   };
 
-  const handleDayPress = (date: Date) => {
-    setSelectedDate(date);
-  };
+  const handleDayPress = useCallback(async (date: Date) => {
+    await setSelectedDate(date);
+  }, [setSelectedDate]);
 
   const isToday = (date: Date) => {
     const today = new Date();
@@ -320,6 +347,7 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(255, 255, 255, 0.1)',
     backgroundColor: 'rgba(255, 255, 255, 0.05)',
     position: 'relative',
+    overflow: 'hidden',
   },
   dayCellInactive: {
     backgroundColor: 'transparent',
@@ -334,7 +362,7 @@ const styles = StyleSheet.create({
   },
   dayText: {
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: '700',
     color: '#ffffff',
     zIndex: 10,
   },
@@ -344,10 +372,10 @@ const styles = StyleSheet.create({
   },
   fireBackground: {
     position: 'absolute',
+    opacity: 0.8,
+    top: -11,
     alignItems: 'center',
     justifyContent: 'center',
-    opacity: 0.8,
-    bottom: 0,
   },
   statsContainer: {
     flexDirection: 'row',

@@ -14,6 +14,7 @@ export const BottomBar: React.FC = () => {
   
   return (
     <Tab.Navigator
+      key={`tab-navigator-${appMode}`}
       initialRouteName="Dashboard"
       screenOptions={{
         tabBarActiveTintColor: Colors.accent,

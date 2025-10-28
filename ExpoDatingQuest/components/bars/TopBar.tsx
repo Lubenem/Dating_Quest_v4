@@ -8,29 +8,29 @@ import { Colors, App as AppConstants } from '../../constants';
 
 export const TopBar: React.FC = () => {
   const insets = useSafeAreaInsets();
-  const { counters, dailyGoal, currentLevel, streak, selectedDate, setSelectedDate, isToday } = useActionsContext();
+  const { counters, selectedDateGoal, currentLevel, streak, selectedDate, setSelectedDate, isToday } = useActionsContext();
   const { showLevelUpPopup } = usePopup();
 
-  const progress = dailyGoal > 0 ? (counters.approaches / dailyGoal) * 100 : 0;
+  const progress = selectedDateGoal > 0 ? (counters.approaches / selectedDateGoal) * 100 : 0;
   const progressClamped = Math.min(progress, 100);
 
   const showFireIcon = streak >= AppConstants.streakThresholds.twoFires;
 
-  const goToPreviousDay = () => {
+  const goToPreviousDay = async () => {
     const newDate = new Date(selectedDate);
     newDate.setDate(newDate.getDate() - 1);
-    setSelectedDate(newDate);
+    await setSelectedDate(newDate);
   };
 
-  const goToNextDay = () => {
+  const goToNextDay = async () => {
     if (isToday) return;
     const newDate = new Date(selectedDate);
     newDate.setDate(newDate.getDate() + 1);
-    setSelectedDate(newDate);
+    await setSelectedDate(newDate);
   };
 
-  const goToToday = () => {
-    setSelectedDate(new Date());
+  const goToToday = async () => {
+    await setSelectedDate(new Date());
   };
 
   const formatDate = (date: Date): string => {
@@ -68,7 +68,7 @@ export const TopBar: React.FC = () => {
             style={styles.dateArrow}
             hitSlop={{ top: 10, bottom: 10, left: 15, right: 15 }}
           >
-            <ChevronLeft size={20} color={!isToday ? Colors.accent : Colors.text} />
+            <ChevronLeft size={20} color={Colors.text} />
           </TouchableOpacity>
           
           <TouchableOpacity 
@@ -89,7 +89,7 @@ export const TopBar: React.FC = () => {
           >
             <ChevronRight 
               size={20} 
-              color={!isToday ? Colors.accent : Colors.text}
+              color={Colors.text}
               opacity={isToday ? 0.3 : 1}
             />
           </TouchableOpacity>
@@ -101,7 +101,7 @@ export const TopBar: React.FC = () => {
           activeOpacity={0.7}
         >
           <Text style={styles.progressText}>
-            {counters.approaches} / {dailyGoal}
+            {counters.approaches} / {selectedDateGoal}
           </Text>
         </TouchableOpacity>
       </View>
@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
   progressText: {
     fontSize: 14,
     fontWeight: '600',
-    color: Colors.accent,
+    color: Colors.text,
   },
   progressBarContainer: {
     height: 3,

@@ -34,6 +34,7 @@ interface CounterButtonProps {
   onIncrement: (type: ActionType) => void;    // Function to call when button pressed
   onDecrement: (type: ActionType) => void;    // Function to call when minus pressed
   disabled?: boolean;                         // Disable interaction (e.g., no location permission)
+  isToday?: boolean;                          // Whether viewing today's date
 }
 
 /**
@@ -96,6 +97,7 @@ export const CounterButton: React.FC<CounterButtonProps> = ({
   onIncrement,
   onDecrement,
   disabled = false,
+  isToday = true,
 }) => {
   // Animation value for scale effect
   const [scaleValue] = useState(new Animated.Value(1));
@@ -185,7 +187,7 @@ export const CounterButton: React.FC<CounterButtonProps> = ({
           end={{ x: 1, y: 1 }}
         >
           {/* Icon in top-left corner */}
-          <View style={[styles.iconContainer, disabled && styles.iconContainerDisabled]}>
+          <View style={[styles.iconContainer, disabled && isToday && styles.iconContainerDisabled]}>
             {IconComponent && <IconComponent size={32} color="white" />}
           </View>
           
@@ -200,10 +202,10 @@ export const CounterButton: React.FC<CounterButtonProps> = ({
           </TouchableOpacity>
           
           {/* Label text */}
-          <Text style={[styles.title, disabled && styles.textDisabled]}>{config?.label || 'Counter'}</Text>
+          <Text style={[styles.title, disabled && isToday && styles.textDisabled]}>{config?.label || 'Counter'}</Text>
           
           {/* Count number (big and bold!) */}
-          <Text style={[styles.count, disabled && styles.textDisabled]}>{count}</Text>
+          <Text style={[styles.count, disabled && isToday && styles.textDisabled, !isToday && styles.textPastDate]}>{count}</Text>
         </LinearGradient>
       </TouchableOpacity>
     </Animated.View>
@@ -283,9 +285,6 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     textAlign: 'center',
     marginTop: 40,
-    textShadowColor: 'rgba(0, 0, 0, 0.5)',
-    textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 4,
     lineHeight: 22,
   },
   count: {
@@ -293,12 +292,12 @@ const styles = StyleSheet.create({
     fontSize: 56,
     fontWeight: 'bold',
     textAlign: 'center',
-    textShadowColor: 'rgba(0, 0, 0, 0.5)',
-    textShadowOffset: { width: 0, height: 3 },
-    textShadowRadius: 6,
   },
   textDisabled: {
     opacity: DISABLED_OPACITY,
+  },
+  textPastDate: {
+    color: Colors.accent,
   },
 });
 

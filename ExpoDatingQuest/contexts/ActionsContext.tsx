@@ -30,7 +30,8 @@ interface ActionsContextType {
   // STATE - Current data
   actions: Action[];                                    // All actions ever recorded
   counters: Counters;                                   // Today's counters (for selected date)
-  dailyGoal: number;                                    // User's daily approach goal
+  dailyGoal: number;                                    // User's daily approach goal (current level)
+  selectedDateGoal: number;                             // Goal for the selected date
   currentLevel: number | null;                          // User's current level (0-5), null until calculated
   streak: number;                                       // Consecutive days of meeting goal
   isLoading: boolean;                                   // Is data loading from storage?
@@ -118,6 +119,7 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
   const [currentLevel, setCurrentLevel] = useState<number | null>(null);
   const [streak, setStreak] = useState<number>(0);
   const [dailyGoal, setDailyGoalState] = useState<number>(10);
+  const [selectedDateGoal, setSelectedDateGoal] = useState<number>(1);
   const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [hasInitialized, setHasInitialized] = useState<boolean>(false);
@@ -217,15 +219,34 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
   const updateCounters = useCallback((): void => {
     const selectedDateString = selectedDate.toDateString();
     const dayActions = getDayActions(selectedDateString);
+    
+    // Single pass through actions for better performance
     const newCounters: Counters = {
-      // Approaches = all actions except missed opportunities
-      approaches: dayActions.filter(action => action.type !== 'missedOpportunity').length,
-      
-      // Count each specific type
-      contacts: dayActions.filter(action => action.type === 'contact').length,
-      instantDates: dayActions.filter(action => action.type === 'instantDate').length,
-      missedOpportunities: dayActions.filter(action => action.type === 'missedOpportunity').length,
+      approaches: 0,
+      contacts: 0,
+      instantDates: 0,
+      missedOpportunities: 0,
     };
+    
+    for (const action of dayActions) {
+      switch (action.type) {
+        case 'contact':
+          newCounters.contacts++;
+          newCounters.approaches++;
+          break;
+        case 'instantDate':
+          newCounters.instantDates++;
+          newCounters.approaches++;
+          break;
+        case 'approach':
+          newCounters.approaches++;
+          break;
+        case 'missedOpportunity':
+          newCounters.missedOpportunities++;
+          break;
+      }
+    }
+    
     setCounters(newCounters);
   }, [getDayActions, selectedDate]);
 
@@ -338,12 +359,35 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
    */
   const getDayCounters = useCallback((date: string): Counters => {
     const dayActions = getDayActions(date);
-    return {
-      approaches: dayActions.filter(action => action.type !== 'missedOpportunity').length,
-      contacts: dayActions.filter(action => action.type === 'contact').length,
-      instantDates: dayActions.filter(action => action.type === 'instantDate').length,
-      missedOpportunities: dayActions.filter(action => action.type === 'missedOpportunity').length,
+    
+    // Single pass through actions for better performance
+    const counters: Counters = {
+      approaches: 0,
+      contacts: 0,
+      instantDates: 0,
+      missedOpportunities: 0,
     };
+    
+    for (const action of dayActions) {
+      switch (action.type) {
+        case 'contact':
+          counters.contacts++;
+          counters.approaches++;
+          break;
+        case 'instantDate':
+          counters.instantDates++;
+          counters.approaches++;
+          break;
+        case 'approach':
+          counters.approaches++;
+          break;
+        case 'missedOpportunity':
+          counters.missedOpportunities++;
+          break;
+      }
+    }
+    
+    return counters;
   }, [getDayActions]);
 
   /**
@@ -366,11 +410,16 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
     await StorageService.setDailyGoal(goal);
   };
 
-  const setSelectedDate = (date: Date): void => {
+  const setSelectedDate = async (date: Date): Promise<void> => {
     setSelectedDateState(date);
     const today = new Date();
     const isSameDay = date.toDateString() === today.toDateString();
     setIsToday(isSameDay);
+    
+    // Update the goal for the selected date
+    const dateStr = date.toDateString();
+    const goal = await getDailyGoalForDate(dateStr);
+    setSelectedDateGoal(goal);
   };
 
   const setAppMode = async (mode: 'basic' | 'fullscale'): Promise<void> => {
@@ -384,7 +433,7 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
     return AppConstants.levels.find(l => l.level === level) || AppConstants.levels[1];
   };
 
-  const getDailyGoalForDate = async (dateStr: string): Promise<number> => {
+  const getDailyGoalForDate = useCallback(async (dateStr: string): Promise<number> => {
     if (AppConstants.goalShenanigans) {
       return -1;
     }
@@ -397,7 +446,7 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
     // No stored goal = user didn't open app that day
     // Return 1 (minimum goal) so 0 approaches < 1 = goal not met
     return 1;
-  };
+  }, []);
 
   const calculateLevelAndStreak = useCallback(async () => {
     // CRITICAL: If currentLevel is hardcoded for testing, force it to that value
@@ -439,7 +488,7 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
         })
       );
 
-      let newLevel = currentLevel ?? 1;
+      let newLevel = currentLevel ?? 0;
       const levelConfig = getLevelConfig(newLevel);
 
       const last3ProgressGoal = dailyProgress.slice(0, 3).every(day => day.approaches >= day.goal);
@@ -515,6 +564,10 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
           await StorageService.setDailyGoalForDate(todayStr, levelConfig.goal);
         }
 
+        // Initialize selectedDateGoal for today
+        const selectedGoal = await getDailyGoalForDate(todayStr);
+        setSelectedDateGoal(selectedGoal);
+
         const storedStreak = await StorageService.getStreak();
         setStreak(storedStreak);
         
@@ -585,6 +638,7 @@ export const ActionsProvider: React.FC<ActionsProviderProps> = ({ children }) =>
     actions,
     counters,
     dailyGoal,
+    selectedDateGoal,
     currentLevel,
     streak,
     isLoading,

@@ -111,6 +111,7 @@ export const DashboardPage: React.FC = () => {
           onIncrement={handleIncrement}
           onDecrement={handleDecrement}
           disabled={!isToday || (appMode === 'fullscale' && !permissionGranted)}
+          isToday={isToday}
         />
       </ScrollView>
     </SafeAreaView>

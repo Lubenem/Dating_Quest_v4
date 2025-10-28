@@ -25,22 +25,12 @@
 ## <Calendar>
 ---
 
-## <Calendar>
-[] Let's improve the Calendar :)
-* The text color should be always white, no opacity (accept for when the color is of `accent`, but we don't have this in calendar)
-* When we select a date, the cell's row height changes, cells size shoud be fixed, no matter weather it is selected and has border or not.
-\
-* Below the calendar we will do smth interesting :)
-Remove the legend. Instead we will have two block, aligned horizontally. Take all posible space
- - `Selected` | Current Date's info. This tab is selected by default
- - `Total` | Shows total info
- - Inside  each block we just list vertically each actions icon and number after
- Should look, simple neat and nice
-
-
 # [Commits]
 
 ## `28.10.25.Tue`
+
+## <Calendar>
+* Calendar v1
 
 ## <Calendar>
 * Calendar v0.9
@@ -75,6 +65,20 @@ Remove the legend. Instead we will have two block, aligned horizontally. Take al
 * Map | Improved map clusters logic
 
 # [Prompts]
+
+## `28.10.25.Tue`
+
+## <Calendar>
+[x] Let's improve the Calendar :)
+* The text color should be always white, no opacity (accept for when the color is of `accent`, but we don't have this in calendar)
+* When we select a date, the cell's row height changes, cells size shoud be fixed, no matter weather it is selected and has border or not.
+\
+* Below the calendar we will do smth interesting :)
+Remove the legend. Instead we will have two block, aligned horizontally. Take all posible space
+ - `Selected` | Current Date's info. This tab is selected by default
+ - `Total` | Shows total info
+ - Inside  each block we just list vertically each actions icon and number after
+ Should look, simple neat and nice
 
 ## `27.10.25.Mon`
 

@@ -124,7 +124,7 @@ export const Animation = {
  */
 export const App = {
   currentLevel: null as number | null, // Set to a number (0-5) for testing, null for automatic
-  goalShenanigans: true, // Set to true to pretend all past goals were met (testing)
+  goalShenanigans: false, // Set to true to pretend all past goals were met (testing)
   
   levels: [
     { level: 0, base: 0, goal: 1 },

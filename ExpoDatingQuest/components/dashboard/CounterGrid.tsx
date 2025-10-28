@@ -32,6 +32,7 @@ interface CounterGridProps {
   onIncrement: (type: ActionType) => void;
   onDecrement: (type: ActionType) => void;
   disabled?: boolean;
+  isToday?: boolean;
 }
 
 /**
@@ -58,6 +59,7 @@ export const CounterGrid: React.FC<CounterGridProps> = ({
   onIncrement,
   onDecrement,
   disabled = false,
+  isToday = true,
 }) => {
   /**
    * Get the count value for a specific action type
@@ -91,6 +93,7 @@ export const CounterGrid: React.FC<CounterGridProps> = ({
           onIncrement={onIncrement}
           onDecrement={onDecrement}
           disabled={disabled}
+          isToday={isToday}
         />
       ))}
     </View>
